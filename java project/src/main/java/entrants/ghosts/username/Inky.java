@@ -16,6 +16,6 @@ public class Inky extends IndividualGhostController {
 
     @Override
     public Constants.MOVE getMove(Game game, long timeDue) {
-        return Constants.MOVE.DOWN;
+        return Constants.MOVE.UP;
     }
 }

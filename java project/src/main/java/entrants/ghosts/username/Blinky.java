@@ -17,12 +17,19 @@ public class Blinky extends IndividualGhostController {
 
     public Blinky() {
         super(Constants.GHOST.BLINKY);
-        this.graphe = new KnowledgeGraph();
+        this.graphe = null;
     }
 
     @Override
     public Constants.MOVE getMove(Game game, long timeDue) {
-        Commons.updateKnowledgeGraph(game, graphe);
+        if(this.graphe == null)
+        {
+            this.graphe = Commons.initKnowledgeGraph(game);
+        }
+        else
+        {
+            Commons.updateKnowledgeGraph(game, this.graphe);
+        }
         return Constants.MOVE.DOWN;
     }
 }

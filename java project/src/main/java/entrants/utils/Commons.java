@@ -4,6 +4,9 @@ import entrants.utils.graph.KnowledgeGraph;
 import entrants.utils.graph.Node;
 import pacman.game.Game;
 
+import java.util.HashSet;
+import java.util.Set;
+
 public abstract class Commons {
     public static boolean getBooleanValue(Boolean b)
     {
@@ -16,22 +19,63 @@ public abstract class Commons {
 
     public static void updateKnowledgeGraph(Game game, KnowledgeGraph graph)
     {
-        int pillsNumber = 0;
+        for(Node node : graph.getNodes())
+        {
+            Commons.updatePillsInfo(game, node);
+        }
+        System.out.println(Node.getNodesWithPills(graph.getNodes()).size());
+    }
+
+    public static KnowledgeGraph initKnowledgeGraph(Game game)
+    {
+        KnowledgeGraph graph = new KnowledgeGraph();
         for(int i=0; i<game.getNumberOfNodes(); i++)
         {
             int[] neighbours = game.getNeighbouringNodes(i);
             for(int j=0; j<neighbours.length; j++)
             {
+                if(neighbours[j] <= i)
+                {
+                    continue;
+                }
                 Node a = new Node(i);
                 Node b = new Node(neighbours[j]);
-                a.updatePillsInfo(game);
-                if(a.containsPill())
-                {
-                    pillsNumber++;
-                }
+                Commons.updatePillsInfo(game, a);
+                Commons.updatePillsInfo(game, b);
                 graph.addUndirectedEdge(a, b);
             }
         }
-        System.out.println(graph.getNodes().size() + " " + pillsNumber);
+        return graph;
+    }
+
+    /**
+     * This method updates the Pills Info of the current Node from a given Game object
+     * @param game
+     * The game object representing the state of the game from which to update the current node
+     */
+    public static void updatePillsInfo(Game game, Node node)
+    {
+        if(game.isNodeObservable(node.getId()))
+        {
+            int pillId = game.getPillIndex(node.getId());
+            if(pillId >= 0 && Commons.getBooleanValue(game.isPillStillAvailable(pillId)))
+            {
+                node.setContainedPillId(pillId);
+            }
+            else
+            {
+                node.setContainedPillId(-1);
+            }
+
+            int powerPillId = game.getPowerPillIndex(node.getId());
+            if(powerPillId >= 0 && Commons.getBooleanValue(game.isPowerPillStillAvailable(powerPillId)))
+            {
+                node.setContainedPowerPillId(powerPillId);
+            }
+            else
+            {
+               node.setContainedPowerPillId(-1);
+            }
+        }
     }
 }

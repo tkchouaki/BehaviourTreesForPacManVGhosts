@@ -9,106 +9,166 @@ import pacman.game.internal.Maze;
 import java.util.HashSet;
 import java.util.Set;
 
+/**
+ * This class represents a node on the PacMan game
+ * A Node is a point in the 2D world, it can contain & pill, a power pill, a pacman, some ghosts.
+ * Each Node in the world is identified by an index.
+ */
 public class Node {
-    private Integer id;
+    private final Integer id;
+    /**
+     * Every pill has an ID.
+     * If the current node doesn't contain a pill, this id is set to -1
+     */
     private int containedPillId;
+
+    /**
+     * Every power pill also has an ID.
+     * If the current node doesn't contain a power pill, this id is set to -1
+     */
     private int containedPowerPillId;
+
     private boolean containsPacMan;
+
+
     private Set<Constants.GHOST> containedGhosts;
 
+    /**
+     * Initializes a Node with the given ID
+     * By default, a node doesn't contain anything
+     * @param id
+     * The node's ID
+     */
     public Node(Integer id)
     {
-        this.setId(id);
+        this.id = id;
         this.setContainedPillId(-1);
         this.setContainedPowerPillId(-1);
         this.setContainedGhosts(new HashSet<>());
         this.setContainsPacMan(false);
     }
 
+    /**
+     * Sets The ID of the contained Pill
+     * @param containedPillId
+     * the ID of the contained pill
+     */
     public void setContainedPillId(int containedPillId) {
         this.containedPillId = containedPillId;
     }
 
-    public void setContainedPowerPillId(int containedPillId)
+    /**
+     * Sets the ID of the contained power pill
+     * @param containedPowerPillId
+     * the id of the contained power pill
+     */
+    public void setContainedPowerPillId(int containedPowerPillId)
     {
-        this.containedPillId = containedPillId;
+        this.containedPowerPillId = containedPowerPillId;
     }
 
+    /**
+     * Checks if the current Node contains a pill
+     * @return
+     * True if the current Node contains a pill
+     */
     public boolean containsPill() {
         return containedPillId >=0 ;
     }
 
+    /**
+     * Checks if the current Node contains a power pill
+     * @return
+     * True if the current node contains a power pill
+     */
     public boolean containsPowerPill() {
         return containedPowerPillId >= 0;
     }
 
+    /**
+     * Returns the ID of the contained pill
+     * @return
+     * The ID of the contained Pill
+     * If the current Node doesn't contain a pill, the returned value is -1
+     */
     public int getContainedPillId() {
         return containedPillId;
     }
 
+    /**
+     * Returns the ID of the contained power pill
+     * @return
+     * The ID of the contained power pill
+     * If the current Node doesn't contain a power pill, the returned value is -1
+     */
     public int getContainedPowerPillId() {
         return containedPowerPillId;
     }
 
+    /**
+     * Checks if PacMan is in the current Node
+     * @return
+     * True if PacMan is in the current Node
+     */
     public boolean containsPacMan() {
         return containsPacMan;
     }
 
+    /**
+     * Sets the containsPacMan attribute's value
+     * @param containsPacMan
+     */
     public void setContainsPacMan(boolean containsPacMan) {
         this.containsPacMan = containsPacMan;
     }
 
+    /**
+     * Retrieves the ghosts present in the current Node
+     * @return
+     * A Set of the ghosts present in the current Node.
+     * The Returned Set is a copy, operations on it will not affect the Node.
+     */
     public Set<Constants.GHOST> getContainedGhosts() {
-        return containedGhosts;
+        return new HashSet<>(containedGhosts);
     }
 
+    /**
+     * Checks if the current Node Contains a ghost
+     * @return
+     * True if the current Node contains a ghost
+     */
+    public boolean containsGhost()
+    {
+        return this.containedGhosts.size() > 0;
+    }
+
+    /**
+     * Sets the containedGhosts attribute's value.
+     * The given Set is copied, it can be manipulated freely after the call to this method
+     * @param containedGhosts
+     * A Set containing the ghosts present in the Node
+     */
     public void setContainedGhosts(Set<Constants.GHOST> containedGhosts) {
-        this.containedGhosts = containedGhosts;
+        this.containedGhosts = new HashSet<>(containedGhosts);
     }
 
-
+    /**
+     * Retrieves the ID of the current node
+     * @return
+     * The current Node's ID
+     */
     public Integer getId()
     {
         return this.id;
     }
 
-    public void setId(Integer id)
-    {
-        this.id = id;
-    }
-
-    @Override
-    public int hashCode()
-    {
-        return this.id.hashCode();
-    }
-
-    public void updatePillsInfo(Game game)
-    {
-        if(game.isNodeObservable(this.id))
-        {
-            int pillId = game.getPillIndex(this.id);
-            if(pillId >= 0 && Commons.getBooleanValue(game.isPillStillAvailable(pillId)))
-            {
-                this.containedPillId = pillId;
-            }
-            else
-            {
-                this.containedPillId = -1;
-            }
-
-            int powerPillId = game.getPowerPillIndex(this.id);
-            if(powerPillId >= 0 && Commons.getBooleanValue(game.isPowerPillStillAvailable(powerPillId)))
-            {
-                this.containedPowerPillId = powerPillId;
-            }
-            else
-            {
-                this.containedPowerPillId = game.getPowerPillIndex(this.id);
-            }
-        }
-    }
-
+    /**
+     * Checks if the current node is equal to a given object
+     * @param obj
+     * The object to compare with the node
+     * @return
+     * True if the given object is a Node with the same id as the current Node
+     */
     @Override
     public boolean equals(Object obj) {
         if (obj != null && obj.getClass().equals(this.getClass())) {
@@ -118,6 +178,26 @@ public class Node {
         return false;
     }
 
+    /**
+     * Returns the hash code of the current node
+     * @return
+     * The hash code of the current node (which is the hash code of its ID)
+     */
+    @Override
+    public int hashCode()
+    {
+        return this.id.hashCode();
+    }
+
+    /**
+     * Retrieves a Node with the desired ID from an Iterable of Nodes
+     * @param nodes
+     * The search scope
+     * @param id
+     * The id of the desired Node
+     * @return
+     * The node with the given id, null if not found
+     */
     public static Node getNodeById(Iterable<Node> nodes, Integer id)
     {
         for(Node node : nodes)
@@ -128,5 +208,66 @@ public class Node {
             }
         }
         return null;
+    }
+
+    /**
+     * Retrieves the nodes containing pills from an Iterable of Nodes
+     * @param nodes
+     * The search scope
+     * @return
+     * A Set containing the Nodes of the given Iterable that contain pills
+     */
+    public static Set<Node> getNodesWithPills(Iterable<Node> nodes)
+    {
+        Set<Node> result = new HashSet<>();
+        for(Node node : nodes)
+        {
+            if(node.containsPill())
+            {
+                result.add(node);
+            }
+        }
+        return result;
+    }
+
+    /**
+     * Retrieves the nodes containing power pills from an Iterable of Nodes
+     * @param nodes
+     * The search scope
+     * @return
+     * A Set containing the Nodes of the given Iterable that contain power pills
+     */
+    public static Set<Node> getNodesWithPowerPills(Iterable<Node> nodes)
+    {
+        Set<Node> result = new HashSet<>();
+        for(Node node : nodes)
+        {
+            if(node.containsPowerPill())
+            {
+                result.add(node);
+            }
+        }
+        return result;
+    }
+
+
+    /**
+     * Retrieves the nodes containing ghosts from an Iterable of Nodes
+     * @param nodes
+     * The search scope
+     * @return
+     * A Set containing the Nodes of the given Iterable that contain ghosts
+     */
+    public static Set<Node> getNodesContainingGhosts(Iterable<Node> nodes)
+    {
+        Set<Node> result = new HashSet<>();
+        for(Node node : nodes)
+        {
+            if(node.containsGhost())
+            {
+                result.add(node);
+            }
+        }
+        return result;
     }
 }
