@@ -74,19 +74,17 @@ public class Node {
         return this.id.hashCode();
     }
 
-    @Override
-    public boolean equals(Object o)
-    {
-        if(o instanceof Node)
-        {
-            return ((Node)o).id.equals(this.id);
-        }
-        return false;
-    }
-
     public void updatePillsInfo(Game game)
     {
         this.containsPill = Commons.getBooleanValue(game.isPillStillAvailable(game.getPillIndex(this.id)));
     }
 
+    @Override
+    public boolean equals(Object obj) {
+        if (obj != null && obj.getClass().equals(this.getClass())) {
+            Node n = (Node) obj;
+            return n.getId().equals(this.getId());
+        }
+        return false;
+    }
 }
