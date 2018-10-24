@@ -479,6 +479,44 @@ public class KnowledgeGraph {
         }
     }
 
+    /**
+     * Removes a Node from the graph
+     * @param n
+     * The node to remove
+     */
+    public void removeNode(Node n)
+    {
+        topology.remove(n);
+        inverted_topology.remove(n);
+        for(Node node : this.getNodes())
+        {
+            topology.get(node).remove(n);
+            inverted_topology.get(node).remove(n);
+        }
+    }
+
+    /**
+     * Removes an Undirected edge from the graph
+     * @param n
+     * @param m
+     */
+    public void removeUndirectedEdge(Node n, Node m)
+    {
+        removeDirectedEdge(n, m);
+        removeDirectedEdge(m, n);
+    }
+
+    /**
+     * Removes a Directed Edge
+     * @param n
+     * @param m
+     */
+    public void removeDirectedEdge(Node n, Node m)
+    {
+        topology.get(n).remove(m);
+        inverted_topology.get(m).remove(n);
+    }
+
     @Override
     public String toString() {
         StringBuilder builder = new StringBuilder();
