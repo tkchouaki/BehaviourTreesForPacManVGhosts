@@ -270,4 +270,49 @@ public class Node {
         }
         return result;
     }
+
+
+    /**
+     * Returns the node containing a specified ghost among a given iterable of nodes
+     * @param nodes
+     * The search scope
+     * @param ghost
+     * The desired ghost
+     * @return
+     * The Node containing the specified ghost among the given iterable
+     * Caution : this method assumes that a ghost can only be at one node at a time
+     * If no such Node is found, a null value is returned
+     */
+    public static Node getNodeContainingGhost(Iterable<Node> nodes, Constants.GHOST ghost)
+    {
+        for(Node node : nodes)
+        {
+            if(node.getContainedGhosts().contains(ghost))
+            {
+                return node;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Returns the node containing PacMan among a given iterable of nodes
+     * @param nodes
+     * The search scope
+     * @return
+     * The Node containing PacMan among the given iterable
+     * Caution : this method assumes that PacMan can only be at one node at a time
+     * If no such Node is found, a null value is returned
+     */
+    public static Node getNodeContainingPacMan(Iterable<Node> nodes)
+    {
+        for(Node node : nodes)
+        {
+            if(node.containsPacMan())
+            {
+                return node;
+            }
+        }
+        return null;
+    }
 }
