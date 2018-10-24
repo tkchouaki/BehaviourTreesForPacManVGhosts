@@ -555,8 +555,13 @@ public class KnowledgeGraph {
      */
     public void removeDirectedEdge(Node n, Node m)
     {
-        topology.get(n).remove(m);
-        inverted_topology.get(m).remove(n);
+        Collection<Node> successors = topology.get(n);
+        Collection<Node> predecessors = inverted_topology.get(m);
+        if(successors != null && predecessors != null)
+        {
+            successors.remove(m);
+            predecessors.remove(n);
+        }
     }
 
     @Override
