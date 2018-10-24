@@ -189,6 +189,12 @@ public class Node {
         return this.id.hashCode();
     }
 
+    @Override
+    public String toString()
+    {
+        return this.id.toString();
+    }
+
     /**
      * Retrieves a Node with the desired ID from an Iterable of Nodes
      * @param nodes
