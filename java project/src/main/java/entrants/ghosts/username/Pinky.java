@@ -1,5 +1,6 @@
 package entrants.ghosts.username;
 
+//import com.sun.corba.se.impl.encoding.CDROutputStream;
 import pacman.controllers.IndividualGhostController;
 import pacman.controllers.MASController;
 import pacman.game.Constants;
@@ -15,7 +16,8 @@ public class Pinky extends IndividualGhostController {
     }
 
     @Override
-    public Constants.MOVE getMove(Game game, long timeDue) {
-        return null;
+    public Constants.MOVE getMove(Game game, long timeDue)
+    {
+        return Constants.MOVE.DOWN;
     }
 }

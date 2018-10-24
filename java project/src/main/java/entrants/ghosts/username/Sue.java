@@ -15,7 +15,8 @@ public class Sue extends IndividualGhostController {
     }
 
     @Override
-    public Constants.MOVE getMove(Game game, long timeDue) {
-        return null;
+    public Constants.MOVE getMove(Game game, long timeDue)
+    {
+        return Constants.MOVE.DOWN;
     }
 }

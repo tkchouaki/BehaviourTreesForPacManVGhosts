@@ -11,34 +11,43 @@ import java.util.Set;
 
 public class Node {
     private Integer id;
-    private boolean containsPill;
-    private boolean containsPowerPill;
+    private int containedPillId;
+    private int containedPowerPillId;
     private boolean containsPacMan;
     private Set<Constants.GHOST> containedGhosts;
 
     public Node(Integer id)
     {
         this.setId(id);
-        this.setContainsPill(false);
-        this.setContainsPowerPill(false);
+        this.setContainedPillId(-1);
+        this.setContainedPowerPillId(-1);
         this.setContainedGhosts(new HashSet<>());
         this.setContainsPacMan(false);
     }
 
-    public void setContainsPill(boolean containsPill) {
-        this.containsPill = containsPill;
+    public void setContainedPillId(int containedPillId) {
+        this.containedPillId = containedPillId;
     }
 
-    public void setContainsPowerPill(boolean containsPowerPill) {
-        this.containsPowerPill = containsPowerPill;
+    public void setContainedPowerPillId(int containedPillId)
+    {
+        this.containedPillId = containedPillId;
     }
 
     public boolean containsPill() {
-        return containsPill;
+        return containedPillId >=0 ;
     }
 
     public boolean containsPowerPill() {
-        return containsPowerPill;
+        return containedPowerPillId >= 0;
+    }
+
+    public int getContainedPillId() {
+        return containedPillId;
+    }
+
+    public int getContainedPowerPillId() {
+        return containedPowerPillId;
     }
 
     public boolean containsPacMan() {
@@ -76,7 +85,28 @@ public class Node {
 
     public void updatePillsInfo(Game game)
     {
-        this.containsPill = Commons.getBooleanValue(game.isPillStillAvailable(game.getPillIndex(this.id)));
+        if(game.isNodeObservable(this.id))
+        {
+            int pillId = game.getPillIndex(this.id);
+            if(pillId >= 0 && Commons.getBooleanValue(game.isPillStillAvailable(pillId)))
+            {
+                this.containedPillId = pillId;
+            }
+            else
+            {
+                this.containedPillId = -1;
+            }
+
+            int powerPillId = game.getPowerPillIndex(this.id);
+            if(powerPillId >= 0 && Commons.getBooleanValue(game.isPowerPillStillAvailable(powerPillId)))
+            {
+                this.containedPowerPillId = powerPillId;
+            }
+            else
+            {
+                this.containedPowerPillId = game.getPowerPillIndex(this.id);
+            }
+        }
     }
 
     @Override
@@ -86,5 +116,17 @@ public class Node {
             return n.getId().equals(this.getId());
         }
         return false;
+    }
+
+    public static Node getNodeById(Iterable<Node> nodes, Integer id)
+    {
+        for(Node node : nodes)
+        {
+            if(node.id.equals(id))
+            {
+                return node;
+            }
+        }
+        return null;
     }
 }
