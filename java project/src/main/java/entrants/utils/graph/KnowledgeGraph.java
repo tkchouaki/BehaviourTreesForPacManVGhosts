@@ -261,6 +261,48 @@ public class KnowledgeGraph {
     }
 
     /**
+     * Retrieves the Neighbours of Node
+     * i.e : A Node's neighbours are the ones connected to him by undirected edges
+     * @param n
+     * A node
+     * @return
+     * A collection of its neighbours
+     */
+    public Collection<Node> getNeighbours(Node n)
+    {
+        Collection<Node> result = this.getSuccessors(n);
+        if(result != null)
+        {
+            Collection<Node> predecessors = this.getPredecessors(n);
+            for(Node m : predecessors )
+            {
+                if(!predecessors.contains(m)){
+                    result.remove(m);
+                }
+            }
+        }
+        return result;
+    }
+
+    /**
+     * Retrieves the degree of a node
+     * The degree of a node here is the number of its successors
+     * @param n
+     * A node
+     * @return
+     * Its degree
+     */
+    public int getDegree(Node n)
+    {
+        Collection<Node> successors = this.getSuccessors(n);
+        if(successors != null)
+        {
+            return successors.size();
+        }
+        return -1;
+    }
+
+    /**
      * Get this KnowledgeGraph's size.
      * @return the size
      */
