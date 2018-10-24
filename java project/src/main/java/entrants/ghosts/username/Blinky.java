@@ -1,6 +1,7 @@
 package entrants.ghosts.username;
 
 import entrants.utils.Commons;
+import entrants.utils.graph.DiscreteKnowledgeGraph;
 import entrants.utils.graph.KnowledgeGraph;
 import entrants.utils.ui.KnowledgeGraphDisplayer;
 import pacman.controllers.IndividualGhostController;
@@ -26,7 +27,7 @@ public class Blinky extends IndividualGhostController {
         {
             KnowledgeGraphDisplayer displayer;
             this.graph = Commons.initKnowledgeGraph(game);
-            displayer = new KnowledgeGraphDisplayer(this.graph, "file:///" + Paths.get(".").toAbsolutePath().normalize().toString() + "/src/main/java/entrants/utils/ui/kgraph.css");
+            displayer = new KnowledgeGraphDisplayer(new DiscreteKnowledgeGraph(this.graph), "file:///" + Paths.get(".").toAbsolutePath().normalize().toString() + "/src/main/java/entrants/utils/ui/kgraph.css");
             displayer.display();
         }
         else
