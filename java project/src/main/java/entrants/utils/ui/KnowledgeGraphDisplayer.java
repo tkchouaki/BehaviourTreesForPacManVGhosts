@@ -13,14 +13,19 @@ public class KnowledgeGraphDisplayer {
     // ATTRIBUTES
     private final KnowledgeGraph graphData;
     private final Graph graphUI;
+    private final NodeRenderer renderer;
 
-    public KnowledgeGraphDisplayer(KnowledgeGraph g) {
-        if (g == null) {
+    public KnowledgeGraphDisplayer(KnowledgeGraph g, String css) {
+        if (g == null || css == null) {
             throw new NullPointerException();
         }
         graphUI = new DefaultGraph("Knowledge");
+        graphUI.addAttribute("ui.stylesheet", "url(" + css + ")");
+        renderer = new NodeRenderer(graphUI);
         graphData = g;
+
         registerListener();
+        updateUI();
     }
 
     public KnowledgeGraph getKnowledgeGraph() {
@@ -51,5 +56,18 @@ public class KnowledgeGraphDisplayer {
                 );
             }
         });
+    }
+
+    private void updateUI() {
+        for (Node n : graphData.getNodes()) {
+            graphUI.addNode(n.toString());
+            renderer.render(n);
+        }
+
+        for (KnowledgeGraph.Edge e : graphData.getEdges()) {
+            graphUI.addEdge(
+                    e.toString(), e.getFirst().toString(), e.getSecond().toString(), e.isDirected()
+            );
+        }
     }
 }

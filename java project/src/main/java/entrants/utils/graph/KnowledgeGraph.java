@@ -5,6 +5,7 @@ import entrants.utils.ui.KnowledgeGraphDisplayer;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
+import java.nio.file.Paths;
 import java.util.*;
 
 /**
@@ -38,12 +39,6 @@ public class KnowledgeGraph {
             }
         });
 
-        // Setup display
-        System.setProperty("org.graphstream.ui.renderer", "org.graphstream.ui.j2dviewer.J2DGraphRenderer");
-
-        KnowledgeGraphDisplayer displayer = new KnowledgeGraphDisplayer(graph);
-        displayer.display();
-
         // Add some nodes
         graph.addNode(new Node(0));
         graph.addNode(new Node(1));
@@ -59,10 +54,19 @@ public class KnowledgeGraph {
         graph.addDirectedEdge(new Node(2), new Node(3));
 
         System.out.println(graph);
+
+        // Setup display
+        System.setProperty("org.graphstream.ui.renderer", "org.graphstream.ui.j2dviewer.J2DGraphRenderer");
+
+        KnowledgeGraphDisplayer displayer = new KnowledgeGraphDisplayer(
+                graph,
+                "file:///" + Paths.get(".").toAbsolutePath().normalize().toString() + "/src/main/java/entrants/utils/ui/kgraph.css"
+        );
+        displayer.display();
     }
 
     /**
-     * Internal class used to represent edges (for properties).
+     * Internal class used to represent edges.
      * @contract.inv <pre>
      *     getFirst() != null
      *     getSecond() != null
@@ -122,6 +126,35 @@ public class KnowledgeGraph {
         @Override
         public String toString() {
             return "(" + n.getId() + (directed ? "-->" : "<->") + m.getId() + ")";
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            if (obj != null && obj.getClass().equals(this.getClass())) {
+                Edge edge = (Edge) obj;
+
+                if (!this.isDirected() && !edge.isDirected()) {
+                    return (getFirst().equals(edge.getFirst()) || getFirst().equals(edge.getSecond()))
+                            && (getSecond().equals(edge.getFirst()) || getSecond().equals(edge.getSecond()));
+
+                } else if (this.isDirected() && edge.isDirected()) {
+                    return getFirst().equals(edge.getFirst()) && getSecond().equals(edge.getSecond());
+                }
+            }
+            return false;
+        }
+
+        @Override
+        public int hashCode() {
+            if (!isDirected()) {
+                int i = getFirst().getId();
+                int j = getSecond().getId();
+                if (i >= j) {
+                    return ("(" + j + "<-->" + i + ")").hashCode();
+                }
+                return ("(" + i + "<-->" + j + ")").hashCode();
+            }
+            return toString().hashCode();
         }
     }
 
@@ -247,10 +280,8 @@ public class KnowledgeGraph {
 
     /**
      * Retrieves a contained node with a given ID
-     * @param id
-     * The id of the desired node
-     * @return
-     * The node with the specified ID if it exists, null otherwise
+     * @param id The id of the desired node
+     * @return The node with the specified ID if it exists, null otherwise
      */
     public Node getNodeById(int id)
     {
@@ -263,6 +294,20 @@ public class KnowledgeGraph {
      */
     public PropertyChangeSupport getPropertyChangeSupport() {
         return this.support;
+    }
+
+    /**
+     * Get all edges in this graph. This method costs a lot, as edges are calculated each time.
+     * @return a collection of edges
+     */
+    public Collection<Edge> getEdges() {
+        Set<Edge> edges = new HashSet<>();
+        for (Node n : topology.keySet()) {
+            for (Node m : getSuccessors(n)) {
+                edges.add(new Edge(n, m, !getSuccessors(m).contains(n)));
+            }
+        }
+        return edges;
     }
 
     // COMMANDS

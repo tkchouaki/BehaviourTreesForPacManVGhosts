@@ -1,0 +1,39 @@
+node {
+    text-mode: normal;
+}
+
+node.sue {
+    fill-color: orange;
+}
+
+node.blinky {
+    fill-color: red;
+}
+
+node.inky {
+    fill-color: cyan;
+}
+
+node.pinky {
+    fill-color: pink;
+}
+
+node.pacman {
+    fill-color: yellow;
+}
+
+node.frighted {
+    fill-color: blue;
+}
+
+node.power_pill {
+    stroke-mode: plain;
+    stroke-color: green;
+    stroke-width: 2px;
+}
+
+node.pill {
+    stroke-mode: plain;
+    stroke-color: black;
+    stroke-width: 2px;
+}
