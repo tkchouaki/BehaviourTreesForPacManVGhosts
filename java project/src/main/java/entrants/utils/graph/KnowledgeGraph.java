@@ -1,5 +1,9 @@
 package entrants.utils.graph;
 
+import entrants.utils.ui.KnowledgeGraphDisplayer;
+
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.util.*;
 
@@ -8,6 +12,8 @@ import java.util.*;
  * Pacman, Pills ... For more details, {@see Node}.
  * @contract.inv <pre>
  *     size() >= 0
+ *     getNodes() != null
+ *     getPropertyChangeSupport() != null
  * </pre>
  */
 public class KnowledgeGraph {
@@ -16,6 +22,27 @@ public class KnowledgeGraph {
     public static void main(String[] args) {
         // Create a graph
         KnowledgeGraph graph = new KnowledgeGraph();
+
+        // Register some property listeners
+        PropertyChangeSupport support = graph.getPropertyChangeSupport();
+        support.addPropertyChangeListener(ADDED_NODE_PROPERTY, new PropertyChangeListener() {
+            @Override
+            public void propertyChange(PropertyChangeEvent evt) {
+                System.out.println("Node added: " + ((Node) evt.getNewValue()).getId());
+            }
+        });
+        support.addPropertyChangeListener(ADDED_EDGE_PROPERTY, new PropertyChangeListener() {
+            @Override
+            public void propertyChange(PropertyChangeEvent evt) {
+                System.out.println("Edge added: " + evt.getNewValue());
+            }
+        });
+
+        // Setup display
+        System.setProperty("org.graphstream.ui.renderer", "org.graphstream.ui.j2dviewer.J2DGraphRenderer");
+
+        KnowledgeGraphDisplayer displayer = new KnowledgeGraphDisplayer(graph);
+        displayer.display();
 
         // Add some nodes
         graph.addNode(new Node(0));
@@ -32,13 +59,74 @@ public class KnowledgeGraph {
         graph.addDirectedEdge(new Node(2), new Node(3));
 
         System.out.println(graph);
+    }
 
+    /**
+     * Internal class used to represent edges (for properties).
+     * @contract.inv <pre>
+     *     getFirst() != null
+     *     getSecond() != null
+     * </pre>
+     */
+    public static final class Edge {
+        private final Node n;
+        private final Node m;
+        private final boolean directed;
+
+        /**
+         * Create a new edge from n to m.
+         * @param n source
+         * @param m target
+         * @param directed is this edge a directed edge ?
+         * @contract.pre <pre>
+         *     n != null
+         *     m != null
+         * </pre>
+         * @contract.post <pre>
+         *     getFirst().equals(n)
+         *     getSecond().equals(m)
+         *     isDirected() == directed
+         * </pre>
+         */
+        private Edge(Node n, Node m, boolean directed) {
+            assert n != null && m != null;
+            this.n = n;
+            this.m = m;
+            this.directed = directed;
+        }
+
+        /**
+         * Get the source node
+         * @return node
+         */
+        public Node getFirst() {
+            return n;
+        }
+
+        /**
+         * Get the target node
+         * @return node
+         */
+        public Node getSecond() {
+            return m;
+        }
+
+        /**
+         * Is this edge directed ?
+         * @return true is directed, else false
+         */
+        public boolean isDirected() {
+            return directed;
+        }
+
+        @Override
+        public String toString() {
+            return "(" + n.getId() + (directed ? "-->" : "<->") + m.getId() + ")";
+        }
     }
 
     public static final String ADDED_NODE_PROPERTY = "added_node";
     public static final String ADDED_EDGE_PROPERTY = "added_edge";
-    public static final String REMOVED_NODE_PROPERTY = "removed_node";
-    public static final String REMOVED_EDGE_PROPERTY = "removed_node";
 
     // ATTRIBUTES
     private final Map<Node, Set<Node>> topology;
@@ -147,6 +235,36 @@ public class KnowledgeGraph {
         return topology.size();
     }
 
+    /**
+     * Return all nodes in the graph.
+     * @return the nodes
+     */
+    public Collection<Node> getNodes()
+    {
+        return new HashSet<>(this.topology.keySet());
+    }
+
+
+    /**
+     * Retrieves a contained node with a given ID
+     * @param id
+     * The id of the desired node
+     * @return
+     * The node with the specified ID if it exists, null otherwise
+     */
+    public Node getNodeById(int id)
+    {
+        return Node.getNodeById(this.getNodes(), id);
+    }
+
+    /**
+     * Get the PropertyChangeSupport associated to this object.
+     * @return the PropertyChangeSupport
+     */
+    public PropertyChangeSupport getPropertyChangeSupport() {
+        return this.support;
+    }
+
     // COMMANDS
     /**
      * Add a node to the graph. If the node is already present, the command is ignored.
@@ -163,7 +281,10 @@ public class KnowledgeGraph {
         if (node == null) {
             throw new NullPointerException();
         }
-        topology.putIfAbsent(node, new HashSet<>());
+
+        if (topology.putIfAbsent(node, new HashSet<>()) == null) {
+            support.firePropertyChange(ADDED_NODE_PROPERTY, null, node);
+        }
         inverted_topology.putIfAbsent(node, new HashSet<>());
     }
 
@@ -211,7 +332,9 @@ public class KnowledgeGraph {
         }
         addNode(n);
         addNode(m);
-        topology.get(n).add(m);
+        if (topology.get(n).add(m)) {
+            getPropertyChangeSupport().firePropertyChange(ADDED_EDGE_PROPERTY, null, new Edge(n, m, true));
+        }
         inverted_topology.get(m).add(n);
     }
 
@@ -244,7 +367,9 @@ public class KnowledgeGraph {
         addNode(n);
         for (Node m : nodes) {
             addNode(m);
-            topology.get(n).add(m);
+            if (topology.get(n).add(m)) {
+                getPropertyChangeSupport().firePropertyChange(ADDED_EDGE_PROPERTY, null, new Edge(n, m, true));
+            };
             inverted_topology.get(m).add(n);
         }
     }
@@ -266,8 +391,19 @@ public class KnowledgeGraph {
      * </pre>
      */
     public void addUndirectedEdge(Node n, Node m) {
-        addDirectedEdge(n, m);
-        addDirectedEdge(m, n);
+        if (n == null || m == null) {
+            throw new NullPointerException();
+        }
+        addNode(n);
+        addNode(m);
+
+        boolean result = topology.get(n).add(m);
+        inverted_topology.get(m).add(n);
+
+        if (topology.get(m).add(n) || result) {
+            getPropertyChangeSupport().firePropertyChange(ADDED_EDGE_PROPERTY, null, new Edge(n, m, false));
+        }
+        inverted_topology.get(n).add(m);
     }
 
     /**
@@ -320,10 +456,5 @@ public class KnowledgeGraph {
             builder.append("]\n");
         }
         return builder.toString();
-    }
-
-    public Set<Node> getNodes()
-    {
-        return new HashSet<>(this.topology.keySet());
     }
 }
