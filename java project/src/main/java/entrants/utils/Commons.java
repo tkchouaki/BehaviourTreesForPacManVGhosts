@@ -8,6 +8,14 @@ import java.util.HashSet;
 import java.util.Set;
 
 public abstract class Commons {
+    /**
+     * Converts a Boolean value to a value of the primitive type boolean.
+     * Basically True & False values are kept and null values are replaced with false
+     * @param b
+     * The Boolean to convert
+     * @return
+     * The result of the conversion
+     */
     public static boolean getBooleanValue(Boolean b)
     {
         if(b==null)
@@ -17,15 +25,28 @@ public abstract class Commons {
         return b;
     }
 
+    /**
+     * Updates a KnowledgeGraph from a Game object
+     * @param game
+     * The game to use for the update
+     * @param graph
+     * The graph to update
+     */
     public static void updateKnowledgeGraph(Game game, KnowledgeGraph graph)
     {
         for(Node node : graph.getNodes())
         {
             Commons.updatePillsInfo(game, node);
         }
-        System.out.println(Node.getNodesWithPills(graph.getNodes()).size());
     }
 
+    /**
+     * Initializes a Knowledge Graph with the fixed topology of a game.
+     * @param game
+     * The game to use for the initialization
+     * @return
+     * The KnowledgeGraph
+     */
     public static KnowledgeGraph initKnowledgeGraph(Game game)
     {
         KnowledgeGraph graph = new KnowledgeGraph();
