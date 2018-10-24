@@ -10,26 +10,35 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class Node {
-    private String id;
-    private int containedPillId;
-    private int containedPowerPillId;
+    private Integer id;
+    private boolean containsPill;
+    private boolean containsPowerPill;
     private boolean containsPacMan;
     private Set<Constants.GHOST> containedGhosts;
 
-    public Node(String id)
+    public Node(Integer id)
     {
         this.setId(id);
-        this.containedPillId = -1;
-        this.containedPowerPillId = -1;
-        this.containedGhosts = new HashSet<>();
+        this.setContainsPill(false);
+        this.setContainsPowerPill(false);
+        this.setContainedGhosts(new HashSet<>());
+        this.setContainsPacMan(false);
+    }
+
+    public void setContainsPill(boolean containsPill) {
+        this.containsPill = containsPill;
+    }
+
+    public void setContainsPowerPill(boolean containsPowerPill) {
+        this.containsPowerPill = containsPowerPill;
     }
 
     public boolean containsPill() {
-        return containedPillId >= 0;
+        return containsPill;
     }
 
     public boolean containsPowerPill() {
-        return containedPowerPillId >= 0;
+        return containsPowerPill;
     }
 
     public boolean containsPacMan() {
@@ -48,30 +57,15 @@ public class Node {
         this.containedGhosts = containedGhosts;
     }
 
-    public int getContainedPillId() {
-        return containedPillId;
-    }
 
-    public void setContainedPillId(int containedPillId) {
-        this.containedPillId = containedPillId;
-    }
-
-    public int getContainedPowerPillId() {
-        return containedPowerPillId;
-    }
-
-    public void setContainedPowerPillId(int containedPowerPillId) {
-        this.containedPowerPillId = containedPowerPillId;
-    }
-
-    public String getId()
+    public Integer getId()
     {
         return this.id;
     }
 
-    public void setId(String id)
+    public void setId(Integer id)
     {
-        this.id = id.toLowerCase();
+        this.id = id;
     }
 
     @Override
@@ -80,9 +74,19 @@ public class Node {
         return this.id.hashCode();
     }
 
-    public void addInfo(GameInfo gameInfo, Maze maze, Game game)
+    @Override
+    public boolean equals(Object o)
     {
-        pacman.game.internal.Node node = maze.graph[0];
+        if(o instanceof Node)
+        {
+            return ((Node)o).id.equals(this.id);
+        }
+        return false;
+    }
+
+    public void updatePillsInfo(Game game)
+    {
+        this.containsPill = Commons.getBooleanValue(game.isPillStillAvailable(game.getPillIndex(this.id)));
     }
 
 }

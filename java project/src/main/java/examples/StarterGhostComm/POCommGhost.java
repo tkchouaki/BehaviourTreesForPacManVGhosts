@@ -68,6 +68,7 @@ public class POCommGhost extends IndividualGhostController {
         }
 
         Boolean requiresAction = game.doesGhostRequireAction(ghost);
+
         if (requiresAction != null && requiresAction)        //if ghost requires an action
         {
             if (pacmanIndex != -1) {
@@ -103,7 +104,6 @@ public class POCommGhost extends IndividualGhostController {
     //This helper function checks if Ms Pac-Man is close to an available power pill
     private boolean closeToPower(Game game) {
         int[] powerPills = game.getPowerPillIndices();
-
         for (int i = 0; i < powerPills.length; i++) {
             Boolean powerPillStillAvailable = game.isPowerPillStillAvailable(i);
             int pacmanNodeIndex = game.getPacmanCurrentNodeIndex();

@@ -1,9 +1,6 @@
 package entrants.utils.graph;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Graph used for representing map topology. This graph also stores in its nodes various information such as Ghosts,
@@ -142,5 +139,10 @@ public class KnowledgeGraph {
             builder.append("]\n");
         }
         return builder.toString();
+    }
+
+    public Set<Node> getNodes()
+    {
+        return new HashSet<>(this.topology.keySet());
     }
 }
