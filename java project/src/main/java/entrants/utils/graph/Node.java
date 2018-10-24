@@ -1,11 +1,10 @@
 package entrants.utils.graph;
 
-import entrants.utils.Commons;
+import entrants.utils.ChangeEventListener;
 import pacman.game.Constants;
-import pacman.game.Game;
-import pacman.game.info.GameInfo;
-import pacman.game.internal.Maze;
 
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.EventListenerList;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -15,6 +14,7 @@ import java.util.Set;
  * Each Node in the world is identified by an index.
  */
 public class Node {
+
     private final Integer id;
     /**
      * Every pill has an ID.
@@ -30,6 +30,8 @@ public class Node {
 
     private boolean containsPacMan;
 
+    private final EventListenerList support;
+    private final ChangeEvent event;
 
     private Set<Constants.GHOST> containedGhosts;
 
@@ -41,6 +43,9 @@ public class Node {
      */
     public Node(Integer id)
     {
+        support = new EventListenerList();
+        event = new ChangeEvent(this);
+
         this.id = id;
         this.setContainedPillId(-1);
         this.setContainedPowerPillId(-1);
@@ -55,6 +60,7 @@ public class Node {
      */
     public void setContainedPillId(int containedPillId) {
         this.containedPillId = containedPillId;
+        fireChangeEvent();
     }
 
     /**
@@ -65,6 +71,7 @@ public class Node {
     public void setContainedPowerPillId(int containedPowerPillId)
     {
         this.containedPowerPillId = containedPowerPillId;
+        fireChangeEvent();
     }
 
     /**
@@ -120,6 +127,15 @@ public class Node {
      */
     public void setContainsPacMan(boolean containsPacMan) {
         this.containsPacMan = containsPacMan;
+        fireChangeEvent();
+    }
+
+    public void addChangeEventListener(ChangeEventListener listener) {
+        support.add(ChangeEventListener.class, listener);
+    }
+
+    public void removeChangeEventListener(ChangeEventListener listener) {
+        support.remove(ChangeEventListener.class, listener);
     }
 
     /**
@@ -275,6 +291,13 @@ public class Node {
             }
         }
         return result;
+    }
+
+    // TOOLS
+    private void fireChangeEvent() {
+        for (ChangeEventListener l : support.getListeners(ChangeEventListener.class)) {
+            l.changed(event);
+        }
     }
 
 

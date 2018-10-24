@@ -1,10 +1,12 @@
 package entrants.utils.ui;
 
+import entrants.utils.ChangeEventListener;
 import entrants.utils.graph.KnowledgeGraph;
 import entrants.utils.graph.Node;
 import org.graphstream.graph.Graph;
 import org.graphstream.graph.implementations.DefaultGraph;
 
+import javax.swing.event.ChangeEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
@@ -21,8 +23,8 @@ public class KnowledgeGraphDisplayer {
         }
         graphUI = new DefaultGraph("Knowledge");
         graphUI.addAttribute("ui.stylesheet", "url(" + css + ")");
-        renderer = new NodeRenderer(graphUI);
         graphData = g;
+        renderer = new NodeRenderer(graphUI);
 
         registerListener();
         updateUI();
@@ -56,6 +58,15 @@ public class KnowledgeGraphDisplayer {
                 );
             }
         });
+
+        for (Node n : graphData.getNodes()) {
+            n.addChangeEventListener(new ChangeEventListener() {
+                @Override
+                public void changed(ChangeEvent evt) {
+                    renderer.render(n);
+                }
+            });
+        }
     }
 
     private void updateUI() {
