@@ -1,0 +1,13 @@
+<Configuration>
+    <DomainFile>config/BehaviourTree/pacman.xml</DomainFile>
+
+    <ModelActionsPackage>entrants.BT.Model.Actions</ModelActionsPackage>
+    <ModelConditionsPackage>entrants.BT.Model.Conditions</ModelConditionsPackage>
+    <ModelActionsOutputDirectory>src/main/java/entrants/BT/Model/Actions</ModelActionsOutputDirectory>
+    <ModelConditionsOutputDirectory>src/main/java/entrants/BT/Model/Conditions</ModelConditionsOutputDirectory>
+
+    <ExecutionActionsPackage>entrants.BT.Execution.Actions</ExecutionActionsPackage>
+    <ExecutionConditionsPackage>entrants.BT.Execution.Conditions</ExecutionConditionsPackage>
+    <ExecutionActionsOutputDirectory>src/main/java/entrants/BT/Execution/Actions</ExecutionActionsOutputDirectory>
+    <ExecutionConditionsOutputDirectory>src/main/java/entrants/BT/Execution/Conditions</ExecutionConditionsOutputDirectory>
+</Configuration>
