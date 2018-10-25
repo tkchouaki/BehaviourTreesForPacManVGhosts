@@ -184,4 +184,16 @@ public class Edge implements WeightedEdgeInterface<Node> {
         }
         return false;
     }
+
+    @Override
+    public String toString()
+    {
+        return this.nodeA.toString() + "," + this.nodeB.toString();
+    }
+
+    @Override
+    public int hashCode()
+    {
+        return this.toString().hashCode();
+    }
 }
