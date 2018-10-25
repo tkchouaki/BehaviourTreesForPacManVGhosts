@@ -2,6 +2,7 @@ package entrants.ghosts.username;
 
 import entrants.utils.Commons;
 import entrants.utils.graph.AgentKnowledge;
+import entrants.utils.graph.DiscreteKnowledgeGraph;
 import entrants.utils.ui.KnowledgeGraphDisplayer;
 import pacman.controllers.IndividualGhostController;
 import pacman.game.Constants;
@@ -27,7 +28,8 @@ public class Blinky extends IndividualGhostController {
             KnowledgeGraphDisplayer displayer;
             this.knowledge = new AgentKnowledge();
             Commons.initAgentsKnowledge(this.knowledge, game);
-            displayer = new KnowledgeGraphDisplayer(this.knowledge.getGraph(), "file:///" + Paths.get(".").toAbsolutePath().normalize().toString() + "/src/main/java/entrants/utils/ui/kgraph.css");
+            DiscreteKnowledgeGraph discreteKnowledgeGraph = new DiscreteKnowledgeGraph(this.knowledge.getGraph());
+            displayer = new KnowledgeGraphDisplayer(discreteKnowledgeGraph, "file:///" + Paths.get(".").toAbsolutePath().normalize().toString() + "/src/main/java/entrants/utils/ui/kgraph.css");
             displayer.display();
         }
         else

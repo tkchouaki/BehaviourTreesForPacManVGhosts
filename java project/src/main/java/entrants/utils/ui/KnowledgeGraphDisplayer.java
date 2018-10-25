@@ -53,9 +53,9 @@ public class KnowledgeGraphDisplayer {
         support.addPropertyChangeListener(UndirectedGraph.EDGE_ADDED_PROP, new PropertyChangeListener() {
             @Override
             public void propertyChange(PropertyChangeEvent evt) {
-                KnowledgeGraph.Edge edge = (KnowledgeGraph.Edge) evt.getNewValue();
+                Edge edge = (Edge) evt.getNewValue();
                 graphUI.addEdge(
-                        edge.toString(), edge.getFirst().toString(), edge.getSecond().toString(), edge.isDirected()
+                        edge.toString(), edge.getNodeA().toString(), edge.getNodeB().toString(), false
                 );
             }
         });
