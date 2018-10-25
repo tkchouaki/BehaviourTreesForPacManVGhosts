@@ -32,7 +32,7 @@ public abstract class Commons {
      * @param agentKnowledge
      * The AgentKnowledge to update
      */
-    public static void updateAgentsKnowledge(Game game, AgentKnowledge agentKnowledge)
+    public static void updateAgentsKnowledge(AgentKnowledge agentKnowledge, Game game)
     {
         for(Node node : agentKnowledge.getGraph().getNodes())
         {

@@ -2,7 +2,6 @@ package entrants.utils.ui;
 
 import entrants.utils.ChangeEventListener;
 import entrants.utils.graph.Edge;
-import entrants.utils.graph.KnowledgeGraph;
 import entrants.utils.graph.Node;
 import entrants.utils.graph.UndirectedGraph;
 import org.graphstream.graph.Graph;
