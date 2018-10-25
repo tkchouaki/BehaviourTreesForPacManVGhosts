@@ -7,9 +7,9 @@ import entrants.utils.graph.interfaces.NodeInterface;
 import java.beans.PropertyChangeSupport;
 import java.util.*;
 
-public class UndirectedGraph implements IUndirectedGraph<NodeInterface, EdgeInterface> {
+public class UndirectedGraph<N extends NodeInterface, E extends EdgeInterface<N>> implements IUndirectedGraph<N, E> {
     // ATTRIBUTES
-    private final Map<NodeInterface, Set<EdgeInterface>> topology;
+    private final Map<N, Set<E>> topology;
     private final PropertyChangeSupport support;
 
     // CONSTRUCTOR
@@ -19,14 +19,14 @@ public class UndirectedGraph implements IUndirectedGraph<NodeInterface, EdgeInte
     }
 
     @Override
-    public Collection<NodeInterface> getNodes() {
+    public Collection<N> getNodes() {
         return new ArrayList<>(topology.keySet());
     }
 
     @Override
-    public Collection<EdgeInterface> getEdges() {
-        Set<EdgeInterface> values = new HashSet<EdgeInterface>();
-        for (Collection<EdgeInterface> edges : topology.values()) {
+    public Collection<E> getEdges() {
+        Set<E> values = new HashSet<>();
+        for (Collection<E> edges : topology.values()) {
             values.addAll(edges);
         }
         return values;
@@ -38,11 +38,11 @@ public class UndirectedGraph implements IUndirectedGraph<NodeInterface, EdgeInte
     }
 
     @Override
-    public int getDegreeOf(NodeInterface node) throws NodeNotFoundException {
+    public int getDegreeOf(N node) throws NodeNotFoundException {
         if (node == null) {
             throw new AssertionError();
         }
-        Collection<EdgeInterface> edges = topology.get(node);
+        Collection<E> edges = topology.get(node);
         if (edges == null) {
             throw new NodeNotFoundException();
         }
@@ -50,16 +50,16 @@ public class UndirectedGraph implements IUndirectedGraph<NodeInterface, EdgeInte
     }
 
     @Override
-    public Collection<NodeInterface> getNeighboursAsNodesOf(NodeInterface node) throws NodeNotFoundException {
+    public Collection<N> getNeighboursAsNodesOf(N node) throws NodeNotFoundException {
          if (node == null) {
              throw new AssertionError();
          }
-        Collection<EdgeInterface> edges = topology.get(node);
+        Collection<E> edges = topology.get(node);
         if (edges == null) {
             throw new NodeNotFoundException();
         }
-        List<NodeInterface> result = new ArrayList<>();
-        for (EdgeInterface edge : edges) {
+        List<N> result = new ArrayList<>();
+        for (E edge : edges) {
             if (!edge.getNodeA().equals(node)) {
                 result.add(edge.getNodeA());
             } else {
@@ -70,11 +70,11 @@ public class UndirectedGraph implements IUndirectedGraph<NodeInterface, EdgeInte
     }
 
     @Override
-    public Collection<EdgeInterface> getNeighboursAsEdgesOf(NodeInterface node) throws NodeNotFoundException {
+    public Collection<E> getNeighboursAsEdgesOf(N node) throws NodeNotFoundException {
         if (node == null) {
             throw new AssertionError();
         }
-        Collection<EdgeInterface> edges = topology.get(node);
+        Collection<E> edges = topology.get(node);
         if (edges == null) {
             throw new NodeNotFoundException();
         }
@@ -82,9 +82,9 @@ public class UndirectedGraph implements IUndirectedGraph<NodeInterface, EdgeInte
     }
 
     @Override
-    public NodeInterface getNodeByID(Integer nodeID) {
+    public N getNodeByID(Integer nodeID) {
         int i = 0;
-        List<NodeInterface> nodes = new ArrayList<>(topology.keySet());
+        List<N> nodes = new ArrayList<>(topology.keySet());
         while (i < nodes.size() && !nodes.get(i).getId().equals(nodeID)) {
             i++;
         }
@@ -93,7 +93,7 @@ public class UndirectedGraph implements IUndirectedGraph<NodeInterface, EdgeInte
     }
 
     @Override
-    public boolean addNode(NodeInterface node) {
+    public boolean addNode(N node) {
         if (node == null) {
             throw new AssertionError();
         }
@@ -106,7 +106,7 @@ public class UndirectedGraph implements IUndirectedGraph<NodeInterface, EdgeInte
     }
 
     @Override
-    public boolean addEdge(EdgeInterface edge) {
+    public boolean addEdge(E edge) {
         if (edge == null) {
             throw new AssertionError();
         }
@@ -126,12 +126,12 @@ public class UndirectedGraph implements IUndirectedGraph<NodeInterface, EdgeInte
     }
 
     @Override
-    public boolean removeNode(NodeInterface node) {
+    public boolean removeNode(N node) {
         if (node == null) {
             throw new AssertionError();
         }
         if (!topology.containsKey(node)) return false;
-        for (EdgeInterface edge : topology.get(node)) {
+        for (E edge : topology.get(node)) {
             removeEdge(edge);
         }
         topology.remove(node);
@@ -140,7 +140,7 @@ public class UndirectedGraph implements IUndirectedGraph<NodeInterface, EdgeInte
     }
 
     @Override
-    public boolean removeEdge(EdgeInterface edge) {
+    public boolean removeEdge(E edge) {
         if (edge == null) {
             throw new AssertionError();
         }

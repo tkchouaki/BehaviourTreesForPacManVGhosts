@@ -1,9 +1,11 @@
 package entrants.utils.graph;
 
-import entrants.utils.graph.interfaces.NodeInterface;
 import entrants.utils.graph.interfaces.WeightedEdgeInterface;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * This class describes an Edge between two neighbouring nodes in the game.
@@ -12,7 +14,7 @@ import java.util.*;
  * If the Edge links two nodes that are not adjacent in the game, it can have pills & power pills.
  * The allowed weights are 'pills', 'power_pills' & 'distance'
  */
-public class Edge implements WeightedEdgeInterface {
+public class Edge implements WeightedEdgeInterface<Node> {
 
     public static final String WEIGHT_PILLS_NUMBER = "pills";
     public static final String WEIGHT_POWER_PILLS_NUMBER = "power pills";
@@ -159,7 +161,7 @@ public class Edge implements WeightedEdgeInterface {
      * True if the node is concerned by the current edge
      */
     @Override
-    public boolean concernsNode(NodeInterface node)
+    public boolean concernsNode(Node node)
     {
         return nodeA.equals(node) || nodeB.equals(node);
     }
