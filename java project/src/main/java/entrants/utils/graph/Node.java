@@ -1,6 +1,7 @@
 package entrants.utils.graph;
 
 import entrants.utils.ChangeEventListener;
+import entrants.utils.graph.interfaces.NodeInterface;
 import pacman.game.Constants;
 
 import javax.swing.event.ChangeEvent;
@@ -13,7 +14,7 @@ import java.util.Set;
  * A Node is a point in the 2D world, it can contain & pill, a power pill, a pacman, some ghosts.
  * Each Node in the world is identified by an index.
  */
-public class Node {
+public class Node implements NodeInterface {
 
     private final Integer id;
     /**
@@ -343,5 +344,21 @@ public class Node {
             }
         }
         return null;
+    }
+
+    /**
+     * Compares the current Node with another one (allows to sort)
+     * @param o
+     * The object to compare the current node with
+     * @return
+     * An integer representing the difference between the current Node & the given object.
+     */
+    @Override
+    public int compareTo(Object o) {
+        if(o instanceof NodeInterface)
+        {
+            return this.getId() - ((NodeInterface)o).getId();
+        }
+        return Integer.MIN_VALUE;
     }
 }
