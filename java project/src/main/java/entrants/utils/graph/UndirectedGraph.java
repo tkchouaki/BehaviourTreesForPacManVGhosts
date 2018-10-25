@@ -131,8 +131,15 @@ public class UndirectedGraph<N extends NodeInterface, E extends EdgeInterface<N>
             throw new AssertionError();
         }
         if (!topology.containsKey(node)) return false;
-        for (E edge : topology.get(node)) {
-            removeEdge(edge);
+        for (Iterator<E> it = topology.get(node).iterator(); it.hasNext();) {
+            E edge = it.next();
+            if (edge.getNodeA().equals(node)) {
+                topology.get(edge.getNodeB()).remove(edge);
+            } else {
+                topology.get(edge.getNodeA()).remove(edge);
+            }
+            it.remove();
+            support.firePropertyChange(EDGE_REMOVED_PROP, edge, null);
         }
         topology.remove(node);
         support.firePropertyChange(NODE_REMOVED_PROP, node, null);
