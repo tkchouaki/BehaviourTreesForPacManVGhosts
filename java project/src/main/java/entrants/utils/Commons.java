@@ -1,11 +1,11 @@
 package entrants.utils;
 
-import entrants.utils.graph.KnowledgeGraph;
+import entrants.utils.graph.AgentKnowledge;
+import entrants.utils.graph.Edge;
 import entrants.utils.graph.Node;
+import entrants.utils.graph.UndirectedGraph;
 import pacman.game.Game;
 
-import java.util.HashSet;
-import java.util.Set;
 
 public abstract class Commons {
     /**
@@ -26,30 +26,28 @@ public abstract class Commons {
     }
 
     /**
-     * Updates a KnowledgeGraph from a Game object
+     * Updates an Agent's Knowledge from a Game object
      * @param game
      * The game to use for the update
-     * @param graph
-     * The graph to update
+     * @param agentKnowledge
+     * The AgentKnowledge to update
      */
-    public static void updateKnowledgeGraph(Game game, KnowledgeGraph graph)
+    public static void updateAgentsKnowledge(Game game, AgentKnowledge agentKnowledge)
     {
-        for(Node node : graph.getNodes())
+        for(Node node : agentKnowledge.getGraph().getNodes())
         {
             Commons.updatePillsInfo(game, node);
         }
     }
 
     /**
-     * Initializes a Knowledge Graph with the fixed topology of a game.
+     * Initializes an Agent's knowledge with the fixed topology of a game.
      * @param game
      * The game to use for the initialization
-     * @return
-     * The KnowledgeGraph
      */
-    public static KnowledgeGraph initKnowledgeGraph(Game game)
+    public static void initAgentsKnowledge(AgentKnowledge agentKnowledge, Game game)
     {
-        KnowledgeGraph graph = new KnowledgeGraph();
+        UndirectedGraph<Node, Edge> graph = agentKnowledge.getGraph();
         for(int i=0; i<game.getNumberOfNodes(); i++)
         {
             int[] neighbours = game.getNeighbouringNodes(i);
@@ -59,14 +57,14 @@ public abstract class Commons {
                 {
                     continue;
                 }
-                Node a = new Node(i);
-                Node b = new Node(neighbours[j]);
+                Node a = new Node(i, game.getNodeXCood(i), game.getNodeYCood(i), game.isJunction(i));
+                Node b = new Node(neighbours[j], game.getNodeXCood(neighbours[j]), game.getNodeYCood(neighbours[j]), game.isJunction(neighbours[j]));
                 Commons.updatePillsInfo(game, a);
                 Commons.updatePillsInfo(game, b);
-                graph.addUndirectedEdge(a, b);
+                Edge edge = new Edge(a, b);
+                graph.addEdge(edge);
             }
         }
-        return graph;
     }
 
     /**
