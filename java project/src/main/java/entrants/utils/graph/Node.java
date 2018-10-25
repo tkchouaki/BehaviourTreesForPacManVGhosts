@@ -17,10 +17,6 @@ import java.util.Set;
 public class Node implements NodeInterface {
 
     private final Integer id;
-    /**
-     * Every pill has an ID.
-     * If the current node doesn't contain a pill, this id is set to -1
-     */
 
     /**
      * The X component of the node's coordinates
@@ -38,6 +34,10 @@ public class Node implements NodeInterface {
 
     private boolean isDecisionNode;
 
+    /**
+     * Every pill has an ID.
+     * If the current node doesn't contain a pill, this id is set to -1
+     */
     private int containedPillId;
 
     /**
