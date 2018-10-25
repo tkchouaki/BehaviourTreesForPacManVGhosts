@@ -1,6 +1,7 @@
 package entrants.utils.ui;
 
 import entrants.utils.graph.Node;
+import entrants.utils.graph.interfaces.NodeInterface;
 import org.graphstream.graph.Graph;
 import pacman.game.Constants;
 

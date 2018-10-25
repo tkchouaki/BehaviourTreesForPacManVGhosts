@@ -7,8 +7,8 @@ import java.util.Set;
 /**
  * This class is used to simplify a KnowledgeGraph by only taking into account the interesting nodes
  */
-public class DiscreteKnowledgeGraph extends KnowledgeGraph{
-    private KnowledgeGraph graph;
+public class DiscreteKnowledgeGraph extends UndirectedGraph<Node, Edge>{
+    private UndirectedGraph<Node, Edge> graph;
 
     /**
      * Initializes the discrete graph with a target KnowledgeGraph.
@@ -16,7 +16,7 @@ public class DiscreteKnowledgeGraph extends KnowledgeGraph{
      * @param graph
      * The target graph
      */
-    public DiscreteKnowledgeGraph(KnowledgeGraph graph)
+    public DiscreteKnowledgeGraph(UndirectedGraph<Node, Edge> graph)
     {
         this.graph = graph;
         this.discretizeWholeGraph();
@@ -44,18 +44,22 @@ public class DiscreteKnowledgeGraph extends KnowledgeGraph{
      */
     private void unlinkAndRemoveNode(Node node)
     {
-        Collection<Node> successors = this.getSuccessors(node);
-        Collection<Node> predecessors = this.getPredecessors(node);
-        this.removeNode(node);
-        for(Node successor : successors)
-        {
-            for(Node predecessor : predecessors)
+        Collection<Node> neighbours = null;
+        try {
+            neighbours = this.getNeighboursAsNodesOf(node);
+            this.removeNode(node);
+            for(Node neighbourA : neighbours)
             {
-                if(!predecessor.equals(successor))
+                for(Node neighbourB : neighbours)
                 {
-                    this.addDirectedEdge(predecessor, successor);
+                    if(!neighbourA.equals(neighbourB))
+                    {
+                        this.addEdge(new Edge(neighbourA, neighbourB));
+                    }
                 }
             }
+        } catch (NodeNotFoundException e) {
+            e.printStackTrace();
         }
     }
 
@@ -68,7 +72,14 @@ public class DiscreteKnowledgeGraph extends KnowledgeGraph{
         for(Node node : this.graph.getNodes())
         {
             this.addNode(node);
-            this.addDirectedEdges(node, this.graph.getSuccessors(node));
+            try {
+                for(Edge edge : this.graph.getNeighboursAsEdgesOf(node))
+                {
+                    this.addEdge(edge);
+                }
+            } catch (NodeNotFoundException e) {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -121,6 +132,6 @@ public class DiscreteKnowledgeGraph extends KnowledgeGraph{
         {
             return true;
         }
-        return graph.getDegree(node)>=3;
+        return node.isDecisionNode();
     }
 }

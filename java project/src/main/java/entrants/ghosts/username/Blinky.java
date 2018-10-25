@@ -1,8 +1,7 @@
 package entrants.ghosts.username;
 
 import entrants.utils.Commons;
-import entrants.utils.graph.DiscreteKnowledgeGraph;
-import entrants.utils.graph.KnowledgeGraph;
+import entrants.utils.graph.AgentKnowledge;
 import entrants.utils.ui.KnowledgeGraphDisplayer;
 import pacman.controllers.IndividualGhostController;
 import pacman.game.Constants;
@@ -14,25 +13,26 @@ import java.nio.file.Paths;
  * Created by Piers on 11/11/2015.
  */
 public class Blinky extends IndividualGhostController {
-    private KnowledgeGraph graph;
+    private AgentKnowledge knowledge;
 
     public Blinky() {
         super(Constants.GHOST.BLINKY);
-        this.graph = null;
+        this.knowledge = null;
     }
 
     @Override
     public Constants.MOVE getMove(Game game, long timeDue) {
-        if(this.graph == null)
+        if(this.knowledge == null)
         {
             KnowledgeGraphDisplayer displayer;
-            this.graph = Commons.initKnowledgeGraph(game);
-            displayer = new KnowledgeGraphDisplayer(new DiscreteKnowledgeGraph(this.graph), "file:///" + Paths.get(".").toAbsolutePath().normalize().toString() + "/src/main/java/entrants/utils/ui/kgraph.css");
+            this.knowledge = new AgentKnowledge();
+            Commons.initAgentsKnowledge(this.knowledge, game);
+            displayer = new KnowledgeGraphDisplayer(this.knowledge.getGraph(), "file:///" + Paths.get(".").toAbsolutePath().normalize().toString() + "/src/main/java/entrants/utils/ui/kgraph.css");
             displayer.display();
         }
         else
         {
-            Commons.updateKnowledgeGraph(game, this.graph);
+            Commons.updateAgentsKnowledge(this.knowledge, game);
         }
         return Constants.MOVE.DOWN;
     }
