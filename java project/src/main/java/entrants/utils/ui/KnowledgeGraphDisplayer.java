@@ -4,7 +4,6 @@ import entrants.utils.ChangeEventListener;
 import entrants.utils.graph.Edge;
 import entrants.utils.graph.Node;
 import entrants.utils.graph.UndirectedGraph;
-import entrants.utils.graph.interfaces.WeightedEdgeInterface;
 import org.graphstream.graph.Graph;
 import org.graphstream.graph.implementations.DefaultGraph;
 
