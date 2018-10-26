@@ -27,4 +27,14 @@ public interface EdgeInterface<N extends NodeInterface>{
      * True if the given node is concerned by the current edge
      */
     boolean concernsNode(N node);
+
+    /**
+     * Retrieves the neighbour of a Node with the current edge
+     * If the given node is not concerned by the current Edge, a Null value is returned
+     * @param node
+     * A node
+     * @return
+     * The node's neighbour with the current edge
+     */
+    N getNeighbour(N node);
 }

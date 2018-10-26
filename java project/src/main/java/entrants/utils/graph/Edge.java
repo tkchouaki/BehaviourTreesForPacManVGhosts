@@ -2,10 +2,7 @@ package entrants.utils.graph;
 
 import entrants.utils.graph.interfaces.WeightedEdgeInterface;
 
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 /**
  * This class describes an Edge between two neighbouring nodes in the game.
@@ -185,6 +182,30 @@ public class Edge implements WeightedEdgeInterface<Node> {
         return false;
     }
 
+    /**
+     * Retrieves the neighbour of a Node with the current edge
+     * If the given node is not concerned by the current Edge, a Null value is returned
+     * @param node
+     * A node
+     * @return
+     * The node's neighbour with the current edge
+     */
+    @Override
+    public Node getNeighbour(Node node) {
+        if(this.nodeA.equals(node))
+        {
+            return this.nodeB;
+        }
+        else if(this.nodeB.equals(node))
+        {
+            return this.nodeA;
+        }
+        else
+        {
+            return null;
+        }
+    }
+
     @Override
     public String toString()
     {
@@ -195,5 +216,61 @@ public class Edge implements WeightedEdgeInterface<Node> {
     public int hashCode()
     {
         return this.toString().hashCode();
+    }
+
+
+    public static Edge chainToEdge(Node startingNode, List<Edge> edges)
+    {
+        Map<String, Double> weights = new HashMap<>();
+        Node nodeA = startingNode;
+        Node nodeB = startingNode;
+        Edge lastEdge;
+        Edge result;
+        if(edges.size() == 0)
+        {
+            return null;
+        }
+        lastEdge = edges.get(edges.size()-1);
+        for(String key : ACCEPTED_WEIGHTS)
+        {
+            weights.put(key, 0d);
+        }
+        for(Edge edge : edges)
+        {
+            for(String key : ACCEPTED_WEIGHTS)
+            {
+                weights.put(key, weights.get(key) + edge.getWeight(key));
+            }
+            nodeB = edge.getNeighbour(nodeB);
+            if(!edge.equals(lastEdge))
+            {
+                for(String key : ACCEPTED_WEIGHTS)
+                {
+                    weights.put(key, weights.get(key) + getNodeWeight(nodeB, key));
+                }
+            }
+        }
+        result = new Edge(nodeA, nodeB);
+        for(String key : ACCEPTED_WEIGHTS)
+        {
+            result.setWeight(key, weights.get(key));
+        }
+        return result;
+    }
+
+    private static Double getNodeWeight(Node node, String key)
+    {
+        if(WEIGHT_PILLS_NUMBER.equals(key))
+        {
+            return node.containsPill() ? 1d : 0d;
+        }
+        else if(WEIGHT_POWER_PILLS_NUMBER.equals(key))
+        {
+            return node.containsPowerPill() ? 1d : 0d;
+        }
+        else
+        {
+            return 0d;
+        }
     }
 }
