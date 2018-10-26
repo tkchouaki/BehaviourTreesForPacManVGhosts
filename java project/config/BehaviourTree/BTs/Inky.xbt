@@ -1,29 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Tree>
-  <Node id="Node_0" name="MsPacMan" type="Root">
+  <Node id="Node_0" name="Inky" type="Root">
     <Children>
-      <Node id="Node_3" type="RandomSelector">
+      <Node id="Node_2" type="RandomSelector">
         <Children>
-          <Node id="Node_4" name="Move" type="Action">
-            <Parameters>
-              <Parameter name="direction" fromcontext="false">0</Parameter>
-            </Parameters>
-          </Node>
-          <Node id="Node_5" name="Move" type="Action">
-            <Parameters>
-              <Parameter name="direction" fromcontext="false">1</Parameter>
-            </Parameters>
-          </Node>
-          <Node id="Node_6" name="Move" type="Action">
-            <Parameters>
-              <Parameter name="direction" fromcontext="false">2</Parameter>
-            </Parameters>
-          </Node>
-          <Node id="Node_7" name="Move" type="Action">
-            <Parameters>
-              <Parameter name="direction" fromcontext="false">3</Parameter>
-            </Parameters>
-          </Node>
+          <Node id="Node_1" name="MoveRight" type="Action" />
+          <Node id="Node_3" name="MoveLeft" type="Action" />
+          <Node id="Node_4" name="MoveUp" type="Action" />
+          <Node id="Node_5" name="MoveDown" type="Action" />
         </Children>
       </Node>
     </Children>

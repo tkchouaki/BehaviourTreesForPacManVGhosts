@@ -212,7 +212,8 @@ class UndirectedGraphTest {
             graph.addEdge(edge);
         }
 
-        graph.removeNode(nodes[0]);
+        assertTrue(graph.removeNode(nodes[0]));
+        assertFalse(graph.removeNode(nodes[0]));
         assertTrue(graph.getEdges().contains(edges[2]));
         assertEquals(graph.getEdges().size(), 1);
         assertTrue(graph.getNodes().containsAll(Arrays.asList(nodes[1], nodes[2], nodes[3])));
@@ -245,8 +246,10 @@ class UndirectedGraphTest {
             graph.addEdge(edge);
         }
 
-        graph.removeEdge(edges[0]);
+        assertTrue(graph.removeEdge(edges[0]));
         assertEquals(graph.getEdges().size(), 2);
         assertTrue(graph.getEdges().containsAll(Arrays.asList(edges[2], edges[1])));
+
+        assertFalse(graph.removeEdge(edges[0]));
     }
 }

@@ -1,0 +1,124 @@
+<!-- See documentation part3 for more information -->
+
+<!-- Contains actions and sensors using Game as support for reasoning -->
+<!-- Functionalities provided by the game have been implemented, see :
+http://www.pacmanvghosts.co.uk/guide_api.html
+-->
+
+<Domain package="Basic">
+    <!-- Defines the set of actions that are present in the game,
+    which are also the set of low level actions that can be
+    used when building BTs -->
+    <ActionSet>
+
+        <!-- =================================== -->
+        <!-- ========== MOVE-RELATED ========== -->
+        <!-- =================================== -->
+        <Action name="MoveRight" />
+        <Action name="MoveLeft" />
+        <Action name="MoveUp" />
+        <Action name="MoveDown" />
+        <Action name="MoveNeutral" />
+
+        <!-- Write in context: INT[] POSSIBLE_MOVES -->
+        <Action name="GetPossibleMove">
+            <Parameter name="nodeIndex" type="INTEGER" />
+            <Parameter name="lastMove" type="DIRECTION" />
+        </Action>
+
+        <!-- =================================== -->
+        <!-- ========== PACMAN-RELATED ========== -->
+        <!-- =================================== -->
+
+        <!-- Write in context: INT PACMAN_CURRENT_NODE_INDEX -->
+        <!-- Will write -1 if the querying agent can't see the PACMAN. -->
+        <Action name="GetPacManCurrentNodeIndex" />
+
+        <!-- TODO See what type can be write into context -->
+        <!-- Write in context: ?(MOVE) PACMAN_LAST_MOVE -->
+        <!-- Will write -1 if the querying agent can't see the PACMAN. -->
+        <Action name="GetPacManLastMoveMade" />
+
+        <!-- =================================== -->
+        <!-- ========== GHOST-RELATED ========== -->
+        <!-- =================================== -->
+
+        <!-- TODO See what type can be write into context -->
+        <!-- Write in context: ?(integer) GHOST_CURRENT_NODE_INDEX -->
+        <!-- Will write -1 if the querying agent can't see the GHOST. -->
+        <Action name="GetGhostCurrentNodeIndex">
+            <Parameter name="ghost" type="ENTITY_ID" />
+        </Action>
+
+        <!-- TODO See what type can be write into context -->
+        <!-- Write in context: ?(MOVE) GHOST_LAST_MOVE -->
+        <!-- Will write -1 if the querying agent can't see the GHOST. -->
+        <Action name="GetGhostLastMoveMade">
+            <Parameter name="ghost" type="ENTITY_ID" />
+        </Action>
+
+        <!-- TODO See what type can be write into context -->
+        <!-- Write in context: ?(integer) GHOST_EDIBLE_TIME -->
+        <!-- Will write -1 if the querying agent can't see the GHOST. -->
+        <Action name="GetGhostEdibleTime">
+            <Parameter name="ghost" type="ENTITY_ID" />
+        </Action>
+
+    </ActionSet>
+
+    <!-- Defines the set of sensors that can be used in the game.
+    A sensor is an operation that queries something about the world.
+    As a result, a sensor must return a boolean (here in JBT).
+    ===== TLDR : A sensor is a condition =====-->
+    <SensorSet>
+        <!-- =================================== -->
+        <!-- ========== GAME-RELATED ========== -->
+        <!-- =================================== -->
+        <Sensor name="IsGameOver" type="BOOLEAN" />
+
+        <!-- =================================== -->
+        <!-- ========== MOVE-RELATED ========== -->
+        <!-- =================================== -->
+
+        <!-- =================================== -->
+        <!-- ========== PACMAN-RELATED ========== -->
+        <!-- =================================== -->
+        <Sensor name="WasPacManEaten" type="BOOLEAN" />
+
+        <!-- =================================== -->
+        <!-- ========== GHOST-RELATED ========== -->
+        <!-- =================================== -->
+        <Sensor name="WasGhostEaten" type="BOOLEAN">
+            <Parameter name="ghost" type="ENTITY_ID" />
+        </Sensor>
+
+        <Sensor name="isGhostEdible" type="BOOLEAN">
+            <Parameter name="ghost" type="ENTITY_ID" />
+        </Sensor>
+
+
+        <!-- =================================== -->
+        <!-- ========== PILL-RELATED ========== -->
+        <!-- =================================== -->
+        <Sensor name="WasPillEaten" type="BOOLEAN" />
+        <Sensor name="WasPowerPillEaten" type="BOOLEAN" />
+
+        <Sensor name="IsPillStillAvailable" type="BOOLEAN">
+            <Parameter name="pillIndex" type="INTEGER" />
+        </Sensor>
+
+        <Sensor name="IsPowerPillStillAvailable" type="BOOLEAN">
+            <Parameter name="powerPillIndex" type="INTEGER" />
+        </Sensor>
+
+    </SensorSet>
+
+    <GoalSet>
+
+    </GoalSet>
+
+    <EntitySet>
+
+    </EntitySet>
+
+</Domain>
