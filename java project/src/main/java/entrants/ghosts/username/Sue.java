@@ -8,15 +8,14 @@ import pacman.game.Game;
 /**
  * Created by Piers on 11/11/2015.
  */
-public class Sue extends IndividualGhostController {
+public class Sue extends Ghost {
 
     public Sue() {
-        super(Constants.GHOST.SUE);
+        super(Constants.GHOST.BLINKY);
     }
 
-    @Override
-    public Constants.MOVE getMove(Game game, long timeDue)
+    public Sue(boolean display)
     {
-        return Constants.MOVE.LEFT;
+        super(Constants.GHOST.BLINKY, display);
     }
 }

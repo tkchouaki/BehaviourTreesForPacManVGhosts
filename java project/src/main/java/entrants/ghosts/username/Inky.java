@@ -8,14 +8,14 @@ import pacman.game.Game;
 /**
  * Created by Piers on 11/11/2015.
  */
-public class Inky extends IndividualGhostController {
+public class Inky extends Ghost {
 
     public Inky() {
         super(Constants.GHOST.INKY);
     }
 
-    @Override
-    public Constants.MOVE getMove(Game game, long timeDue) {
-        return Constants.MOVE.UP;
+    public Inky(boolean display)
+    {
+        super(Constants.GHOST.INKY, display);
     }
 }
