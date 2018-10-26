@@ -132,7 +132,15 @@ public interface IUndirectedGraph<N extends NodeInterface, E extends EdgeInterfa
      * @param edge the edge you want to add to the graph
      * @return true if the node has been added, false if it was already registered in the graph
      * @contract.pre edge != null
-     * //TODO: finish contract
+     * @contract.post <pre>
+     *     getNodes().contains(edge.getNodeA())
+     *     getNodes().contains(edge.getNodeB())
+     *     getEdges().contains(edge)
+     *     getNeighboursAsNodesOf(edge.getNodeA()).contains(edge.getNodeB())
+     *     getNeighboursAsNodesOf(edge.getNodeB()).contains(edge.getNodeA())
+     *     getNeighboursAsEdgesOf(edge.getNodeA()).contains(edge)
+     *     getNeighboursAsEdgesOf(edge.getNodeB()).contains(edge)
+     * </pre>
      */
     boolean addEdge(E edge);
 
@@ -142,7 +150,10 @@ public interface IUndirectedGraph<N extends NodeInterface, E extends EdgeInterfa
      * node's effective deletion and NODE_REMOVED_PROP fire).
      * @param node the node to be deleted
      * @return true is the node has been deleted, false if this was a no-op
-     * //TODO: finish contract
+     * @contract.post <pre>
+     *     !getNodes().contains(node)
+     *     !getEdges().contains(getNeighboursAsEdgesOf(node))
+     * </pre>
      */
     boolean removeNode(N node);
 
@@ -150,7 +161,7 @@ public interface IUndirectedGraph<N extends NodeInterface, E extends EdgeInterfa
      * Remove an edge from the graph. If not such edge matches, this is a no-op. Fires a EDGE_REMOVED_PROP property.
      * @param edge the edge to be deleted
      * @return true is the edge has been deleted, false if this was a no-op
-     * //TODO: finish contract
+     * @contract.post !getEdges().contains(edge)
      */
     boolean removeEdge(E edge);
 }
