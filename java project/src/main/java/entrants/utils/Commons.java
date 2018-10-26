@@ -6,6 +6,9 @@ import entrants.utils.graph.Node;
 import entrants.utils.graph.UndirectedGraph;
 import pacman.game.Game;
 
+import java.util.Collection;
+import java.util.HashSet;
+
 
 public abstract class Commons {
     /**
@@ -32,12 +35,16 @@ public abstract class Commons {
      * @param agentKnowledge
      * The AgentKnowledge to update
      */
-    public static void updateAgentsKnowledge(AgentKnowledge agentKnowledge, Game game)
+    public static Collection<Node> updateAgentsKnowledge(AgentKnowledge agentKnowledge, Game game)
     {
+        Collection<Node> changedNodes = new HashSet<>();
         for(Node node : agentKnowledge.getGraph().getNodes())
         {
-            Commons.updatePillsInfo(game, node);
+            if(Commons.updatePillsInfo(game, node)){
+                changedNodes.add(node);
+            }
         }
+        return changedNodes;
     }
 
     /**
@@ -72,8 +79,10 @@ public abstract class Commons {
      * @param game
      * The game object representing the state of the game from which to update the current node
      */
-    public static void updatePillsInfo(Game game, Node node)
+    public static boolean updatePillsInfo(Game game, Node node)
     {
+        int oldPillId = node.getContainedPillId();
+        int oldPowerPillId = node.getContainedPowerPillId();
         if(game.isNodeObservable(node.getId()))
         {
             int pillId = game.getPillIndex(node.getId());
@@ -93,8 +102,9 @@ public abstract class Commons {
             }
             else
             {
-               node.setContainedPowerPillId(-1);
+                node.setContainedPowerPillId(-1);
             }
         }
+        return !(node.getContainedPillId() == oldPillId && node.getContainedPowerPillId() == oldPowerPillId);
     }
 }
