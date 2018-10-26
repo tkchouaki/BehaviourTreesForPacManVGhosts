@@ -1,8 +1,7 @@
 package entrants.utils.graph;
 
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
+
+import java.util.*;
 
 /**
  * This class is used to simplify a KnowledgeGraph by only taking into account the interesting nodes
@@ -22,6 +21,54 @@ public class DiscreteKnowledgeGraph extends UndirectedGraph<Node, Edge>{
         this.discretizeWholeGraph();
     }
 
+    public void update()
+    {
+        this.update(this.getNodes());
+    }
+
+    public void update(Collection<Node> updatedNodes)
+    {
+        Collection<Node> nodes = this.getNodes();
+        for(Node updatedNode : updatedNodes)
+        {
+            if(this.isNodeInteresting(updatedNode) && !nodes.contains(updatedNode))
+            {
+                if(updatedNode.containsPowerPill())
+                {
+                    System.out.println("adding a power pill");
+                }
+                this.addNewIntrestingNode(updatedNode);
+            }
+            else if(!this.isNodeInteresting(updatedNode) && nodes.contains(updatedNode))
+            {
+                this.unlinkAndRemoveNode(updatedNode);
+            }
+        }
+    }
+
+    private void addNewIntrestingNode(Node node)
+    {
+        Collection<Node> myNodes = this.getNodes();
+        Map<Node, List<Edge>> pathsToMyNodes = this.graph.circleNode(node, myNodes);
+        Collection<Node> neighbours = new HashSet<>();
+        for(Node myNode : pathsToMyNodes.keySet())
+        {
+            neighbours.add(myNode);
+            List<Edge> path = pathsToMyNodes.get(myNode);
+            Edge toAdd = Edge.chainToEdge(node, path);
+            this.addEdge(toAdd);
+        }
+        for(Node neighbourA : neighbours)
+        {
+            for(Node neighbourB : neighbours)
+            {
+                if(!neighbourA.equals(neighbourB))
+                {
+                    this.removeEdge(new Edge(neighbourA, neighbourB));
+                }
+            }
+        }
+    }
 
     /**
      * Discritizes the whole target KnowledgeGraph (checking all the nodes)
