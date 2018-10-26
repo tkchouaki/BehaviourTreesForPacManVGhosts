@@ -53,10 +53,26 @@ public class KnowledgeGraphDisplayer {
         support.addPropertyChangeListener(UndirectedGraph.EDGE_ADDED_PROP, new PropertyChangeListener() {
             @Override
             public void propertyChange(PropertyChangeEvent evt) {
-                KnowledgeGraph.Edge edge = (KnowledgeGraph.Edge) evt.getNewValue();
+                Edge edge = (Edge) evt.getNewValue();
                 graphUI.addEdge(
-                        edge.toString(), edge.getFirst().toString(), edge.getSecond().toString(), edge.isDirected()
+                        edge.toString(), edge.getNodeA().toString(), edge.getNodeB().toString(), false
                 );
+            }
+        });
+
+        support.addPropertyChangeListener(UndirectedGraph.NODE_REMOVED_PROP, new PropertyChangeListener() {
+            @Override
+            public void propertyChange(PropertyChangeEvent evt) {
+                Node node = (Node) evt.getOldValue();
+                graphUI.removeNode(node.getId().toString());
+            }
+        });
+
+        support.addPropertyChangeListener(UndirectedGraph.EDGE_REMOVED_PROP, new PropertyChangeListener() {
+            @Override
+            public void propertyChange(PropertyChangeEvent evt) {
+                Edge edge = (Edge) evt.getOldValue();
+                graphUI.removeEdge(edge.toString());
             }
         });
 
