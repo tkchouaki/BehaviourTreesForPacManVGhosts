@@ -33,10 +33,6 @@ public class DiscreteKnowledgeGraph extends UndirectedGraph<Node, Edge>{
         {
             if(this.isNodeInteresting(updatedNode) && !nodes.contains(updatedNode))
             {
-                if(updatedNode.containsPowerPill())
-                {
-                    System.out.println("adding a power pill");
-                }
                 this.addNewIntrestingNode(updatedNode);
             }
             else if(!this.isNodeInteresting(updatedNode) && nodes.contains(updatedNode))
