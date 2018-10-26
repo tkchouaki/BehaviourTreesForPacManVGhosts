@@ -152,9 +152,79 @@ public class UndirectedGraph<N extends NodeInterface, E extends EdgeInterface<N>
             throw new AssertionError();
         }
         if (!topology.containsKey(edge.getNodeA()) || !topology.containsKey(edge.getNodeB())) return false;
+        if(!topology.get(edge.getNodeA()).contains(edge)) return false;
         topology.get(edge.getNodeA()).remove(edge);
         topology.get(edge.getNodeB()).remove(edge);
         support.firePropertyChange(EDGE_REMOVED_PROP, edge, null);
         return true;
+    }
+
+
+    public Map<N, List<E>> circleNode(N node, Collection<N> circlingNodes)
+    {
+        Map<N, List<E>> result = new HashMap<>();
+        Map<N, E> predecessors = new HashMap<>();
+        Collection<N> tempCirclingNodes = new HashSet<>(circlingNodes);
+        Set<N> closed = new HashSet<>();
+        Set<N> open = Collections.singleton(node);
+        Set<N> nextOpen;
+
+        predecessors.put(node, null);
+
+        while(tempCirclingNodes.size() > 0 && open.size()>0)
+        {
+            nextOpen = new HashSet<>();
+            for(N openNode : open)
+            {
+                if(closed.contains(openNode))
+                {
+                    continue;
+                }
+                try {
+                    for(E edge: this.getNeighboursAsEdgesOf(openNode))
+                    {
+                        N neighbour = edge.getNeighbour(openNode);
+                        if(closed.contains(neighbour))
+                        {
+                            continue;
+                        }
+                        predecessors.put(neighbour, edge);
+                        if(!tempCirclingNodes.contains(neighbour))
+                        {
+                            nextOpen.add(neighbour);
+                        }
+                        else
+                        {
+                            tempCirclingNodes.remove(neighbour);
+                        }
+                    }
+                } catch (NodeNotFoundException e) {
+                    e.printStackTrace();
+                }
+                closed.add(openNode);
+            }
+            open = nextOpen;
+        }
+
+        for(N circlingNode : circlingNodes)
+        {
+            if(predecessors.containsKey(circlingNode))
+            {
+                List<E> path = new ArrayList<>();
+                N currentNode = circlingNode;
+                E currentEdge = predecessors.get(currentNode);
+                while(currentEdge != null)
+                {
+                    path.add(0, currentEdge);
+                    currentNode = currentEdge.getNeighbour(currentNode);
+                    currentEdge = predecessors.get(currentNode);
+                }
+                if(path.size()>0)
+                {
+                    result.put(circlingNode, path);
+                }
+            }
+        }
+        return result;
     }
 }
