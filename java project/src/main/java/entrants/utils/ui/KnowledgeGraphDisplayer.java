@@ -60,6 +60,22 @@ public class KnowledgeGraphDisplayer {
             }
         });
 
+        support.addPropertyChangeListener(UndirectedGraph.NODE_REMOVED_PROP, new PropertyChangeListener() {
+            @Override
+            public void propertyChange(PropertyChangeEvent evt) {
+                Node node = (Node) evt.getOldValue();
+                graphUI.removeNode(node.getId().toString());
+            }
+        });
+
+        support.addPropertyChangeListener(UndirectedGraph.EDGE_REMOVED_PROP, new PropertyChangeListener() {
+            @Override
+            public void propertyChange(PropertyChangeEvent evt) {
+                Edge edge = (Edge) evt.getOldValue();
+                graphUI.removeEdge(edge.toString());
+            }
+        });
+
         for (Node n : graphData.getNodes()) {
             n.addChangeEventListener(new ChangeEventListener() {
                 @Override
