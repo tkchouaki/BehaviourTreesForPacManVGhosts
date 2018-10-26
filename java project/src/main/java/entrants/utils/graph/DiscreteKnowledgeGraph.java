@@ -21,11 +21,23 @@ public class DiscreteKnowledgeGraph extends UndirectedGraph<Node, Edge>{
         this.discretizeWholeGraph();
     }
 
+    /**
+     * Updates the graph by rechecking all the source graph's nodes.
+     * Removes the nodes that are no longer intresting.
+     * Adds the nodes that became interesting.
+     */
     public void update()
     {
-        this.update(this.getNodes());
+        this.update(this.graph.getNodes());
     }
 
+    /**
+     * Updates the graph by rechecking all the given nodes
+     * Removes the nodes that are no longer intresting.
+     * Adds the nodes that became interesting.
+     * @param updatedNodes
+     * The nodes to recheck
+     */
     public void update(Collection<Node> updatedNodes)
     {
         Collection<Node> nodes = this.getNodes();
@@ -42,6 +54,14 @@ public class DiscreteKnowledgeGraph extends UndirectedGraph<Node, Edge>{
         }
     }
 
+    /**
+     * Adds a new interesting node.
+     * The node to add is first encircled by nodes that are already present in the graph.
+     * It is then added meanwhile adding the edges that links him to the encircling nodes.
+     * The added edges are the sum results of the edges that links it to the encircling nodes.
+     * @param node
+     * The node to add.
+     */
     private void addNewIntrestingNode(Node node)
     {
         Collection<Node> myNodes = this.getNodes();
