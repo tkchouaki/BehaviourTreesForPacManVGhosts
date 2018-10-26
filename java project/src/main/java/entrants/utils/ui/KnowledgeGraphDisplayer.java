@@ -4,6 +4,7 @@ import entrants.utils.ChangeEventListener;
 import entrants.utils.graph.Edge;
 import entrants.utils.graph.Node;
 import entrants.utils.graph.UndirectedGraph;
+import entrants.utils.graph.interfaces.WeightedEdgeInterface;
 import org.graphstream.graph.Graph;
 import org.graphstream.graph.implementations.DefaultGraph;
 
@@ -14,7 +15,7 @@ import java.beans.PropertyChangeSupport;
 
 public class KnowledgeGraphDisplayer {
     // ATTRIBUTES
-    private final UndirectedGraph<Node, Edge> graphData;
+    private UndirectedGraph<Node, Edge> graphData;
     private final Graph graphUI;
     private final NodeRenderer renderer;
 
@@ -87,6 +88,19 @@ public class KnowledgeGraphDisplayer {
                 }
             });
         }
+    }
+
+    public void clear()
+    {
+        graphUI.clear();
+    }
+
+    public void setGraphData(UndirectedGraph<Node, Edge> graphData)
+    {
+        this.clear();
+        this.graphData = graphData;
+        this.registerListener();
+        this.updateUI();
     }
 
     private void updateUI() {
