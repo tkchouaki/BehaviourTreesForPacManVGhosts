@@ -10,14 +10,14 @@ package entrants.BT.Execution.Actions;
 
 import pacman.game.Constants;
 
-/** ExecutionAction class created from MMPM action MoveDown. */
-public class MoveDown extends jbt.execution.task.leaf.action.ExecutionAction {
+/** ExecutionAction class created from MMPM action MoveNeutral. */
+public class MoveNeutral extends jbt.execution.task.leaf.action.ExecutionAction {
 
 	/**
-	 * Constructor. Constructs an instance of MoveDown that is able to run a
-	 * entrants.BT.Model.Actions.MoveDown.
+	 * Constructor. Constructs an instance of MoveNeutral that is able to run a
+	 * entrants.BT.Model.Actions.MoveNeutral.
 	 */
-	public MoveDown(entrants.BT.Model.Actions.MoveDown modelTask,
+	public MoveNeutral(entrants.BT.Model.Actions.MoveNeutral modelTask,
 			jbt.execution.core.BTExecutor executor,
 			jbt.execution.core.ExecutionTask parent) {
 		super(modelTask, executor, parent);
@@ -31,7 +31,8 @@ public class MoveDown extends jbt.execution.task.leaf.action.ExecutionAction {
 		 */
 		this.getExecutor().requestInsertionIntoList(
 				jbt.execution.core.BTExecutor.BTExecutorList.TICKABLE, this);
-		getContext().setVariable("MOVE", Constants.MOVE.DOWN);
+		/* TODO: this method's implementation must be completed. */
+		getContext().setVariable("MOVE", Constants.MOVE.NEUTRAL);
 	}
 
 	protected jbt.execution.core.ExecutionTask.Status internalTick() {

@@ -4,23 +4,25 @@
 //                                                         
 // Generated on 10/26/2018 14:10:42
 // ******************************************************* 
-package entrants.BT.Model.Actions;
+package entrants.BT.Model.Conditions;
 
-/** ModelAction class created from MMPM action MoveUp. */
-public class MoveUp extends jbt.model.task.leaf.action.ModelAction {
+/** ModelCondition class created from MMPM condition WasPacManEaten. */
+public class WasPacManEaten extends
+		jbt.model.task.leaf.condition.ModelCondition {
 
-	/** Constructor. Constructs an instance of MoveUp. */
-	public MoveUp(jbt.model.core.ModelTask guard) {
+	/** Constructor. Constructs an instance of WasPacManEaten. */
+	public WasPacManEaten(jbt.model.core.ModelTask guard) {
 		super(guard);
 	}
 
 	/**
-	 * Returns a entrants.BT.Execution.Actions.MoveUp task that is able to run
-	 * this task.
+	 * Returns a entrants.BT.Execution.Conditions.WasPacManEaten task that is
+	 * able to run this task.
 	 */
 	public jbt.execution.core.ExecutionTask createExecutor(
 			jbt.execution.core.BTExecutor executor,
 			jbt.execution.core.ExecutionTask parent) {
-		return new entrants.BT.Execution.Actions.MoveUp(this, executor, parent);
+		return new entrants.BT.Execution.Conditions.WasPacManEaten(this,
+				executor, parent);
 	}
 }

@@ -1,6 +1,6 @@
 
 import entrants.ghosts.username.*;
-import examples.StarterPacMan.MyPacMan;
+import entrants.pacman.username.MyPacMan;
 import pacman.Executor;
 import pacman.controllers.IndividualGhostController;
 import pacman.controllers.MASController;

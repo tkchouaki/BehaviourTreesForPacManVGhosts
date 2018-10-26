@@ -12,7 +12,8 @@
         <LibraryPackage>entrants.BT.Library</LibraryPackage>
         <LibraryOutputDirectory>src/main/java/entrants/BT/Library</LibraryOutputDirectory>
 
-        <DomainFile>config/BehaviourTree/pacman.xml</DomainFile>
+        <DomainFile>config/BehaviourTree/Domain_Basic.xml</DomainFile>
+        <DomainFile>config/BehaviourTree/Domain_Knowledge.xml</DomainFile>
 
         <ModelActionsPackage>entrants.BT.Model.Actions</ModelActionsPackage>
         <ModelConditionsPackage>entrants.BT.Model.Conditions</ModelConditionsPackage>

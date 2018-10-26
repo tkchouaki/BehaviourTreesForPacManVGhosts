@@ -6,18 +6,19 @@
 //                                                         
 // Generated on 10/26/2018 14:10:42
 // ******************************************************* 
-package entrants.BT.Execution.Actions;
+package entrants.BT.Execution.Conditions;
 
-import pacman.game.Constants;
+import pacman.game.Game;
 
-/** ExecutionAction class created from MMPM action MoveDown. */
-public class MoveDown extends jbt.execution.task.leaf.action.ExecutionAction {
+/** ExecutionCondition class created from MMPM condition IsGameOver. */
+public class IsGameOver extends
+		jbt.execution.task.leaf.condition.ExecutionCondition {
 
 	/**
-	 * Constructor. Constructs an instance of MoveDown that is able to run a
-	 * entrants.BT.Model.Actions.MoveDown.
+	 * Constructor. Constructs an instance of IsGameOver that is able to run a
+	 * entrants.BT.Model.Conditions.IsGameOver.
 	 */
-	public MoveDown(entrants.BT.Model.Actions.MoveDown modelTask,
+	public IsGameOver(entrants.BT.Model.Conditions.IsGameOver modelTask,
 			jbt.execution.core.BTExecutor executor,
 			jbt.execution.core.ExecutionTask parent) {
 		super(modelTask, executor, parent);
@@ -31,16 +32,17 @@ public class MoveDown extends jbt.execution.task.leaf.action.ExecutionAction {
 		 */
 		this.getExecutor().requestInsertionIntoList(
 				jbt.execution.core.BTExecutor.BTExecutorList.TICKABLE, this);
-		getContext().setVariable("MOVE", Constants.MOVE.DOWN);
+		/* TODO: this method's implementation must be completed. */
 	}
 
 	protected jbt.execution.core.ExecutionTask.Status internalTick() {
-		/*
-		 * TODO: this method's implementation must be completed. This function
-		 * should only return Status.SUCCESS, Status.FAILURE or Status.RUNNING.
-		 * No other values are allowed.
-		 */
-		return jbt.execution.core.ExecutionTask.Status.SUCCESS;
+		Game game = (Game) getContext().getVariable("GAME");
+
+		if(game.gameOver()){
+			return Status.SUCCESS;
+		}else{
+			return Status.FAILURE;
+		}
 	}
 
 	protected void internalTerminate() {

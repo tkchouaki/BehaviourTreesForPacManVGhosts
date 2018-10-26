@@ -1,0 +1,60 @@
+<!-- See documentation part3 for more information -->
+
+<!-- Contains actions and sensors using Knowledge as support for reasoning -->
+
+<Domain package="Knowledge">
+    <!-- Defines the set of actions that are present in the game,
+    which are also the set of low level actions that can be
+    used when building BTs -->
+    <ActionSet>
+
+        <!-- =================================== -->
+        <!-- ========== MOVE-RELATED ========== -->
+        <!-- =================================== -->
+
+        <!-- =================================== -->
+        <!-- ========== PACMAN-RELATED ========== -->
+        <!-- =================================== -->
+
+        <!-- =================================== -->
+        <!-- ========== GHOST-RELATED ========== -->
+        <!-- =================================== -->
+
+    </ActionSet>
+
+    <!-- Defines the set of sensors that can be used in the game.
+    A sensor is an operation that queries something about the world.
+    As a result, a sensor must return a boolean (here in JBT).
+    ===== TLDR : A sensor is a condition =====-->
+    <SensorSet>
+        <!-- =================================== -->
+        <!-- ========== GAME-RELATED ========== -->
+        <!-- =================================== -->
+
+        <!-- =================================== -->
+        <!-- ========== MOVE-RELATED ========== -->
+        <!-- =================================== -->
+
+        <!-- =================================== -->
+        <!-- ========== PACMAN-RELATED ========== -->
+        <!-- =================================== -->
+
+        <!-- =================================== -->
+        <!-- ========== GHOST-RELATED ========== -->
+        <!-- =================================== -->
+
+        <!-- =================================== -->
+        <!-- ========== PILL-RELATED ========== -->
+        <!-- =================================== -->
+
+    </SensorSet>
+
+    <GoalSet>
+
+    </GoalSet>
+
+    <EntitySet>
+
+    </EntitySet>
+
+</Domain>
