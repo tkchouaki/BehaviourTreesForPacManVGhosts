@@ -1,11 +1,13 @@
 
 import entrants.ghosts.username.*;
+import entrants.utils.ui.DebugWindow;
 import examples.StarterPacMan.MyPacMan;
 import pacman.Executor;
 import pacman.controllers.IndividualGhostController;
 import pacman.controllers.MASController;
 import pacman.game.Constants.*;
 
+import javax.swing.*;
 import java.util.EnumMap;
 
 
@@ -28,6 +30,15 @@ public class Main {
         controllers.put(GHOST.PINKY, new Pinky());
         controllers.put(GHOST.SUE, new Sue());
 
+        SwingUtilities.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+                DebugWindow window = new DebugWindow();
+                window.getModel().registerAgent(((Blinky) controllers.get(GHOST.BLINKY)).getAgentKnowledge());
+                window.getModel().registerAgent(((Sue) controllers.get(GHOST.SUE)).getAgentKnowledge());
+                window.setVisible(true);
+            }
+        });
         executor.runGameTimed(new MyPacMan(), new MASController(controllers));
     }
 }

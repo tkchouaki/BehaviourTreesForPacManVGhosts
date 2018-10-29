@@ -4,10 +4,17 @@ import entrants.utils.graph.AgentKnowledge;
 import entrants.utils.graph.Edge;
 import entrants.utils.graph.Node;
 import entrants.utils.graph.UndirectedGraph;
+import entrants.utils.graph.interfaces.IUndirectedGraph;
+import pacman.game.Constants;
 import pacman.game.Game;
+import pacman.game.comms.BasicMessage;
+import pacman.game.comms.Message;
+import pacman.game.comms.Messenger;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
 
 
 public abstract class Commons {
@@ -38,12 +45,18 @@ public abstract class Commons {
     public static Collection<Node> updateAgentsKnowledge(AgentKnowledge agentKnowledge, Game game)
     {
         Collection<Node> changedNodes = new HashSet<>();
+        Messenger messenger = game.getMessenger();
+
         for(Node node : agentKnowledge.getGraph().getNodes())
         {
             if(Commons.updatePillsInfo(game, node)){
                 changedNodes.add(node);
+                sendToAllGhostExceptMe(
+                        messenger, agentKnowledge.getAgent(), Message.MessageType.PILL_NOT_SEEN, node.getId()
+                );
             }
         }
+        changedNodes.addAll(readMessages(agentKnowledge, game));
         return changedNodes;
     }
 
@@ -106,5 +119,39 @@ public abstract class Commons {
             }
         }
         return !(node.getContainedPillId() == oldPillId && node.getContainedPowerPillId() == oldPowerPillId);
+    }
+
+    public static Collection<Node> readMessages(AgentKnowledge agentKnowledge, Game game) {
+        List<Message> messages = game.getMessenger().getMessages(agentKnowledge.getAgent());
+        List<Node> toUpdate = new ArrayList<>();
+        IUndirectedGraph<Node, Edge> graph = agentKnowledge.getGraph();
+
+        for (Message message : messages) {
+            Message.MessageType type = message.getType();
+            if (type.equals(Message.MessageType.PILL_NOT_SEEN)) {
+                Node node = graph.getNodeByID(message.getData());
+                if (node != null) {
+                    node.setContainedPillId(-1);
+                    node.setContainedPowerPillId(-1);
+                }
+            }
+        }
+
+        return toUpdate;
+    }
+
+    public static void sendToAllGhostExceptMe(Messenger messenger, Constants.GHOST me, Message.MessageType type, int data) {
+        for (Constants.GHOST ghost : Constants.GHOST.values()) {
+            if (!ghost.equals(me)) {
+                System.out.println("Received NO MORE PILL");
+                messenger.addMessage(new BasicMessage(
+                        me,
+                        ghost,
+                        type,
+                        data,
+                        0 // should be the current tick
+                ));
+            }
+        }
     }
 }

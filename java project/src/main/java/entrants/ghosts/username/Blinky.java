@@ -16,22 +16,24 @@ import java.nio.file.Paths;
 public class Blinky extends IndividualGhostController {
     private AgentKnowledge knowledge;
     private DiscreteKnowledgeGraph discreteKnowledgeGraph;
+    private boolean initialized;
 
     public Blinky() {
         super(Constants.GHOST.BLINKY);
-        this.knowledge = null;
+        this.knowledge = new AgentKnowledge(ghost);
+    }
+
+    public AgentKnowledge getAgentKnowledge() {
+        return knowledge;
     }
 
     @Override
     public Constants.MOVE getMove(Game game, long timeDue) {
-        if(this.knowledge == null)
+        if(!initialized)
         {
-            KnowledgeGraphDisplayer displayer;
-            this.knowledge = new AgentKnowledge();
             Commons.initAgentsKnowledge(this.knowledge, game);
             discreteKnowledgeGraph = new DiscreteKnowledgeGraph(this.knowledge.getGraph());
-            displayer = new KnowledgeGraphDisplayer(discreteKnowledgeGraph, "file:///" + Paths.get(".").toAbsolutePath().normalize().toString() + "/src/main/java/entrants/utils/ui/kgraph.css");
-            displayer.display();
+            initialized = true;
         }
         else
         {

@@ -6,6 +6,7 @@ import entrants.utils.graph.Node;
 import entrants.utils.graph.UndirectedGraph;
 import org.graphstream.graph.Graph;
 import org.graphstream.graph.implementations.DefaultGraph;
+import org.graphstream.ui.view.Viewer;
 
 import javax.swing.event.ChangeEvent;
 import java.beans.PropertyChangeEvent;
@@ -35,8 +36,12 @@ public class KnowledgeGraphDisplayer {
         return this.graphData;
     }
 
-    public void display() {
-        graphUI.display();
+    public Graph getUIGraph() {
+        return graphUI;
+    }
+
+    public Viewer display() {
+        return graphUI.display();
     }
 
     // TOOLS
