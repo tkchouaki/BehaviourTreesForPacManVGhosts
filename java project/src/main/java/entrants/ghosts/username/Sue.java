@@ -1,16 +1,21 @@
 package entrants.ghosts.username;
 
-import entrants.utils.Commons;
-import entrants.utils.graph.Agent;
-import entrants.utils.graph.DiscreteKnowledgeGraph;
+import pacman.controllers.IndividualGhostController;
+import pacman.controllers.MASController;
 import pacman.game.Constants;
 import pacman.game.Game;
 
 /**
  * Created by Piers on 11/11/2015.
  */
-public class Sue extends Agent {
+public class Sue extends Ghost {
+
     public Sue() {
-        super(Constants.GHOST.SUE);
+        super(Constants.GHOST.BLINKY);
+    }
+
+    public Sue(boolean display)
+    {
+        super(Constants.GHOST.BLINKY, display);
     }
 }

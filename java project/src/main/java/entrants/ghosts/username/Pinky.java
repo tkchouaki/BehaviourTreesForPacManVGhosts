@@ -9,15 +9,14 @@ import pacman.game.Game;
 /**
  * Created by Piers on 11/11/2015.
  */
-public class Pinky extends IndividualGhostController {
+public class Pinky extends Ghost {
 
     public Pinky() {
-        super(Constants.GHOST.PINKY);
+        super(Constants.GHOST.BLINKY);
     }
 
-    @Override
-    public Constants.MOVE getMove(Game game, long timeDue)
+    public Pinky(boolean display)
     {
-        return Constants.MOVE.RIGHT;
+        super(Constants.GHOST.BLINKY, display);
     }
 }

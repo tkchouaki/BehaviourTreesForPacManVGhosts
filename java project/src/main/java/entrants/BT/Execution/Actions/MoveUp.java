@@ -4,9 +4,11 @@
 //                                                         
 //           ABSTRACT METHODS MUST BE IMPLEMENTED          
 //                                                         
-// Generated on 10/25/2018 12:08:02
+// Generated on 10/26/2018 14:10:42
 // ******************************************************* 
 package entrants.BT.Execution.Actions;
+
+import pacman.game.Constants;
 
 /** ExecutionAction class created from MMPM action MoveUp. */
 public class MoveUp extends jbt.execution.task.leaf.action.ExecutionAction {
@@ -30,7 +32,7 @@ public class MoveUp extends jbt.execution.task.leaf.action.ExecutionAction {
 		this.getExecutor().requestInsertionIntoList(
 				jbt.execution.core.BTExecutor.BTExecutorList.TICKABLE, this);
 		/* TODO: this method's implementation must be completed. */
-		System.out.println(this.getClass().getCanonicalName() + " spawned");
+		getContext().setVariable("MOVE", Constants.MOVE.UP);
 	}
 
 	protected jbt.execution.core.ExecutionTask.Status internalTick() {
