@@ -34,8 +34,8 @@ public class Main {
             @Override
             public void run() {
                 DebugWindow window = new DebugWindow();
-                window.getModel().registerAgent(((Blinky) controllers.get(GHOST.BLINKY)).getAgentKnowledge());
-                window.getModel().registerAgent(((Sue) controllers.get(GHOST.SUE)).getAgentKnowledge());
+                window.getModel().registerAgent(((Blinky) controllers.get(GHOST.BLINKY)));
+                window.getModel().registerAgent(((Sue) controllers.get(GHOST.SUE)));
                 window.setVisible(true);
             }
         });

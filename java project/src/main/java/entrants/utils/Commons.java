@@ -1,6 +1,6 @@
 package entrants.utils;
 
-import entrants.utils.graph.AgentKnowledge;
+import entrants.utils.graph.Agent;
 import entrants.utils.graph.Edge;
 import entrants.utils.graph.Node;
 import entrants.utils.graph.UndirectedGraph;
@@ -39,24 +39,24 @@ public abstract class Commons {
      * Updates an Agent's Knowledge from a Game object
      * @param game
      * The game to use for the update
-     * @param agentKnowledge
-     * The AgentKnowledge to update
+     * @param agent
+     * The Agent to update
      */
-    public static Collection<Node> updateAgentsKnowledge(AgentKnowledge agentKnowledge, Game game)
+    public static Collection<Node> updateAgentsKnowledge(Agent agent, Game game)
     {
         Collection<Node> changedNodes = new HashSet<>();
         Messenger messenger = game.getMessenger();
 
-        for(Node node : agentKnowledge.getGraph().getNodes())
+        for(Node node : agent.getDiscreteGraph().getNodes())
         {
             if(Commons.updatePillsInfo(game, node)){
                 changedNodes.add(node);
                 sendToAllGhostExceptMe(
-                        messenger, agentKnowledge.getAgent(), Message.MessageType.PILL_NOT_SEEN, node.getId()
+                        messenger, agent.getAgent(), Message.MessageType.PILL_NOT_SEEN, node.getId()
                 );
             }
         }
-        changedNodes.addAll(readMessages(agentKnowledge, game));
+        changedNodes.addAll(readMessages(agent, game));
         return changedNodes;
     }
 
@@ -65,9 +65,9 @@ public abstract class Commons {
      * @param game
      * The game to use for the initialization
      */
-    public static void initAgentsKnowledge(AgentKnowledge agentKnowledge, Game game)
+    public static void initAgentsKnowledge(Agent agent, Game game)
     {
-        UndirectedGraph<Node, Edge> graph = agentKnowledge.getGraph();
+        UndirectedGraph<Node, Edge> graph = agent.getDiscreteGraph();
         for(int i=0; i<game.getNumberOfNodes(); i++)
         {
             int[] neighbours = game.getNeighbouringNodes(i);
@@ -121,10 +121,10 @@ public abstract class Commons {
         return !(node.getContainedPillId() == oldPillId && node.getContainedPowerPillId() == oldPowerPillId);
     }
 
-    public static Collection<Node> readMessages(AgentKnowledge agentKnowledge, Game game) {
-        List<Message> messages = game.getMessenger().getMessages(agentKnowledge.getAgent());
+    public static Collection<Node> readMessages(Agent agent, Game game) {
+        List<Message> messages = game.getMessenger().getMessages(agent.getAgent());
         List<Node> toUpdate = new ArrayList<>();
-        IUndirectedGraph<Node, Edge> graph = agentKnowledge.getGraph();
+        IUndirectedGraph<Node, Edge> graph = agent.getDiscreteGraph();
 
         for (Message message : messages) {
             Message.MessageType type = message.getType();

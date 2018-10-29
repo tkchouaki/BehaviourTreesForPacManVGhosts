@@ -1,9 +1,6 @@
 package entrants.utils.ui;
 
-import org.graphstream.graph.Graph;
-import org.graphstream.graph.implementations.DefaultGraph;
 import org.graphstream.ui.swingViewer.ViewPanel;
-import org.graphstream.ui.view.View;
 import org.graphstream.ui.view.Viewer;
 
 import javax.swing.*;
