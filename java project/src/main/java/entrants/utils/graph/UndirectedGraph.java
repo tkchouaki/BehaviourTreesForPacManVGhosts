@@ -159,7 +159,14 @@ public class UndirectedGraph<N extends NodeInterface, E extends EdgeInterface<N>
         return true;
     }
 
+    @Override
+    public void clear() {
+        Map<N, Collection<E>> result = new HashMap<>(this.topology);
+        topology.clear();
+        support.firePropertyChange(GRAPH_CLEARED_PROP, result, null);
+    }
 
+    // TODO: Add in interface if necessary or add javadoc
     public Map<N, List<E>> circleNode(N node, Collection<N> circlingNodes)
     {
         Map<N, List<E>> result = new HashMap<>();

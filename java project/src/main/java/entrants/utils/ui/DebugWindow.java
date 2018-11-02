@@ -24,12 +24,16 @@ public class DebugWindow extends JFrame {
         createController();
 
         this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        setMinimumSize(new Dimension(100, 100));
-        setTitle("Hello world");
+        setMinimumSize(new Dimension(900, 500));
+        setTitle("Debug window");
     }
 
     public DebugModel getModel() {
         return model;
+    }
+
+    public JTextArea getLogsArea() {
+        return logs;
     }
 
     // TOOLS
@@ -38,10 +42,15 @@ public class DebugWindow extends JFrame {
     }
 
     private void createComponents() {
-        logs = new JTextArea();
-        logs.setPreferredSize(new Dimension(200, 400));
+        logs = new JTextArea(); {
+            logs.setPreferredSize(new Dimension(300, 400));
+            //logs.setText("For future use");
+            logs.setEditable(false);
+            //logs.setEnabled(false);
+        }
+
         displayers = new HashMap<>();
-        displayPanel = new JPanel(new FlowLayout());
+        displayPanel = new JPanel(new GridLayout(2, 2, 5, 5));
     }
 
     private void placeComponents() {
@@ -70,10 +79,11 @@ public class DebugWindow extends JFrame {
         Viewer viewer = new Viewer(
                 displayer.getUIGraph(), Viewer.ThreadingModel.GRAPH_IN_ANOTHER_THREAD
         );
+
         viewer.enableAutoLayout();
 
         ViewPanel view = viewer.addDefaultView(false);
-        view.setPreferredSize(new Dimension(600, 400));
+        view.setPreferredSize(new Dimension(300, 200));
 
         displayers.put(displayer, view);
         displayPanel.add(view);

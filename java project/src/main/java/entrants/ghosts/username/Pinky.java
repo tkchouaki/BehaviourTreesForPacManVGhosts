@@ -12,11 +12,6 @@ import pacman.game.Game;
 public class Pinky extends Ghost {
 
     public Pinky() {
-        super(Constants.GHOST.BLINKY);
-    }
-
-    public Pinky(boolean display)
-    {
-        super(Constants.GHOST.BLINKY, display);
+        super(Constants.GHOST.PINKY);
     }
 }

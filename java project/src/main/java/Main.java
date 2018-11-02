@@ -1,8 +1,8 @@
 
 import entrants.ghosts.username.*;
+import entrants.utils.logging.GhostLogger;
 import entrants.utils.ui.DebugWindow;
 import examples.StarterPacMan.MyPacMan;
-import entrants.pacman.username.MyPacMan;
 import pacman.Executor;
 import pacman.controllers.IndividualGhostController;
 import pacman.controllers.MASController;
@@ -18,6 +18,8 @@ import java.util.EnumMap;
 public class Main {
 
     public static void main(String[] args) {
+
+        System.setProperty("org.graphstream.ui.renderer", "org.graphstream.ui.j2dviewer.J2DGraphRenderer");
 
         Executor executor = new Executor.Builder()
                 .setVisual(true)
@@ -35,8 +37,15 @@ public class Main {
             @Override
             public void run() {
                 DebugWindow window = new DebugWindow();
-                window.getModel().registerAgent(((Blinky) controllers.get(GHOST.BLINKY)));
-                window.getModel().registerAgent(((Sue) controllers.get(GHOST.SUE)));
+                window.getModel().registerAgent((Ghost) controllers.get(GHOST.BLINKY));
+                window.getModel().registerAgent((Ghost) controllers.get(GHOST.SUE));
+                window.getModel().registerAgent((Ghost) controllers.get(GHOST.INKY));
+                window.getModel().registerAgent((Ghost) controllers.get(GHOST.PINKY));
+
+                // Configure Logger
+                GhostLogger.setup();
+                GhostLogger.setTextArea(window.getLogsArea());
+
                 window.setVisible(true);
             }
         });

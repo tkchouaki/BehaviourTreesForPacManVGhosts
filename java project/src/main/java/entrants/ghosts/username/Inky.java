@@ -13,9 +13,4 @@ public class Inky extends Ghost {
     public Inky() {
         super(Constants.GHOST.INKY);
     }
-
-    public Inky(boolean display)
-    {
-        super(Constants.GHOST.INKY, display);
-    }
 }

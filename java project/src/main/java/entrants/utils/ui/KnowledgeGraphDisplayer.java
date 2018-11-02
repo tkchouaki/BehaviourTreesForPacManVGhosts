@@ -18,13 +18,15 @@ public class KnowledgeGraphDisplayer {
     private UndirectedGraph<Node, Edge> graphData;
     private final Graph graphUI;
     private final NodeRenderer renderer;
+    private String css;
 
     public KnowledgeGraphDisplayer(UndirectedGraph<Node, Edge> g, String css) {
         if (g == null || css == null) {
             throw new NullPointerException();
         }
+        this.css = "url(" + css + ")";
         graphUI = new DefaultGraph("Knowledge");
-        graphUI.addAttribute("ui.stylesheet", "url(" + css + ")");
+        graphUI.addAttribute("ui.stylesheet", this.css);
         graphData = g;
         renderer = new NodeRenderer(graphUI);
 
@@ -51,7 +53,6 @@ public class KnowledgeGraphDisplayer {
         support.addPropertyChangeListener(UndirectedGraph.NODE_ADDED_PROP, new PropertyChangeListener() {
             @Override
             public void propertyChange(PropertyChangeEvent evt) {
-
                 graphUI.addNode(evt.getNewValue().toString());
                 renderer.render((Node) evt.getNewValue());
             }
@@ -97,6 +98,7 @@ public class KnowledgeGraphDisplayer {
     public void clear()
     {
         graphUI.clear();
+        graphUI.addAttribute("ui.stylesheet", css);
     }
 
     public void setGraphData(UndirectedGraph<Node, Edge> graphData)
