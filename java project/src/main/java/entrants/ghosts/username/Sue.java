@@ -13,9 +13,4 @@ public class Sue extends Ghost {
     public Sue() {
         super(Constants.GHOST.BLINKY);
     }
-
-    public Sue(boolean display)
-    {
-        super(Constants.GHOST.BLINKY, display);
-    }
 }

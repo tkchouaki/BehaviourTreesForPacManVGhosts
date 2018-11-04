@@ -31,6 +31,7 @@ public interface IUndirectedGraph<N extends NodeInterface, E extends EdgeInterfa
     String EDGE_ADDED_PROP = "edge_added_prop";
     String NODE_REMOVED_PROP = "node_removed_prop";
     String EDGE_REMOVED_PROP = "edge_removed_prop";
+    String GRAPH_CLEARED_PROP = "graph_cleared";
 
     /**
      * Exception indicating that the node you requested is not registered in the graph.
@@ -164,4 +165,14 @@ public interface IUndirectedGraph<N extends NodeInterface, E extends EdgeInterfa
      * @contract.post !getEdges().contains(edge)
      */
     boolean removeEdge(E edge);
+
+    /**
+     * Clear the entire graph. Method fires GRAPH_CLEARED_PROP property containing in oldValue the graph before deletion
+     * ie a map N -> Collection<E>.
+     * @contract.post <pre>
+     *     getNodes().size() == 0
+     *     getEdges().size() == 0
+     * </pre>
+     */
+    void clear();
 }

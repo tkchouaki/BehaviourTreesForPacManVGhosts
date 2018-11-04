@@ -10,9 +10,4 @@ public class Blinky extends Ghost{
     public Blinky() {
         super(Constants.GHOST.BLINKY);
     }
-
-    public Blinky(boolean display)
-    {
-        super(Constants.GHOST.BLINKY, display);
-    }
 }

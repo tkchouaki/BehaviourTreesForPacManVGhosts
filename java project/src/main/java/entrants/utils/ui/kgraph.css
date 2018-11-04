@@ -29,11 +29,9 @@ node.frighted {
 node.power_pill {
     stroke-mode: plain;
     fill-color: green;
-    stroke-width: 10px;
 }
 
 node.pill {
     stroke-mode: plain;
     fill-color: violet;
-    stroke-width: 10px;
 }
