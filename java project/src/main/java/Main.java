@@ -18,9 +18,10 @@ import java.util.EnumMap;
 public class Main {
 
     public static void main(String[] args) {
-
+        // Set renderer for graphstream
         System.setProperty("org.graphstream.ui.renderer", "org.graphstream.ui.j2dviewer.J2DGraphRenderer");
 
+        // Create the game
         Executor executor = new Executor.Builder()
                 .setVisual(true)
                 .setTickLimit(4000)
@@ -33,6 +34,7 @@ public class Main {
         controllers.put(GHOST.PINKY, new Pinky());
         controllers.put(GHOST.SUE, new Sue());
 
+        // Launch debug window
         SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run() {
@@ -49,6 +51,8 @@ public class Main {
                 window.setVisible(true);
             }
         });
+
+        // Run the game
         executor.runGameTimed(new MyPacMan(), new MASController(controllers));
     }
 }

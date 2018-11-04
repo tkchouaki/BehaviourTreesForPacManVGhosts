@@ -10,6 +10,9 @@ import java.beans.PropertyChangeListener;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * A debug window designed to see how agent's knowledge is and display some log information.
+ */
 public class DebugWindow extends JFrame {
 
     private JTextArea logs;
@@ -44,9 +47,8 @@ public class DebugWindow extends JFrame {
     private void createComponents() {
         logs = new JTextArea(); {
             logs.setPreferredSize(new Dimension(300, 400));
-            //logs.setText("For future use");
             logs.setEditable(false);
-            //logs.setEnabled(false);
+            logs.setLineWrap(true);
         }
 
         displayers = new HashMap<>();
