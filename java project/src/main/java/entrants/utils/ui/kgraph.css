@@ -1,5 +1,6 @@
 node {
     text-mode: normal;
+    stroke-mode: plain;
 }
 
 node.sue {
@@ -27,11 +28,9 @@ node.frighted {
 }
 
 node.power_pill {
-    stroke-mode: plain;
     fill-color: green;
 }
 
 node.pill {
-    stroke-mode: plain;
     fill-color: violet;
 }

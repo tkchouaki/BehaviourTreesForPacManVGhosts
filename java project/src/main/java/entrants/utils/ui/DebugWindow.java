@@ -4,6 +4,9 @@ import org.graphstream.ui.swingViewer.ViewPanel;
 import org.graphstream.ui.view.Viewer;
 
 import javax.swing.*;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
+import javax.swing.text.BadLocationException;
 import java.awt.*;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
@@ -76,6 +79,23 @@ public class DebugWindow extends JFrame {
                     KnowledgeGraphDisplayer displayer = (KnowledgeGraphDisplayer) evt.getOldValue();
                     removeDisplayer(displayer);
                 }
+            }
+        });
+
+        logs.getDocument().addDocumentListener(new DocumentListener() {
+            @Override
+            public void insertUpdate(DocumentEvent e) {
+                logs.setCaretPosition(logs.getText().length());
+            }
+
+            @Override
+            public void removeUpdate(DocumentEvent e) {
+
+            }
+
+            @Override
+            public void changedUpdate(DocumentEvent e) {
+
             }
         });
     }

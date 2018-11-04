@@ -1,14 +1,16 @@
 package entrants.utils.ui;
 
 import entrants.utils.graph.Node;
-import entrants.utils.graph.interfaces.NodeInterface;
 import org.graphstream.graph.Graph;
 import pacman.game.Constants;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 
 public class NodeRenderer {
+    private static final Logger LOGGER = Logger.getLogger(NodeRenderer.class.getName());
+
     // ATTRIBUTES
     private Graph graph;
 
@@ -38,7 +40,7 @@ public class NodeRenderer {
         if (n.containsPacMan()) {
             classes.add("pacman");
         }
-
+        //LOGGER.info("Classes for node " + n.getId() + ": " + classes);
         graph.getNode(n.getId().toString()).addAttribute("ui.class", String.join(",", classes));
     }
 

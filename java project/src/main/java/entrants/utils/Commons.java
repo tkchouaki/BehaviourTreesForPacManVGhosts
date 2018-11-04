@@ -11,10 +11,7 @@ import pacman.game.comms.BasicMessage;
 import pacman.game.comms.Message;
 import pacman.game.comms.Messenger;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
+import java.util.*;
 import java.util.logging.Logger;
 
 
@@ -122,6 +119,7 @@ public abstract class Commons {
             {
                 node.setContainedPowerPillId(-1);
             }
+            node.setLastUpdateTick(game.getCurrentLevelTime());
         }
         return !(node.getContainedPillId() == oldPillId && node.getContainedPowerPillId() == oldPowerPillId);
     }
@@ -139,14 +137,35 @@ public abstract class Commons {
 
         for (Message message : messages) {
             Message.MessageType type = message.getType();
+            Node node = graph.getNodeByID(message.getData());
+            if (node == null) continue;
 
             // A pill just disappeared
             if (type.equals(Message.MessageType.PILL_NOT_SEEN)) {
-                Node node = graph.getNodeByID(message.getData());
-                if (node != null) {
-                    node.setContainedPillId(-1);
-                    node.setContainedPowerPillId(-1);
-                    LOGGER.info(agent.getAgent() + " received no more pills for node " + node.getId());
+                node.setContainedPillId(-1);
+                node.setContainedPowerPillId(-1);
+                node.setLastUpdateTick(game.getCurrentLevelTime());
+                LOGGER.info(agent.getAgent() + " received no more pills for node " + node.getId());
+            }
+
+            // Teammates positions have changed
+            if (type.equals(Message.MessageType.I_AM)) {
+                Node old = Node.getNodeContainingGhost(agent.getDiscreteGraph().getNodes(), message.getSender());
+                System.out.println(old);
+                if (old == null || !old.getId().equals(node.getId())) {
+                    // Remove old position
+                    if (old != null) {
+                        Set<Constants.GHOST> ghosts = old.getContainedGhosts();
+                        ghosts.remove(message.getSender());
+                        old.setContainedGhosts(ghosts);
+                        old.setLastUpdateTick(game.getCurrentLevelTime());
+                    }
+                    // Set new one
+                    Set<Constants.GHOST> ghosts = node.getContainedGhosts();
+                    ghosts.add(message.getSender());
+                    node.setContainedGhosts(ghosts);
+                    node.setLastUpdateTick(game.getCurrentLevelTime());
+                    LOGGER.info(agent.getAgent() + " received " + message.getSender() + "'s position (" + node.getId() +")");
                 }
             }
         }

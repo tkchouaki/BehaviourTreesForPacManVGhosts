@@ -5,6 +5,7 @@ import entrants.utils.graph.*;
 import pacman.controllers.IndividualGhostController;
 import pacman.game.Constants;
 import pacman.game.Game;
+import pacman.game.comms.Message;
 import pacman.game.internal.Maze;
 
 import java.beans.PropertyChangeSupport;
@@ -68,6 +69,7 @@ public class Ghost extends IndividualGhostController {
      */
     @Override
     public Constants.MOVE getMove(Game game, long l) {
+        // Update knowledge
         if (!initialized || !game.getCurrentMaze().equals(this.currentMaze)) {
             changeMaze(game);
             initialized = true;
@@ -75,6 +77,10 @@ public class Ghost extends IndividualGhostController {
         } else {
             this.discreteKnowledgeGraph.update(Commons.updateAgentsKnowledge(this, game));
         }
+        // Send current position to others
+        Commons.sendToAllGhostExceptMe(game, ghost, Message.MessageType.I_AM, game.getGhostCurrentNodeIndex(ghost));
+
+        // Move (BT in the future)
         return Constants.MOVE.NEUTRAL;
     }
 
