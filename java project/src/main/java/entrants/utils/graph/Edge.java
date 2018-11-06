@@ -206,19 +206,31 @@ public class Edge implements WeightedEdgeInterface<Node> {
         }
     }
 
+    /**
+     * @return The string representation of the edge (composed of the string representation of its nodes)
+     */
     @Override
     public String toString()
     {
         return this.nodeA.toString() + "," + this.nodeB.toString();
     }
 
+    /**
+     * @return The hashCode of the edge (which is the hashCode of its string representation)
+     */
     @Override
     public int hashCode()
     {
         return this.toString().hashCode();
     }
 
-
+    /**
+     * Converts a chain of edges to an Edge.
+     * The given edges must be in the order in the form A-B-C-...-X-Y-Z
+     * @param startingNode The starting node of the chain (the node A)
+     * @param edges a list of edges
+     * @return an edge which is the sum of the given edges. The sum is done on the weights of the edges & the nodes in between.
+     */
     public static Edge chainToEdge(Node startingNode, List<Edge> edges)
     {
         Map<String, Double> weights = new HashMap<>();
@@ -258,6 +270,12 @@ public class Edge implements WeightedEdgeInterface<Node> {
         return result;
     }
 
+    /**
+     * Retrieves a node's weight specified by its key string
+     * @param node the node
+     * @param key the weight's string key
+     * @return the weight value of the given node for the specified key
+     */
     private static Double getNodeWeight(Node node, String key)
     {
         if(WEIGHT_PILLS_NUMBER.equals(key))

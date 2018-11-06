@@ -44,7 +44,13 @@ public abstract class AgentDescription {
         }
     }
 
+    /**
+     * To be implemented by subclasses
+     */
     public abstract void removeFromPosition();
 
+    /**
+     * To be implemented by subclasses
+     */
     public abstract void addToPosition();
 }

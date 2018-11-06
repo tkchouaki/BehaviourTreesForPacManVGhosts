@@ -90,6 +90,10 @@ public class AgentKnowledge {
         return new HashMap<>(this.ghostsDescriptions);
     }
 
+    /**
+     * Retrieves the owner of the knowledge
+     * @return The Ghost owning the knowledge, if it is owned by PacMan, a null value is returned
+     */
     public Constants.GHOST getOwner()
     {
         return this.owner;

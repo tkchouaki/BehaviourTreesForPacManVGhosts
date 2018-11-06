@@ -79,11 +79,14 @@ public class GhostDescription extends AgentDescription{
         this.postSetEdibleTime();
     }
 
+    /**
+     * Resets the edible time to 0 if it goes below.
+     */
     private void postSetEdibleTime()
     {
-        if(this.edibleTime<-1)
+        if(this.edibleTime<0)
         {
-            this.edibleTime=-1;
+            this.edibleTime=0;
         }
     }
 

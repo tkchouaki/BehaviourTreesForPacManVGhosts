@@ -21,6 +21,11 @@ import java.util.logging.Logger;
 
 public abstract class Commons {
     /**
+     * The logger to use.
+     */
+    private static final Logger LOGGER = Logger.getLogger(Commons.class.getName());
+
+    /**
      * Converts a Boolean value to a value of the primitive type boolean.
      * Basically True & False values are kept and null values are replaced with false
      * @param b
@@ -37,7 +42,6 @@ public abstract class Commons {
         return b;
     }
 
-    private static final Logger LOGGER = Logger.getLogger(Commons.class.getName());
 
     /**
      * Updates an Agent's Knowledge from a Game object
@@ -105,6 +109,7 @@ public abstract class Commons {
                 }
             }
         }
+        //We process the received messages
         changedNodes.addAll(readMessages(agentKnowledge, game));
         //We return the changed nodes.
         changedNodes.remove(null);
@@ -145,8 +150,10 @@ public abstract class Commons {
      */
     public static boolean updatePillsInfo(Game game, Node node)
     {
+        //We store the old values to see if anything has changed.
         int oldPillId = node.getContainedPillId();
         int oldPowerPillId = node.getContainedPowerPillId();
+        //We only update if the node is observable
         if(game.isNodeObservable(node.getId()))
         {
             int pillId = game.getPillIndex(node.getId());
@@ -168,6 +175,7 @@ public abstract class Commons {
             {
                 node.setContainedPowerPillId(-1);
             }
+            //We shouldn't forget tu update the last update tick of the node.
             node.setLastUpdateTick(game.getCurrentLevelTime());
         }
         return !(node.getContainedPillId() == oldPillId && node.getContainedPowerPillId() == oldPowerPillId);

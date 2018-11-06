@@ -15,6 +15,9 @@ public class PacManDescription extends AgentDescription{
         super(position);
     }
 
+    /**
+     * Removes the PacManDescription from its current position.
+     */
     @Override
     public void removeFromPosition() {
         if(this.getPosition().containsPacMan())
@@ -23,6 +26,9 @@ public class PacManDescription extends AgentDescription{
         }
     }
 
+    /**
+     * Adds the PacManDescription to its current position.
+     */
     @Override
     public void addToPosition() {
         if(!this.getPosition().containsPacMan())

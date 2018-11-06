@@ -7,22 +7,42 @@ import entrants.utils.graph.interfaces.NodeInterface;
 import java.beans.PropertyChangeSupport;
 import java.util.*;
 
+/**
+ * This class describes an Undirected Graph
+ * @param <N>
+ *     The class that represents the nodes of the graph
+ * @param <E>
+ *     The class that represents the edged of the graph
+ */
 public class UndirectedGraph<N extends NodeInterface, E extends EdgeInterface<N>> implements IUndirectedGraph<N, E> {
     // ATTRIBUTES
     private final Map<N, Set<E>> topology;
     private final PropertyChangeSupport support;
 
+    /**
+     * Initializes the graph as an empty one
+     */
     // CONSTRUCTOR
     public UndirectedGraph() {
         topology = new HashMap<>();
         support = new PropertyChangeSupport(this);
     }
 
+    /**
+     * Retrieves a collection of all the nodes of the graph
+     * @return
+     * A collection of all the nodes of the graph
+     */
     @Override
     public Collection<N> getNodes() {
         return new ArrayList<>(topology.keySet());
     }
 
+    /**
+     * Retrieves a collection of all the nodes of the graph
+     * @return
+     * A collection of all the nodes of the graph
+     */
     @Override
     public Collection<E> getEdges() {
         Set<E> values = new HashSet<>();
@@ -32,11 +52,22 @@ public class UndirectedGraph<N extends NodeInterface, E extends EdgeInterface<N>
         return values;
     }
 
+    /**
+     * Returns the property change support of the graph
+     * @return
+     * The property change support of the graph
+     */
     @Override
     public PropertyChangeSupport getPropertyChangeSupport() {
         return support;
     }
 
+    /**
+     * Computes the degree of a given node
+     * @param node the node
+     * @return The degree of a given node
+     * @throws NodeNotFoundException fired if the given node doesn't exist in the graph
+     */
     @Override
     public int getDegreeOf(N node) throws NodeNotFoundException {
         if (node == null) {
@@ -49,6 +80,12 @@ public class UndirectedGraph<N extends NodeInterface, E extends EdgeInterface<N>
         return edges.size();
     }
 
+    /**
+     * Returns the neighbouring nodes of a given node
+     * @param node the node
+     * @return A collection of the given node's neighbours.
+     * @throws NodeNotFoundException Fired if the given node doesn't exist in the graph
+     */
     @Override
     public Collection<N> getNeighboursAsNodesOf(N node) throws NodeNotFoundException {
          if (node == null) {
@@ -69,6 +106,12 @@ public class UndirectedGraph<N extends NodeInterface, E extends EdgeInterface<N>
         return result;
     }
 
+    /**
+     * Retrieves the Edges that concern a given node (i.e the edges between the given node & its neighbours)
+     * @param node the node
+     * @return The edges that concer
+     * @throws NodeNotFoundException
+     */
     @Override
     public Collection<E> getNeighboursAsEdgesOf(N node) throws NodeNotFoundException {
         if (node == null) {
@@ -81,6 +124,11 @@ public class UndirectedGraph<N extends NodeInterface, E extends EdgeInterface<N>
         return edges;
     }
 
+    /**
+     * Retrieves a node with the given ID from the graph
+     * @param nodeID the id of the desired node
+     * @return The node with the given ID if it exists in the graph, null otherwise
+     */
     @Override
     public N getNodeByID(Integer nodeID) {
         int i = 0;
@@ -92,6 +140,11 @@ public class UndirectedGraph<N extends NodeInterface, E extends EdgeInterface<N>
         return nodes.get(i);
     }
 
+    /**
+     * Adds a node to the graph if it doesn't exist yet
+     * @param node the node you want to add to the graph
+     * @return True if the node didn't exist, False otherwise
+     */
     @Override
     public boolean addNode(N node) {
         if (node == null) {
@@ -105,6 +158,11 @@ public class UndirectedGraph<N extends NodeInterface, E extends EdgeInterface<N>
         return true;
     }
 
+    /**
+     * Adds an edge to the graph if it doesn't already exist.
+     * @param edge the edge you want to add to the graph
+     * @return True if the edge didn't exist in the graph, False otherwise
+     */
     @Override
     public boolean addEdge(E edge) {
         if (edge == null) {
@@ -125,6 +183,11 @@ public class UndirectedGraph<N extends NodeInterface, E extends EdgeInterface<N>
         return false;
     }
 
+    /**
+     * Removes a node from the graph if it exists
+     * @param node the node to be deleted
+     * @return True if the node existed in the graph, False otherwise
+     */
     @Override
     public boolean removeNode(N node) {
         if (node == null) {
@@ -146,6 +209,11 @@ public class UndirectedGraph<N extends NodeInterface, E extends EdgeInterface<N>
         return true;
     }
 
+    /**
+     * Removes an edge from the graph if it exists
+     * @param edge the edge to be deleted
+     * @return True if the edge existed in the graph, False otherwise
+     */
     @Override
     public boolean removeEdge(E edge) {
         if (edge == null) {
@@ -159,6 +227,9 @@ public class UndirectedGraph<N extends NodeInterface, E extends EdgeInterface<N>
         return true;
     }
 
+    /**
+     * Removes everything from the graph
+     */
     @Override
     public void clear() {
         Map<N, Collection<E>> result = new HashMap<>(this.topology);

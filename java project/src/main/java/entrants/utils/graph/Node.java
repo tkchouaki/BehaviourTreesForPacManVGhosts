@@ -171,6 +171,11 @@ public class Node implements NodeInterface {
         return containedPillId;
     }
 
+    /**
+     * Retrieves the last update tick of the current node
+     * @return
+     * The last update tick of the current node.
+     */
     public int getLastUpdateTick() {
         return lastUpdateTick;
     }
@@ -215,6 +220,12 @@ public class Node implements NodeInterface {
         fireChangeEvent();
     }
 
+    /**
+     * Returns the description of the contained PacMan
+     * @return
+     * The Description of PacMan if it is contained in the current node.
+     * If PacMan is node in the current node, a null value is returned.
+     */
     public PacManDescription getContainedPacManDescription()
     {
         return this.containedPacMan;
@@ -230,16 +241,19 @@ public class Node implements NodeInterface {
     }
 
     /**
-     * Sets the containsPacMan attribute's value
+     * Sets the containedPacMan attribute's value
      * @param containedPacMan
+     * The contained PacMan's description
      */
     public void setContainedPacMan(PacManDescription containedPacMan) {
         PacManDescription old = this.containedPacMan;
         this.containedPacMan = containedPacMan;
+        //We remove the old PacManDescription from the current node.
         if(old != null && old.getPosition().equals(this))
         {
             old.setPosition(null);
         }
+        //We add the new PacManDescription to the Current node.
         if(this.containedPacMan != null && !this.containedPacMan.getPosition().equals(this))
         {
             this.containedPacMan.setPosition(this);
@@ -293,6 +307,8 @@ public class Node implements NodeInterface {
     public boolean addGhost(GhostDescription ghostDescription)
     {
         boolean toReturn = this.containedGhosts.add(ghostDescription);
+        //If the position specified in the ghost's description is not the current node.
+        //It is set to the current node.
         if(!ghostDescription.getPosition().equals(this))
         {
             ghostDescription.setPosition(this);
@@ -343,14 +359,29 @@ public class Node implements NodeInterface {
         fireChangeEvent();
     }
 
+    /**
+     * Adds a change event listener to be called when changes occur at the current node.
+     * @param listener
+     * The listener to add.
+     */
     public void addChangeEventListener(ChangeEventListener listener) {
         support.add(ChangeEventListener.class, listener);
     }
 
+    /**
+     * Removes a change event listener so it won't be called anymore when changes occur at the current node
+     * @param listener
+     * The listener to remove.
+     */
     public void removeChangeEventListener(ChangeEventListener listener) {
         support.remove(ChangeEventListener.class, listener);
     }
 
+    /**
+     * Sets the last update tick of the node
+     * @param tick
+     * The new last update tick of the node.
+     */
     public void setLastUpdateTick(int tick) {
         lastUpdateTick = tick;
     }
@@ -382,12 +413,20 @@ public class Node implements NodeInterface {
         return this.id.hashCode();
     }
 
+    /**
+     * Returns the string representation of the node : a string containing its ID
+     * @return
+     * The string representation of the node
+     */
     @Override
     public String toString()
     {
         return this.id.toString();
     }
 
+    /**
+     * Fires the change event to all registered listeners
+     */
     // TOOLS
     private void fireChangeEvent() {
         for (ChangeEventListener l : support.getListeners(ChangeEventListener.class)) {
