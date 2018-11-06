@@ -4,6 +4,7 @@ import entrants.utils.graph.AgentKnowledge;
 import entrants.utils.graph.Edge;
 import entrants.utils.graph.Node;
 import entrants.utils.graph.UndirectedGraph;
+import entrants.utils.graph.interfaces.IUndirectedGraph;
 import pacman.game.Constants;
 import pacman.game.Game;
 import pacman.game.comms.BasicMessage;
@@ -75,7 +76,8 @@ public abstract class Commons {
             //We update the pills information
             if(Commons.updatePillsInfo(game, node)){
                 changedNodes.add(node);
-                if (game.isNodeObservable(node.getId()) && node.getContainedPillId() == -1 && node.getContainedPowerPillId() == -1) {
+                node.setLastUpdateTick(game.getCurrentLevelTime());
+                if (node.getContainedPillId() == -1 && node.getContainedPowerPillId() == -1) {
                     sendToAllGhostExceptMe(
                             game, agentKnowledge.getOwner(), Message.MessageType.PILL_NOT_SEEN, node.getId()
                     );
@@ -88,6 +90,7 @@ public abstract class Commons {
             {
                 changedNodes.add(agentKnowledge.getPacManDescription().getPosition());
                 agentKnowledge.getPacManDescription().setPosition(node);
+                node.setLastUpdateTick(game.getCurrentLevelTime());
                 changedNodes.add(node);
             }
             //We check if the current node is a ghost's current position.
@@ -96,17 +99,13 @@ public abstract class Commons {
             {
                 if(ghostsPositions.get(ghost).equals(node.getId()))
                 {
-                    if(!ghost.equals(Constants.GHOST.BLINKY))
-                    {
-                        System.out.println("i saw " + ghost.className + " on " + node.getId());
-                    }
                     changedNodes.add(agentKnowledge.getGhostDescription(ghost).getPosition());
                     agentKnowledge.getGhostDescription(ghost).setPosition(node);
                     changedNodes.add(node);
                 }
             }
         }
-        changedNodes.addAll(readMessages(agent, game));
+        changedNodes.addAll(readMessages(agentKnowledge, game));
         //We return the changed nodes.
         changedNodes.remove(null);
         return changedNodes;
@@ -176,14 +175,14 @@ public abstract class Commons {
 
     /**
      * Read received messages and update knowledge according to received informmation
-     * @param agent the agent receiving
+     * @param agentKnowledge the receiving agent's knowledge
      * @param game the running game
      * @return all nodes that have been updated
      */
-    public static Collection<Node> readMessages(Ghost agent, Game game) {
-        List<Message> messages = game.getMessenger().getMessages(agent.getAgent());
+    public static Collection<Node> readMessages(AgentKnowledge agentKnowledge, Game game) {
+        List<Message> messages = game.getMessenger().getMessages(agentKnowledge.getOwner());
         List<Node> toUpdate = new ArrayList<>();
-        IUndirectedGraph<Node, Edge> graph = agent.getDiscreteGraph();
+        IUndirectedGraph<Node, Edge> graph = agentKnowledge.getGraph();
 
         for (Message message : messages) {
             Message.MessageType type = message.getType();
@@ -192,32 +191,37 @@ public abstract class Commons {
 
             // A pill just disappeared
             if (type.equals(Message.MessageType.PILL_NOT_SEEN)) {
-                node.setContainedPillId(-1);
-                node.setContainedPowerPillId(-1);
-                node.setLastUpdateTick(game.getCurrentLevelTime());
-                LOGGER.info(agent.getAgent() + " received no more pills for node " + node.getId());
+                if(node.getLastUpdateTick() < message.getTick())
+                {
+                    node.setContainedPillId(-1);
+                    node.setContainedPowerPillId(-1);
+                    node.setLastUpdateTick(message.getTick());
+                    LOGGER.info(agentKnowledge.getOwner() + " received no more pills for node " + node.getId());
+                }
             }
 
             // Teammates positions have changed
             if (type.equals(Message.MessageType.I_AM)) {
-                Node old = Node.getNodeContainingGhost(agent.getDiscreteGraph().getNodes(), message.getSender());
-                System.out.println(old);
-                if (old == null || !old.getId().equals(node.getId())) {
+                Node old = Node.getNodeContainingGhost(agentKnowledge.getGraph().getNodes(), message.getSender());
+                if (old == null || !old.getId().equals(node.getId()))
+                {
                     // Remove old position
-                    if (old != null) {
-                        Set<Constants.GHOST> ghosts = old.getContainedGhosts();
-                        ghosts.remove(message.getSender());
-                        old.setContainedGhosts(ghosts);
-                        old.setLastUpdateTick(game.getCurrentLevelTime());
+                    if (old != null && old.getLastUpdateTick() < message.getTick())
+                    {
+                        old.removeGhost(message.getSender());
+                        old.setLastUpdateTick(message.getTick());
+                        toUpdate.add(old);
                     }
                     // Set new one
-                    Set<Constants.GHOST> ghosts = node.getContainedGhosts();
-                    ghosts.add(message.getSender());
-                    node.setContainedGhosts(ghosts);
-                    node.setLastUpdateTick(game.getCurrentLevelTime());
-                    LOGGER.info(agent.getAgent() + " received " + message.getSender() + "'s position (" + node.getId() +")");
+                    if(node.getLastUpdateTick() < message.getTick())
+                    {
+                        agentKnowledge.getGhostDescription(message.getSender()).setPosition(node);
+                        node.setLastUpdateTick(message.getTick());
+                    }
+                    LOGGER.info(agentKnowledge.getOwner() + " received " + message.getSender() + "'s position (" + node.getId() +")");
                 }
             }
+            toUpdate.add(node);
         }
         return toUpdate;
     }

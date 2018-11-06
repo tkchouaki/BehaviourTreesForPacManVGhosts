@@ -26,7 +26,7 @@ public class NodeRenderer {
     public void render(Node n) {
         List<String> classes = new ArrayList<>();
 
-        for (Constants.GHOST ghost : GhostDescription.getGhosts(n.getContainedGhosts())) {
+        for (Constants.GHOST ghost : n.getContainedGhosts()) {
             classes.add(ghost.className.toLowerCase());
         }
 
@@ -42,7 +42,11 @@ public class NodeRenderer {
             classes.add("pacman");
         }
         //LOGGER.info("Classes for node " + n.getId() + ": " + classes);
-        graph.getNode(n.getId().toString()).addAttribute("ui.class", String.join(",", classes));
+        org.graphstream.graph.Node graphStreamNode = graph.getNode(n.getId().toString());
+        if(graphStreamNode != null)
+        {
+            graphStreamNode.addAttribute("ui.class", String.join(",", classes));
+        }
     }
 
 

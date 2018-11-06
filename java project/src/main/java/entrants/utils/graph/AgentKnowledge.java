@@ -89,4 +89,9 @@ public class AgentKnowledge {
     {
         return new HashMap<>(this.ghostsDescriptions);
     }
+
+    public Constants.GHOST getOwner()
+    {
+        return this.owner;
+    }
 }

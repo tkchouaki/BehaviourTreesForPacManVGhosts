@@ -4,6 +4,7 @@ import entrants.utils.ChangeEventListener;
 import entrants.utils.graph.Edge;
 import entrants.utils.graph.Node;
 import entrants.utils.graph.UndirectedGraph;
+import entrants.utils.graph.interfaces.IUndirectedGraph;
 import org.graphstream.graph.Graph;
 import org.graphstream.graph.implementations.DefaultGraph;
 import org.graphstream.ui.view.Viewer;
@@ -15,26 +16,26 @@ import java.beans.PropertyChangeSupport;
 
 public class KnowledgeGraphDisplayer {
     // ATTRIBUTES
-    private UndirectedGraph<Node, Edge> graphData;
+    private IUndirectedGraph<Node, Edge> graphData;
     private final Graph graphUI;
     private final NodeRenderer renderer;
     private String css;
 
-    public KnowledgeGraphDisplayer(UndirectedGraph<Node, Edge> g, String css) {
-        if (g == null || css == null) {
+    public KnowledgeGraphDisplayer(IUndirectedGraph<Node, Edge> g, String css) {
+        if (css == null) {
             throw new NullPointerException();
         }
         this.css = "url(" + css + ")";
         graphUI = new DefaultGraph("Knowledge");
         graphUI.addAttribute("ui.stylesheet", this.css);
-        graphData = g;
+        graphData = (g == null) ? new UndirectedGraph<>() : g;
         renderer = new NodeRenderer(graphUI);
 
         registerListener();
         updateUI();
     }
 
-    public UndirectedGraph getKnowledgeGraph() {
+    public IUndirectedGraph getKnowledgeGraph() {
         return this.graphData;
     }
 
@@ -54,7 +55,14 @@ public class KnowledgeGraphDisplayer {
             @Override
             public void propertyChange(PropertyChangeEvent evt) {
                 graphUI.addNode(evt.getNewValue().toString());
-                renderer.render((Node) evt.getNewValue());
+                Node n = (Node) evt.getNewValue();
+                n.addChangeEventListener(new ChangeEventListener() {
+                    @Override
+                    public void changed(ChangeEvent evt) {
+                        renderer.render((Node) evt.getSource());
+                    }
+                });
+                renderer.render(n);
             }
         });
 
@@ -101,7 +109,7 @@ public class KnowledgeGraphDisplayer {
         graphUI.addAttribute("ui.stylesheet", css);
     }
 
-    public void setGraphData(UndirectedGraph<Node, Edge> graphData)
+    public void setGraphData(IUndirectedGraph<Node, Edge> graphData)
     {
         this.clear();
         this.graphData = graphData;

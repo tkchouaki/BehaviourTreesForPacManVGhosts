@@ -14,10 +14,4 @@ public class Pinky extends Ghost {
     public Pinky() {
         super(Constants.GHOST.PINKY);
     }
-
-    @Override
-    public Constants.MOVE getMove(Game g, long l)
-    {
-        return Constants.MOVE.UP;
-    }
 }

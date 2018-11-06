@@ -3,7 +3,9 @@ package entrants.ghosts.username;
 import entrants.utils.Commons;
 import entrants.utils.graph.AgentKnowledge;
 import entrants.utils.graph.DiscreteKnowledgeGraph;
+import entrants.utils.graph.Edge;
 import entrants.utils.graph.Node;
+import entrants.utils.graph.interfaces.IUndirectedGraph;
 import entrants.utils.ui.KnowledgeGraphDisplayer;
 import pacman.controllers.IndividualGhostController;
 import pacman.game.Constants;
@@ -12,6 +14,7 @@ import pacman.game.comms.Message;
 import pacman.game.internal.Maze;
 
 import java.beans.PropertyChangeSupport;
+import java.nio.file.Paths;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -24,6 +27,7 @@ public class Ghost extends IndividualGhostController {
 
     // STATICS
     public static final String MAZE_CHANGED_PROP = "maze_changed";
+    public static final int POSITION_SENDING_FREQUENCY = 10;
     private static final Logger LOGGER = Logger.getLogger(Ghost.class.getName());
     static {
         LOGGER.setLevel(Level.INFO);
@@ -71,14 +75,20 @@ public class Ghost extends IndividualGhostController {
      */
     @Override
     public Constants.MOVE getMove(Game game, long l) {
+        if(game.getCurrentLevelTime()%Ghost.POSITION_SENDING_FREQUENCY == 0)
+        {
+            Commons.sendToAllGhostExceptMe(game, this.ghost, Message.MessageType.I_AM, game.getGhostCurrentNodeIndex(this.ghost));
+        }
         //if its the first iteration or the maze has changed
         if (this.knowledge == null || !game.getCurrentMaze().equals(this.currentMaze)) {
+            Maze oldMaze = this.currentMaze;
             //We update the current maze
             this.currentMaze = game.getCurrentMaze();
             //We reset the knowledge
             this.knowledge = new AgentKnowledge(this.ghost);
             Commons.initAgentsKnowledge(this.knowledge, game);
             discreteKnowledgeGraph = new DiscreteKnowledgeGraph(this.knowledge.getGraph());
+            this.support.firePropertyChange(Ghost.MAZE_CHANGED_PROP, oldMaze, this.currentMaze);
             if(this.display)
             {
                 if (displayer == null) {
@@ -94,4 +104,12 @@ public class Ghost extends IndividualGhostController {
         return Constants.MOVE.DOWN;
     }
 
+    public PropertyChangeSupport getPropertyChangeSupport() {
+        return support;
+    }
+
+    public IUndirectedGraph<Node, Edge> getDiscreteGraph()
+    {
+        return this.discreteKnowledgeGraph;
+    }
 }

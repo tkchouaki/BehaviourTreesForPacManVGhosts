@@ -6,6 +6,7 @@ import pacman.game.Constants;
 
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.EventListenerList;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -296,6 +297,7 @@ public class Node implements NodeInterface {
         {
             ghostDescription.setPosition(this);
         }
+        this.fireChangeEvent();
         return toReturn;
     }
 
@@ -317,6 +319,7 @@ public class Node implements NodeInterface {
         }
         boolean toReturn = this.containedGhosts.remove(toRemove);
         toRemove.setPosition(null);
+        this.fireChangeEvent();
         return toReturn;
     }
 
@@ -324,10 +327,9 @@ public class Node implements NodeInterface {
      * Retrieves the ghosts present in the current Node
      * @return
      * A Set of the ghosts present in the current Node.
-     * The Returned Set is a copy, operations on it will not affect the Node.
      */
-    public Set<GhostDescription> getContainedGhosts() {
-        return new HashSet<>(containedGhosts);
+    public Collection<Constants.GHOST> getContainedGhosts() {
+        return GhostDescription.getGhosts(this.containedGhosts);
     }
 
     /**

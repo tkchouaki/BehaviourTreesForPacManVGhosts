@@ -14,9 +14,4 @@ public class Sue extends Ghost {
         super(Constants.GHOST.SUE);
     }
 
-    @Override
-    public Constants.MOVE getMove(Game g, long l)
-    {
-        return Constants.MOVE.DOWN;
-    }
 }
