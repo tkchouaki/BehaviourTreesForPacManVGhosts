@@ -60,6 +60,8 @@ public class Node implements NodeInterface {
      */
     private Set<GhostDescription> containedGhosts;
 
+    private int lastUpdateTick;
+
     /**
      * Initializes a Node with the given ID & coordinates
      * By default, a node doesn't contain anything & is not a decision node
@@ -166,6 +168,10 @@ public class Node implements NodeInterface {
      */
     public int getContainedPillId() {
         return containedPillId;
+    }
+
+    public int getLastUpdateTick() {
+        return lastUpdateTick;
     }
 
     /**
@@ -332,6 +338,7 @@ public class Node implements NodeInterface {
      */
     public void setContainedGhosts(Set<GhostDescription> containedGhosts) {
         this.containedGhosts = new HashSet<>(containedGhosts);
+        fireChangeEvent();
     }
 
     public void addChangeEventListener(ChangeEventListener listener) {
@@ -340,6 +347,10 @@ public class Node implements NodeInterface {
 
     public void removeChangeEventListener(ChangeEventListener listener) {
         support.remove(ChangeEventListener.class, listener);
+    }
+
+    public void setLastUpdateTick(int tick) {
+        lastUpdateTick = tick;
     }
 
     /**

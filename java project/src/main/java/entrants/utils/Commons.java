@@ -6,11 +6,16 @@ import entrants.utils.graph.Node;
 import entrants.utils.graph.UndirectedGraph;
 import pacman.game.Constants;
 import pacman.game.Game;
+import pacman.game.comms.BasicMessage;
+import pacman.game.comms.Message;
+import pacman.game.comms.Messenger;
 
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.*;
+import java.util.logging.Logger;
 
 
 public abstract class Commons {
@@ -30,6 +35,8 @@ public abstract class Commons {
         }
         return b;
     }
+
+    private static final Logger LOGGER = Logger.getLogger(Commons.class.getName());
 
     /**
      * Updates an Agent's Knowledge from a Game object
@@ -68,6 +75,12 @@ public abstract class Commons {
             //We update the pills information
             if(Commons.updatePillsInfo(game, node)){
                 changedNodes.add(node);
+                if (game.isNodeObservable(node.getId()) && node.getContainedPillId() == -1 && node.getContainedPowerPillId() == -1) {
+                    sendToAllGhostExceptMe(
+                            game, agentKnowledge.getOwner(), Message.MessageType.PILL_NOT_SEEN, node.getId()
+                    );
+                    LOGGER.info(agentKnowledge.getOwner() + ": no more pills at node " + node.getId());
+                }
             }
             //We check if the current node is the PacMan's position to update it.
             //We add its old & new position to the changed nodes.
@@ -93,6 +106,7 @@ public abstract class Commons {
                 }
             }
         }
+        changedNodes.addAll(readMessages(agent, game));
         //We return the changed nodes.
         changedNodes.remove(null);
         return changedNodes;
@@ -155,7 +169,79 @@ public abstract class Commons {
             {
                 node.setContainedPowerPillId(-1);
             }
+            node.setLastUpdateTick(game.getCurrentLevelTime());
         }
         return !(node.getContainedPillId() == oldPillId && node.getContainedPowerPillId() == oldPowerPillId);
+    }
+
+    /**
+     * Read received messages and update knowledge according to received informmation
+     * @param agent the agent receiving
+     * @param game the running game
+     * @return all nodes that have been updated
+     */
+    public static Collection<Node> readMessages(Ghost agent, Game game) {
+        List<Message> messages = game.getMessenger().getMessages(agent.getAgent());
+        List<Node> toUpdate = new ArrayList<>();
+        IUndirectedGraph<Node, Edge> graph = agent.getDiscreteGraph();
+
+        for (Message message : messages) {
+            Message.MessageType type = message.getType();
+            Node node = graph.getNodeByID(message.getData());
+            if (node == null) continue;
+
+            // A pill just disappeared
+            if (type.equals(Message.MessageType.PILL_NOT_SEEN)) {
+                node.setContainedPillId(-1);
+                node.setContainedPowerPillId(-1);
+                node.setLastUpdateTick(game.getCurrentLevelTime());
+                LOGGER.info(agent.getAgent() + " received no more pills for node " + node.getId());
+            }
+
+            // Teammates positions have changed
+            if (type.equals(Message.MessageType.I_AM)) {
+                Node old = Node.getNodeContainingGhost(agent.getDiscreteGraph().getNodes(), message.getSender());
+                System.out.println(old);
+                if (old == null || !old.getId().equals(node.getId())) {
+                    // Remove old position
+                    if (old != null) {
+                        Set<Constants.GHOST> ghosts = old.getContainedGhosts();
+                        ghosts.remove(message.getSender());
+                        old.setContainedGhosts(ghosts);
+                        old.setLastUpdateTick(game.getCurrentLevelTime());
+                    }
+                    // Set new one
+                    Set<Constants.GHOST> ghosts = node.getContainedGhosts();
+                    ghosts.add(message.getSender());
+                    node.setContainedGhosts(ghosts);
+                    node.setLastUpdateTick(game.getCurrentLevelTime());
+                    LOGGER.info(agent.getAgent() + " received " + message.getSender() + "'s position (" + node.getId() +")");
+                }
+            }
+        }
+        return toUpdate;
+    }
+
+    /**
+     * Utility method design to send messages to other ghosts
+     * @param game the current game
+     * @param me the ghost sending the message
+     * @param type message's type
+     * @param data message's data
+     */
+    public static void sendToAllGhostExceptMe(Game game, Constants.GHOST me, Message.MessageType type, int data) {
+        Messenger messenger = game.getMessenger();
+
+        for (Constants.GHOST ghost : Constants.GHOST.values()) {
+            if (!ghost.equals(me)) {
+                messenger.addMessage(new BasicMessage(
+                        me,
+                        ghost,
+                        type,
+                        data,
+                        game.getCurrentLevelTime()
+                ));
+            }
+        }
     }
 }

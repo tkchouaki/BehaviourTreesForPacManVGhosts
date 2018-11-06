@@ -3,13 +3,17 @@ package entrants.ghosts.username;
 import entrants.utils.Commons;
 import entrants.utils.graph.AgentKnowledge;
 import entrants.utils.graph.DiscreteKnowledgeGraph;
+import entrants.utils.graph.Node;
 import entrants.utils.ui.KnowledgeGraphDisplayer;
 import pacman.controllers.IndividualGhostController;
 import pacman.game.Constants;
 import pacman.game.Game;
+import pacman.game.comms.Message;
 import pacman.game.internal.Maze;
 
-import java.nio.file.Paths;
+import java.beans.PropertyChangeSupport;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * This class serves as a base class for the ghosts
@@ -17,11 +21,22 @@ import java.nio.file.Paths;
  * The knowledge of a ghost can be visualized using GraphStream
  */
 public class Ghost extends IndividualGhostController {
+
+    // STATICS
+    public static final String MAZE_CHANGED_PROP = "maze_changed";
+    private static final Logger LOGGER = Logger.getLogger(Ghost.class.getName());
+    static {
+        LOGGER.setLevel(Level.INFO);
+    }
+
+    // ATTRIBUTES
     private AgentKnowledge knowledge;
-    private boolean display;
     private DiscreteKnowledgeGraph discreteKnowledgeGraph;
     private KnowledgeGraphDisplayer displayer;
     private Maze currentMaze;
+    private boolean initialized;
+    private final PropertyChangeSupport support;
+    private boolean display;
 
     /**
      * Initializes the ghost, its knowledge is not displayed
@@ -42,6 +57,7 @@ public class Ghost extends IndividualGhostController {
     public Ghost(Constants.GHOST ghost, boolean display) {
         super(ghost);
         this.display = display;
+        this.support = new PropertyChangeSupport(this);
     }
 
     /**
@@ -55,8 +71,11 @@ public class Ghost extends IndividualGhostController {
      */
     @Override
     public Constants.MOVE getMove(Game game, long l) {
+        //if its the first iteration or the maze has changed
         if (this.knowledge == null || !game.getCurrentMaze().equals(this.currentMaze)) {
+            //We update the current maze
             this.currentMaze = game.getCurrentMaze();
+            //We reset the knowledge
             this.knowledge = new AgentKnowledge(this.ghost);
             Commons.initAgentsKnowledge(this.knowledge, game);
             discreteKnowledgeGraph = new DiscreteKnowledgeGraph(this.knowledge.getGraph());
@@ -74,4 +93,5 @@ public class Ghost extends IndividualGhostController {
         }
         return Constants.MOVE.DOWN;
     }
+
 }
