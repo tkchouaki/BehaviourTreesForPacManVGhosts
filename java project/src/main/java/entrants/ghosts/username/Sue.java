@@ -18,4 +18,10 @@ public class Sue extends Ghost {
     {
         super(Constants.GHOST.BLINKY, display);
     }
+
+    @Override
+    public Constants.MOVE getMove(Game g, long l)
+    {
+        return Constants.MOVE.DOWN;
+    }
 }

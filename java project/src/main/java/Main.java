@@ -1,6 +1,6 @@
 
 import entrants.ghosts.username.*;
-import entrants.pacman.username.MyPacMan;
+import examples.StarterPacMan.MyPacMan;
 import pacman.Executor;
 import pacman.controllers.IndividualGhostController;
 import pacman.controllers.MASController;
@@ -24,7 +24,7 @@ public class Main {
         EnumMap<GHOST, IndividualGhostController> controllers = new EnumMap<>(GHOST.class);
 
         controllers.put(GHOST.INKY, new Inky());
-        controllers.put(GHOST.BLINKY, new Blinky());
+        controllers.put(GHOST.BLINKY, new Blinky(true));
         controllers.put(GHOST.PINKY, new Pinky());
         controllers.put(GHOST.SUE, new Sue());
 

@@ -18,4 +18,10 @@ public class Inky extends Ghost {
     {
         super(Constants.GHOST.INKY, display);
     }
+
+    @Override
+    public Constants.MOVE getMove(Game g, long l)
+    {
+        return Constants.MOVE.RIGHT;
+    }
 }

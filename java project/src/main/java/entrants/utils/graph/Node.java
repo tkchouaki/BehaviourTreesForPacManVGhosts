@@ -32,6 +32,9 @@ public class Node implements NodeInterface {
     private final EventListenerList support;
     private final ChangeEvent event;
 
+    /**
+     * Indicates if the node is a decision node
+     */
     private boolean isDecisionNode;
 
     /**
@@ -46,9 +49,16 @@ public class Node implements NodeInterface {
      */
     private int containedPowerPillId;
 
-    private boolean containsPacMan;
+    /**
+     * The description of PacMan if it is in the current Node
+     * If not, this attribute should be set to null
+     */
+    private PacManDescription containedPacMan;
 
-    private Set<Constants.GHOST> containedGhosts;
+    /**
+     * A set of contained ghosts descriptions
+     */
+    private Set<GhostDescription> containedGhosts;
 
     /**
      * Initializes a Node with the given ID & coordinates
@@ -90,7 +100,7 @@ public class Node implements NodeInterface {
         this.setContainedPillId(-1);
         this.setContainedPowerPillId(-1);
         this.setContainedGhosts(new HashSet<>());
-        this.setContainsPacMan(false);
+        this.setContainedPacMan(null);
     }
 
 
@@ -198,21 +208,35 @@ public class Node implements NodeInterface {
         fireChangeEvent();
     }
 
+    public PacManDescription getContainedPacManDescription()
+    {
+        return this.containedPacMan;
+    }
+
     /**
      * Checks if PacMan is in the current Node
      * @return
      * True if PacMan is in the current Node
      */
     public boolean containsPacMan() {
-        return containsPacMan;
+        return this.containedPacMan != null;
     }
 
     /**
      * Sets the containsPacMan attribute's value
-     * @param containsPacMan
+     * @param containedPacMan
      */
-    public void setContainsPacMan(boolean containsPacMan) {
-        this.containsPacMan = containsPacMan;
+    public void setContainedPacMan(PacManDescription containedPacMan) {
+        PacManDescription old = this.containedPacMan;
+        this.containedPacMan = containedPacMan;
+        if(old != null && old.getPosition().equals(this))
+        {
+            old.setPosition(null);
+        }
+        if(this.containedPacMan != null && !this.containedPacMan.getPosition().equals(this))
+        {
+            this.containedPacMan.setPosition(this);
+        }
         fireChangeEvent();
     }
 
@@ -226,13 +250,77 @@ public class Node implements NodeInterface {
         return this.containedGhosts.size() > 0;
     }
 
+
+    /**
+     * Checks if the current node contains a specific ghost
+     * @param ghost
+     * The ghost to look for
+     * @return
+     * True if the current node contains the specified ghost, false otherwise.
+     */
+    public boolean containsGhost(Constants.GHOST ghost)
+    {
+        return GhostDescription.getGhostDescription(this.containedGhosts, ghost) != null;
+    }
+
+    /**
+     * Retrieves the description of a ghost contained in the node.
+     * @param ghost
+     * The ghost whose description is desired
+     * @return
+     * The description of the desired ghost if it is in the current node.
+     * Otherwise, a null value is returned.
+     */
+    public GhostDescription getContainedGhostDescription(Constants.GHOST ghost)
+    {
+        return GhostDescription.getGhostDescription(this.containedGhosts, ghost);
+    }
+
+    /**
+     * Adds a ghost's description to the current Node.
+     * @param ghostDescription
+     * The ghost's description
+     * @return
+     * True if the description didn't exist in the node & it was added.
+     */
+    public boolean addGhost(GhostDescription ghostDescription)
+    {
+        boolean toReturn = this.containedGhosts.add(ghostDescription);
+        if(!ghostDescription.getPosition().equals(this))
+        {
+            ghostDescription.setPosition(this);
+        }
+        return toReturn;
+    }
+
+
+    /**
+     * Removes a ghost's description from the current node
+     * @param ghost
+     * The ghost whose description will be removed.
+     * @return
+     * True if the ghost was in the current node.
+     * False otherwise.
+     */
+    public boolean removeGhost(Constants.GHOST ghost)
+    {
+        GhostDescription toRemove = GhostDescription.getGhostDescription(this.containedGhosts, ghost);
+        if(toRemove == null)
+        {
+            return false;
+        }
+        boolean toReturn = this.containedGhosts.remove(toRemove);
+        toRemove.setPosition(null);
+        return toReturn;
+    }
+
     /**
      * Retrieves the ghosts present in the current Node
      * @return
      * A Set of the ghosts present in the current Node.
      * The Returned Set is a copy, operations on it will not affect the Node.
      */
-    public Set<Constants.GHOST> getContainedGhosts() {
+    public Set<GhostDescription> getContainedGhosts() {
         return new HashSet<>(containedGhosts);
     }
 
@@ -242,7 +330,7 @@ public class Node implements NodeInterface {
      * @param containedGhosts
      * A Set containing the ghosts present in the Node
      */
-    public void setContainedGhosts(Set<Constants.GHOST> containedGhosts) {
+    public void setContainedGhosts(Set<GhostDescription> containedGhosts) {
         this.containedGhosts = new HashSet<>(containedGhosts);
     }
 

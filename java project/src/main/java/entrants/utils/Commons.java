@@ -4,10 +4,13 @@ import entrants.utils.graph.AgentKnowledge;
 import entrants.utils.graph.Edge;
 import entrants.utils.graph.Node;
 import entrants.utils.graph.UndirectedGraph;
+import pacman.game.Constants;
 import pacman.game.Game;
 
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 
 
 public abstract class Commons {
@@ -37,13 +40,61 @@ public abstract class Commons {
      */
     public static Collection<Node> updateAgentsKnowledge(AgentKnowledge agentKnowledge, Game game)
     {
+        //We retrieve the PacMan's & the ghosts positions (if we can see them)
+        int pacManPosition = game.getPacmanCurrentNodeIndex();
+        Map<Constants.GHOST, Integer> ghostsPositions = new HashMap<>();
+        for(Constants.GHOST ghost : Constants.GHOST.values())
+        {
+            //While retrieving the positions of the ghosts
+            //We also retrieve their edible time.
+            //If we can observe it, we directly update it.
+            //Otherwise, we just decrement the old value
+            ghostsPositions.put(ghost, game.getGhostCurrentNodeIndex(ghost));
+            int edibleTime = game.getGhostEdibleTime(ghost);
+            if(edibleTime > -1)
+            {
+                agentKnowledge.getGhostDescription(ghost).setEdibleTime(edibleTime);
+            }
+            else
+            {
+                agentKnowledge.getGhostDescription(ghost).decrementEdibleTime();
+            }
+        }
+
+        //We loop through the nodes of the graph to update them. the changed nodes are store into a set.
         Collection<Node> changedNodes = new HashSet<>();
         for(Node node : agentKnowledge.getGraph().getNodes())
         {
+            //We update the pills information
             if(Commons.updatePillsInfo(game, node)){
                 changedNodes.add(node);
             }
+            //We check if the current node is the PacMan's position to update it.
+            //We add its old & new position to the changed nodes.
+            if(node.getId().equals(pacManPosition))
+            {
+                changedNodes.add(agentKnowledge.getPacManDescription().getPosition());
+                agentKnowledge.getPacManDescription().setPosition(node);
+                changedNodes.add(node);
+            }
+            //We check if the current node is a ghost's current position.
+            //We also add its old & new position to the changed nodes.
+            for(Constants.GHOST ghost : Constants.GHOST.values())
+            {
+                if(ghostsPositions.get(ghost).equals(node.getId()))
+                {
+                    if(!ghost.equals(Constants.GHOST.BLINKY))
+                    {
+                        System.out.println("i saw " + ghost.className + " on " + node.getId());
+                    }
+                    changedNodes.add(agentKnowledge.getGhostDescription(ghost).getPosition());
+                    agentKnowledge.getGhostDescription(ghost).setPosition(node);
+                    changedNodes.add(node);
+                }
+            }
         }
+        //We return the changed nodes.
+        changedNodes.remove(null);
         return changedNodes;
     }
 

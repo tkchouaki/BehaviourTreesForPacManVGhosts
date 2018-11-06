@@ -57,14 +57,17 @@ public class Ghost extends IndividualGhostController {
     public Constants.MOVE getMove(Game game, long l) {
         if (this.knowledge == null || !game.getCurrentMaze().equals(this.currentMaze)) {
             this.currentMaze = game.getCurrentMaze();
-            this.knowledge = new AgentKnowledge();
+            this.knowledge = new AgentKnowledge(this.ghost);
             Commons.initAgentsKnowledge(this.knowledge, game);
             discreteKnowledgeGraph = new DiscreteKnowledgeGraph(this.knowledge.getGraph());
-            if (displayer == null) {
-                displayer = new KnowledgeGraphDisplayer(discreteKnowledgeGraph, "file:///" + Paths.get(".").toAbsolutePath().normalize().toString() + "/src/main/java/entrants/utils/ui/kgraph.css");
-                displayer.display();
-            } else {
-                displayer.setGraphData(discreteKnowledgeGraph);
+            if(this.display)
+            {
+                if (displayer == null) {
+                    displayer = new KnowledgeGraphDisplayer(discreteKnowledgeGraph, "file:///" + Paths.get(".").toAbsolutePath().normalize().toString() + "/src/main/java/entrants/utils/ui/kgraph.css");
+                    displayer.display();
+                } else {
+                    displayer.setGraphData(discreteKnowledgeGraph);
+                }
             }
         } else {
             this.discreteKnowledgeGraph.update(Commons.updateAgentsKnowledge(this.knowledge, game));

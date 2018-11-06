@@ -1,5 +1,6 @@
 package entrants.utils.ui;
 
+import entrants.utils.graph.GhostDescription;
 import entrants.utils.graph.Node;
 import entrants.utils.graph.interfaces.NodeInterface;
 import org.graphstream.graph.Graph;
@@ -23,7 +24,7 @@ public class NodeRenderer {
     public void render(Node n) {
         List<String> classes = new ArrayList<>();
 
-        for (Constants.GHOST ghost : n.getContainedGhosts()) {
+        for (Constants.GHOST ghost : GhostDescription.getGhosts(n.getContainedGhosts())) {
             classes.add(ghost.className.toLowerCase());
         }
 
