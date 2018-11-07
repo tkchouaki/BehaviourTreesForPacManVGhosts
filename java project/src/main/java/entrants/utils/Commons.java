@@ -89,6 +89,13 @@ public abstract class Commons {
                     LOGGER.info(agentKnowledge.getOwner() + ": no more pills at node " + node.getId());
                 }
             }
+            //Check if we see a node where we thought there was PacMan but now it's not.
+            if(node.containsPacMan() && !node.getId().equals(pacManPosition))
+            {
+                //We change the last update time of the old Pac Man position.
+                agentKnowledge.getPacManDescription().setPosition(null);
+                node.setLastUpdateTick(game.getCurrentLevelTime());
+            }
             //We check if the current node is the PacMan's position to update it.
             //We add its old & new position to the changed nodes.
             if(node.getId().equals(pacManPosition))
