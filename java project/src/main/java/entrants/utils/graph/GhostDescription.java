@@ -57,7 +57,7 @@ public class GhostDescription extends AgentDescription{
      */
     public int getEdibleTime()
     {
-        return this.getEdibleTime();
+        return this.edibleTime;
     }
 
     /**

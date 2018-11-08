@@ -8,6 +8,10 @@
 // ******************************************************* 
 package entrants.BT.Execution.Conditions;
 
+import entrants.ghosts.username.Ghost;
+import entrants.utils.graph.Node;
+import pacman.game.Game;
+
 /**
  * ExecutionCondition class created from MMPM condition
  * IsPacManCloseToPowerPill.
@@ -44,7 +48,27 @@ public class IsPacManCloseToPowerPill extends
 		 * should only return Status.SUCCESS, Status.FAILURE or Status.RUNNING.
 		 * No other values are allowed.
 		 */
-		return jbt.execution.core.ExecutionTask.Status.SUCCESS;
+		Game game = (Game) this.getContext().getVariable("GAME");
+		Ghost ghost = (Ghost) this.getContext().getVariable("GHOST");
+		int threshold = 15;
+		int distanceToClosestPowerPill = -1;
+
+		int pacManPosition = ghost.getKnowledge().getPacManDescription().getPosition().getId();
+		int closestPowerPillPosition = -1;
+		for(Node node : Node.getNodesWithPowerPills(ghost.getDiscreteGraph().getNodes()))
+		{
+			int distance = game.getShortestPathDistance(pacManPosition, node.getId());
+			if(distance < distanceToClosestPowerPill || closestPowerPillPosition < 0)
+			{
+				distanceToClosestPowerPill = distance;
+				closestPowerPillPosition = node.getId();
+			}
+		}
+		if(distanceToClosestPowerPill>-1 && distanceToClosestPowerPill<=threshold)
+		{
+			return jbt.execution.core.ExecutionTask.Status.SUCCESS;
+		}
+		return Status.FAILURE;
 	}
 
 	protected void internalTerminate() {

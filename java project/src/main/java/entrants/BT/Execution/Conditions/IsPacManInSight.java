@@ -8,6 +8,8 @@
 // ******************************************************* 
 package entrants.BT.Execution.Conditions;
 
+import entrants.ghosts.username.Ghost;
+
 /** ExecutionCondition class created from MMPM condition IsPacManInSight. */
 public class IsPacManInSight extends
 		jbt.execution.task.leaf.condition.ExecutionCondition {
@@ -41,7 +43,9 @@ public class IsPacManInSight extends
 		 * should only return Status.SUCCESS, Status.FAILURE or Status.RUNNING.
 		 * No other values are allowed.
 		 */
-		return jbt.execution.core.ExecutionTask.Status.SUCCESS;
+		Ghost ghost = (Ghost) this.getContext().getVariable("GHOST");
+		System.out.println("isPacManInsight");
+		return ghost.getKnowledge().getPacManDescription().getPosition() != null ? jbt.execution.core.ExecutionTask.Status.SUCCESS : Status.FAILURE;
 	}
 
 	protected void internalTerminate() {

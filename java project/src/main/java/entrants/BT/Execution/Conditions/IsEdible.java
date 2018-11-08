@@ -8,6 +8,8 @@
 // ******************************************************* 
 package entrants.BT.Execution.Conditions;
 
+import entrants.ghosts.username.Ghost;
+
 /** ExecutionCondition class created from MMPM condition IsEdible. */
 public class IsEdible extends
 		jbt.execution.task.leaf.condition.ExecutionCondition {
@@ -40,7 +42,8 @@ public class IsEdible extends
 		 * should only return Status.SUCCESS, Status.FAILURE or Status.RUNNING.
 		 * No other values are allowed.
 		 */
-		return jbt.execution.core.ExecutionTask.Status.SUCCESS;
+		Ghost ghost = (Ghost) this.getContext().getVariable("GHOST");
+		return ghost.getKnowledge().getGhostDescription(ghost.getGhostEnumValue()).getEdibleTime() > 0 ? jbt.execution.core.ExecutionTask.Status.SUCCESS : Status.FAILURE;
 	}
 
 	protected void internalTerminate() {

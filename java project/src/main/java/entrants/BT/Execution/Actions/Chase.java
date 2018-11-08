@@ -8,6 +8,10 @@
 // ******************************************************* 
 package entrants.BT.Execution.Actions;
 
+import entrants.ghosts.username.Ghost;
+import pacman.game.Constants;
+import pacman.game.Game;
+
 /** ExecutionAction class created from MMPM action Chase. */
 public class Chase extends jbt.execution.task.leaf.action.ExecutionAction {
 
@@ -39,6 +43,12 @@ public class Chase extends jbt.execution.task.leaf.action.ExecutionAction {
 		 * should only return Status.SUCCESS, Status.FAILURE or Status.RUNNING.
 		 * No other values are allowed.
 		 */
+		Game game = (Game) this.getContext().getVariable("GAME");
+		Ghost ghost = (Ghost) this.getContext().getVariable("GHOST");
+		int currentPosition = ghost.getKnowledge().getKnowledgeAboutMySelf().getPosition().getId();
+		int pacManPosition = ghost.getKnowledge().getPacManDescription().getPosition().getId();
+		this.getContext().setVariable("MOVE", game.getNextMoveTowardsTarget(currentPosition, pacManPosition, Constants.DM.PATH));
+		System.out.println("Chase");
 		return jbt.execution.core.ExecutionTask.Status.SUCCESS;
 	}
 
