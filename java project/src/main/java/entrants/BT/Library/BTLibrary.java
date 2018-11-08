@@ -2,7 +2,7 @@
 //                   MACHINE GENERATED CODE                
 //                       DO NOT MODIFY                     
 //                                                         
-// Generated on 11/08/2018 15:32:54
+// Generated on 11/08/2018 16:52:46
 // ******************************************************* 
 package entrants.BT.Library;
 
@@ -67,7 +67,10 @@ public class BTLibrary implements jbt.execution.core.IBTLibrary {
 				null,
 				new jbt.model.task.composite.ModelSequence(
 						null,
-						new entrants.BT.Model.Conditions.IsPacManInSight(null),
+						new jbt.model.task.decorator.ModelInverter(
+								null,
+								new entrants.BT.Model.Conditions.IsPacManInSight(
+										null)),
 						new jbt.model.task.composite.ModelRandomSelector(null,
 								new entrants.BT.Model.Actions.GoToPowerPill(
 										null, (int) -1, null),

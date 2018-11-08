@@ -6,7 +6,11 @@
         <Children>
           <Node id="Node_2" type="Sequence">
             <Children>
-              <Node id="Node_4" name="IsPacManInSight" type="Condition" />
+              <Node id="Node_15" type="Inverter">
+                <Children>
+                  <Node id="Node_4" name="IsPacManInSight" type="Condition" />
+                </Children>
+              </Node>
               <Node id="Node_8" type="RandomSelector">
                 <Children>
                   <Node id="Node_6" name="GoToPowerPill" type="Action">
