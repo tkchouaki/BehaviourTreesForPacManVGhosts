@@ -12,5 +12,6 @@ public class Inky extends Ghost {
 
     public Inky() {
         super(Constants.GHOST.INKY);
+        initJBT();
     }
 }
