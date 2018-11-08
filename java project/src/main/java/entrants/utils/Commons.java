@@ -145,8 +145,10 @@ public abstract class Commons {
                 }
                 Node a = new Node(i, game.getNodeXCood(i), game.getNodeYCood(i), game.isJunction(i));
                 Node b = new Node(neighbours[j], game.getNodeXCood(neighbours[j]), game.getNodeYCood(neighbours[j]), game.isJunction(neighbours[j]));
-                Commons.updatePillsInfo(game, a);
-                Commons.updatePillsInfo(game, b);
+                a.setContainedPowerPillId(game.getPowerPillIndex(a.getId()));
+                a.setContainedPillId(game.getPillIndex(a.getId()));
+                b.setContainedPowerPillId(game.getPowerPillIndex(b.getId()));
+                b.setContainedPillId(game.getPillIndex(b.getId()));
                 Edge edge = new Edge(a, b);
                 graph.addEdge(edge);
             }
