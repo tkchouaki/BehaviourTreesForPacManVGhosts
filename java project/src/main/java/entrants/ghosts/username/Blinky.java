@@ -9,5 +9,6 @@ public class Blinky extends Ghost{
 
     public Blinky() {
         super(Constants.GHOST.BLINKY);
+        initJBT();
     }
 }

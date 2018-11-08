@@ -12,6 +12,7 @@ public class Sue extends Ghost {
 
     public Sue() {
         super(Constants.GHOST.SUE);
+        initJBT();
     }
 
 }

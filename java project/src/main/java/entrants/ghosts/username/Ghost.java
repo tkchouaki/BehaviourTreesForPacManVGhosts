@@ -13,6 +13,12 @@ import pacman.game.Game;
 import pacman.game.comms.Message;
 import pacman.game.internal.Maze;
 
+import entrants.BT.Library.BTLibrary;
+import jbt.execution.core.*;
+import jbt.model.core.ModelTask;
+import pacman.controllers.PacmanController;
+import pacman.game.Constants.MOVE;
+
 import java.beans.PropertyChangeSupport;
 import java.nio.file.Paths;
 import java.util.logging.Level;
@@ -24,6 +30,12 @@ import java.util.logging.Logger;
  * The knowledge of a ghost can be visualized using GraphStream
  */
 public class Ghost extends IndividualGhostController {
+
+    // BT
+    private MOVE            myMove;
+    private IContext        context;
+    private ModelTask       bt;
+    private String          btName;
 
     // STATICS
     public static final String MAZE_CHANGED_PROP = "maze_changed";
@@ -64,6 +76,16 @@ public class Ghost extends IndividualGhostController {
         this.support = new PropertyChangeSupport(this);
     }
 
+    public void initJBT(){
+       initJBT("StarterGhost");
+    }
+
+    public void initJBT(String behaviourTreeName){
+        IBTLibrary btLibrary = new BTLibrary();
+        bt = btLibrary.getBT(behaviourTreeName);
+        context = ContextFactory.createContext(btLibrary);
+    }
+
     /**
      * Retireves the next move of the ghost
      * @param game
@@ -101,7 +123,18 @@ public class Ghost extends IndividualGhostController {
         } else {
             this.discreteKnowledgeGraph.update(Commons.updateAgentsKnowledge(this.knowledge, game));
         }
-        return Constants.MOVE.DOWN;
+
+        // ========== Behaviour Tree's LOOP =========
+        context.setVariable("MOVE", MOVE.NEUTRAL);
+        context.setVariable("GAME", game);
+
+        IBTExecutor btExecutor = BTExecutorFactory.createBTExecutor(bt, context);
+
+        do{
+            btExecutor.tick();
+        }while(btExecutor.getStatus() == ExecutionTask.Status.RUNNING);
+
+        return (MOVE) context.getVariable("MOVE");
     }
 
     public PropertyChangeSupport getPropertyChangeSupport() {
