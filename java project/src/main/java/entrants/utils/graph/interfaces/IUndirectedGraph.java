@@ -2,6 +2,8 @@ package entrants.utils.graph.interfaces;
 
 import java.beans.PropertyChangeSupport;
 import java.util.Collection;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Interface for Undirected graphs. No assumptions are made about nodes and edges, except that they need to extend
@@ -175,4 +177,22 @@ public interface IUndirectedGraph<N extends NodeInterface, E extends EdgeInterfa
      * </pre>
      */
     void clear();
+
+    /**
+     * Given a node n and a bunch of nodes M, find nodes in M circling node n.
+     * It means that if C is the subset of M, for all node in C, there is a path
+     * between n and the node AND none of the nodes in C are contained in the path.
+     * @param node the node you want to circle
+     * @param circlingNodes candidates for circling
+     * @return a map, associating each node with the path to reach n.
+     * @contract.pre <pre>
+     *     node != null
+     *     circlingNodes != null
+     * </pre>
+     * @contract.post <pre>
+     *     circleNode(node, circlingNodes) != null
+     *     circlingNodes.containsAll(circleNode(node, circlingNodes).keySet())     *
+     * </pre>
+     */
+    Map<N, List<E>> circleNode(N node, Collection<N> circlingNodes);
 }
