@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Tree>
+  <Node id="Node_0" name="StarterGhost" type="Root">
+    <Children>
+      <Node id="Node_1" type="Selector">
+        <Children>
+          <Node id="Node_2" type="Sequence">
+            <Children>
+              <Node id="Node_4" name="IsPacManInSight" type="Condition" />
+              <Node id="Node_8" type="RandomSelector">
+                <Children>
+                  <Node id="Node_6" name="GoToPowerPill" type="Action">
+                    <Parameters>
+                      <Parameter name="powerPillIndex" fromcontext="false">-1</Parameter>
+                    </Parameters>
+                  </Node>
+                  <Node id="Node_7" name="DefaultMove" type="Action" />
+                </Children>
+              </Node>
+            </Children>
+          </Node>
+          <Node id="Node_3" type="Selector">
+            <Children>
+              <Node id="Node_9" type="Sequence">
+                <Children>
+                  <Node id="Node_10" type="Selector">
+                    <Children>
+                      <Node id="Node_11" name="IsPacManCloseToPowerPill" type="Condition" />
+                      <Node id="Node_12" name="IsEdible" type="Condition" />
+                    </Children>
+                  </Node>
+                  <Node id="Node_13" name="Escape" type="Action" />
+                </Children>
+              </Node>
+              <Node id="Node_14" name="Chase" type="Action" />
+            </Children>
+          </Node>
+        </Children>
+      </Node>
+    </Children>
+  </Node>
+</Tree>
+

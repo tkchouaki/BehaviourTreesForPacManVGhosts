@@ -11,6 +11,15 @@
         <!-- =================================== -->
         <!-- ========== MOVE-RELATED ========== -->
         <!-- =================================== -->
+        <Action name="GoToPowerPill">
+            <Parameter name="powerPillIndex" type="INTEGER" />
+        </Action>
+
+        <Action name="Escape" />
+
+        <Action name="Chase" />
+
+        <Action name="DefaultMove" />
 
         <!-- =================================== -->
         <!-- ========== PACMAN-RELATED ========== -->
@@ -38,10 +47,14 @@
         <!-- =================================== -->
         <!-- ========== PACMAN-RELATED ========== -->
         <!-- =================================== -->
+        <Sensor name="IsPacManInSight" type="BOOLEAN" />
+
+        <Sensor name="IsPacManCloseToPowerPill" type="BOOLEAN" />
 
         <!-- =================================== -->
         <!-- ========== GHOST-RELATED ========== -->
         <!-- =================================== -->
+        <Sensor name="IsEdible" type="BOOLEAN" />
 
         <!-- =================================== -->
         <!-- ========== PILL-RELATED ========== -->
