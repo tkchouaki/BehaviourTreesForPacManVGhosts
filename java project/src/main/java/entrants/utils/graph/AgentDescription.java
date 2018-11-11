@@ -5,6 +5,7 @@ package entrants.utils.graph;
  * At this level, we just keep its last known position & the tick of the last update
  */
 public abstract class AgentDescription {
+    private Node previousPosition;
     private Node position;
     private int lastUpdateTick;
 
@@ -17,6 +18,16 @@ public abstract class AgentDescription {
     {
         this.setPosition(position);
         this.lastUpdateTick = 0;
+    }
+
+    /**
+     * Retrieves the second last known position of the agent.
+     * @return
+     * The second last known position of the agent.
+     */
+    public Node getPreviousPosition()
+    {
+        return this.previousPosition;
     }
 
     /**
@@ -35,6 +46,7 @@ public abstract class AgentDescription {
      */
     public void setPosition(Node position)
     {
+        this.previousPosition = this.position;
         if(this.position != null)
         {
             this.removeFromPosition();
