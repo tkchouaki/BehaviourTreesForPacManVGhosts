@@ -105,7 +105,7 @@ public class DebugWindow extends JFrame {
                 displayer.getUIGraph(), Viewer.ThreadingModel.GRAPH_IN_ANOTHER_THREAD
         );
 
-        viewer.enableAutoLayout();
+        // viewer.enableAutoLayout();
 
         ViewPanel view = viewer.addDefaultView(false);
         view.setPreferredSize(new Dimension(300, 200));

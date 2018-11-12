@@ -1,6 +1,9 @@
 node {
     text-mode: normal;
     stroke-mode: plain;
+    text-color: black;
+    text-background-mode: plain;
+    text-alignment: under;
 }
 
 node.sue {

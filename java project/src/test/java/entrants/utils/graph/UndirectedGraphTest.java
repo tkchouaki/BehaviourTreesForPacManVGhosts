@@ -241,11 +241,16 @@ class UndirectedGraphTest {
         assertTrue(graph.getNodes().containsAll(Arrays.asList(nodes[1], nodes[2], nodes[3])));
         assertEquals(graph.getNodes().size(), 3);
 
-        graph.removeNode(nodes[3]);
+        assertTrue(graph.removeNode(nodes[3]));
         assertTrue(graph.getEdges().contains(edges[2]));
         assertEquals(graph.getEdges().size(), 1);
         assertTrue(graph.getNodes().containsAll(Arrays.asList(nodes[1], nodes[2])));
         assertEquals(graph.getNodes().size(), 2);
+
+        assertTrue(graph.removeNode(nodes[2]));
+        assertEquals(0, graph.getEdges().size());
+        assertTrue(graph.getNodes().contains(nodes[1]));
+        assertEquals(graph.getNodes().size(), 1);
 
         assertThrows(AssertionError.class, () -> graph.removeNode(null));
     }

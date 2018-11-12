@@ -61,8 +61,8 @@ public class KnowledgeGraphDisplayer {
         support.addPropertyChangeListener(UndirectedGraph.NODE_ADDED_PROP, new PropertyChangeListener() {
             @Override
             public void propertyChange(PropertyChangeEvent evt) {
-                graphUI.addNode(evt.getNewValue().toString());
                 Node n = (Node) evt.getNewValue();
+                org.graphstream.graph.Node gNode = graphUI.addNode(n.getId().toString());
                 n.addChangeEventListener(renderListener);
                 renderer.render(n);
             }
