@@ -62,7 +62,7 @@ public class KnowledgeGraphDisplayer {
             @Override
             public void propertyChange(PropertyChangeEvent evt) {
                 graphUI.addNode(evt.getNewValue().toString());
-                Node n = (Node) evt.getSource();
+                Node n = (Node) evt.getNewValue();
                 n.addChangeEventListener(renderListener);
                 renderer.render(n);
             }
