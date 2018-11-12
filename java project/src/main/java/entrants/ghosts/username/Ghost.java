@@ -1,26 +1,22 @@
 package entrants.ghosts.username;
 
+import entrants.BT.Library.BTLibrary;
 import entrants.utils.Commons;
 import entrants.utils.graph.AgentKnowledge;
 import entrants.utils.graph.DiscreteKnowledgeGraph;
 import entrants.utils.graph.Edge;
 import entrants.utils.graph.Node;
 import entrants.utils.graph.interfaces.IUndirectedGraph;
-import entrants.utils.ui.KnowledgeGraphDisplayer;
+import jbt.execution.core.*;
+import jbt.model.core.ModelTask;
 import pacman.controllers.IndividualGhostController;
 import pacman.game.Constants;
+import pacman.game.Constants.MOVE;
 import pacman.game.Game;
 import pacman.game.comms.Message;
 import pacman.game.internal.Maze;
 
-import entrants.BT.Library.BTLibrary;
-import jbt.execution.core.*;
-import jbt.model.core.ModelTask;
-import pacman.controllers.PacmanController;
-import pacman.game.Constants.MOVE;
-
 import java.beans.PropertyChangeSupport;
-import java.nio.file.Paths;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -37,6 +33,7 @@ public class Ghost extends IndividualGhostController {
 
     // STATICS
     public static final String MAZE_CHANGED_PROP = "maze_changed";
+    public static final String SAVE_CURRENT_STATE_PROP = "save_current_state";
     public static final int POSITION_SENDING_FREQUENCY = 10;
     private static final Logger LOGGER = Logger.getLogger(Ghost.class.getName());
     static {
@@ -46,7 +43,6 @@ public class Ghost extends IndividualGhostController {
     // ATTRIBUTES
     private AgentKnowledge knowledge;
     private DiscreteKnowledgeGraph discreteKnowledgeGraph;
-    private KnowledgeGraphDisplayer displayer;
     private Maze currentMaze;
     private boolean initialized;
     private final PropertyChangeSupport support;
@@ -109,15 +105,6 @@ public class Ghost extends IndividualGhostController {
             Commons.initAgentsKnowledge(this.knowledge, game);
             discreteKnowledgeGraph = new DiscreteKnowledgeGraph(this.knowledge.getGraph());
             this.support.firePropertyChange(Ghost.MAZE_CHANGED_PROP, oldMaze, this.currentMaze);
-            if(this.display)
-            {
-                if (displayer == null) {
-                    displayer = new KnowledgeGraphDisplayer(discreteKnowledgeGraph, "file:///" + Paths.get(".").toAbsolutePath().normalize().toString() + "/src/main/java/entrants/utils/ui/kgraph.css");
-                    displayer.display();
-                } else {
-                    displayer.setGraphData(discreteKnowledgeGraph);
-                }
-            }
         } else {
             this.discreteKnowledgeGraph.update(Commons.updateAgentsKnowledge(this.knowledge, game));
         }
@@ -131,10 +118,13 @@ public class Ghost extends IndividualGhostController {
 
             IBTExecutor btExecutor = BTExecutorFactory.createBTExecutor(bt, context);
 
+            if (display) {
+                support.firePropertyChange(SAVE_CURRENT_STATE_PROP, null, game.getTotalTime());
+            }
+
             do {
                 btExecutor.tick();
             } while (btExecutor.getStatus() == ExecutionTask.Status.RUNNING);
-
             return (MOVE) context.getVariable("MOVE");
         }
         return null;

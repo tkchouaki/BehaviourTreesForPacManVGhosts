@@ -35,7 +35,8 @@ public class KnowledgeGraphDisplayer {
         renderListener = new ChangeEventListener() {
             @Override
             public void changed(ChangeEvent evt) {
-                renderer.render((Node) evt.getSource());
+                Node n = (Node) evt.getSource();
+                renderer.render(n);
             }
         };
 

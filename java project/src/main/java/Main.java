@@ -7,9 +7,12 @@ import examples.StarterPacMan.MyPacMan;
 import pacman.Executor;
 import pacman.controllers.IndividualGhostController;
 import pacman.controllers.MASController;
+import pacman.controllers.examples.StarterPacMan;
 import pacman.game.Constants.*;
+import pacman.game.util.Stats;
 
 import javax.swing.*;
+import java.util.Arrays;
 import java.util.EnumMap;
 
 
@@ -31,7 +34,7 @@ public class Main {
         EnumMap<GHOST, IndividualGhostController> controllers = new EnumMap<>(GHOST.class);
 
         controllers.put(GHOST.INKY, new Inky());
-        controllers.put(GHOST.BLINKY, new Blinky());
+        controllers.put(GHOST.BLINKY, new Blinky(true));
         controllers.put(GHOST.PINKY, new Pinky());
         controllers.put(GHOST.SUE, new Sue());
 
@@ -52,8 +55,14 @@ public class Main {
                 window.setVisible(true);
             }
         });
-
+        // GhostLogger.setup();
         // Run the game
         executor.runGameTimed(new MyPacMan(), new MASController(controllers));
+        /*for (int i = 0; i < 20; ++i) {
+            Stats[] stats = executor.runExperiment(new MyPacMan(), new MASController(controllers), 1, "");
+            for (Stats stat : stats) {
+                System.out.println(stat.getAverage());
+            }
+        }*/
     }
 }

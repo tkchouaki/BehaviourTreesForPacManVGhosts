@@ -8,7 +8,11 @@ import pacman.game.Constants;
 public class Blinky extends Ghost{
 
     public Blinky() {
-        super(Constants.GHOST.BLINKY);
+        this(false);
+    }
+
+    public Blinky(boolean display) {
+        super(Constants.GHOST.BLINKY, display);
         initJBT();
     }
 }

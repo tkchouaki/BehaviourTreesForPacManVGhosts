@@ -1,10 +1,12 @@
 package entrants.utils.ui;
 
 import entrants.ghosts.username.Ghost;
+import org.graphstream.stream.file.FileSinkImages;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
+import java.io.IOException;
 import java.nio.file.Paths;
 import java.util.*;
 
@@ -17,10 +19,13 @@ public class DebugModel {
 
     private final Map<Ghost, KnowledgeGraphDisplayer> tracedAgents;
     private final PropertyChangeSupport support;
+    private final FileSinkImages pic;
 
     public DebugModel() {
         tracedAgents = new HashMap<>();
         support = new PropertyChangeSupport(this);
+
+        this.pic = new FileSinkImages(FileSinkImages.OutputType.PNG, FileSinkImages.Resolutions.CGA);
     }
 
     public Collection<Ghost> getRegisteredAgents() {
@@ -44,6 +49,16 @@ public class DebugModel {
             @Override
             public void propertyChange(PropertyChangeEvent evt) {
                 tracedAgents.get(agent).setGraphData(agent.getDiscreteGraph());
+            }
+        });
+        agent.getPropertyChangeSupport().addPropertyChangeListener(Ghost.SAVE_CURRENT_STATE_PROP, new PropertyChangeListener() {
+            @Override
+            public void propertyChange(PropertyChangeEvent evt) {
+                try {
+                    pic.writeAll(tracedAgents.get(agent).getUIGraph(), agent.getGhostEnumValue() + "_" + evt.getNewValue() + ".png");
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
         });
         support.firePropertyChange(AGENT_REGISTERED_PROP, null, agent);
