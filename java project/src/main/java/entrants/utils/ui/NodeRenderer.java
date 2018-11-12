@@ -45,9 +45,6 @@ public class NodeRenderer {
         org.graphstream.graph.Node graphStreamNode = graph.getNode(n.getId().toString());
         if(graphStreamNode != null)
         {
-            graphStreamNode.setAttribute("ui.label", n.getId());
-            graphStreamNode.setAttribute("x", n.getX());
-            graphStreamNode.setAttribute("y", n.getY());
             graphStreamNode.addAttribute("ui.class", String.join(",", classes));
         }
     }
