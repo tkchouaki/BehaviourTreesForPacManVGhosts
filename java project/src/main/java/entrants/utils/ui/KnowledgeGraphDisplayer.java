@@ -20,6 +20,7 @@ public class KnowledgeGraphDisplayer {
     private final Graph graphUI;
     private final NodeRenderer renderer;
     private String css;
+    private final ChangeEventListener renderListener;
 
     public KnowledgeGraphDisplayer(IUndirectedGraph<Node, Edge> g, String css) {
         if (css == null) {
@@ -30,6 +31,12 @@ public class KnowledgeGraphDisplayer {
         graphUI.addAttribute("ui.stylesheet", this.css);
         graphData = (g == null) ? new UndirectedGraph<>() : g;
         renderer = new NodeRenderer(graphUI);
+        renderListener = new ChangeEventListener() {
+            @Override
+            public void changed(ChangeEvent evt) {
+                renderer.render((Node) evt.getSource());
+            }
+        };
 
         registerListener();
         updateUI();
@@ -55,13 +62,8 @@ public class KnowledgeGraphDisplayer {
             @Override
             public void propertyChange(PropertyChangeEvent evt) {
                 graphUI.addNode(evt.getNewValue().toString());
-                Node n = (Node) evt.getNewValue();
-                n.addChangeEventListener(new ChangeEventListener() {
-                    @Override
-                    public void changed(ChangeEvent evt) {
-                        renderer.render((Node) evt.getSource());
-                    }
-                });
+                Node n = (Node) evt.getSource();
+                n.addChangeEventListener(renderListener);
                 renderer.render(n);
             }
         });
@@ -80,6 +82,7 @@ public class KnowledgeGraphDisplayer {
             @Override
             public void propertyChange(PropertyChangeEvent evt) {
                 Node node = (Node) evt.getOldValue();
+                node.removeChangeEventListener(renderListener);
                 graphUI.removeNode(node.getId().toString());
             }
         });
@@ -93,13 +96,7 @@ public class KnowledgeGraphDisplayer {
         });
 
         for (Node n : graphData.getNodes()) {
-            n.addChangeEventListener(new ChangeEventListener() {
-                @Override
-                public void changed(ChangeEvent evt)
-                {
-                    renderer.render(n);
-                }
-            });
+            n.addChangeEventListener(renderListener);
         }
     }
 
