@@ -41,7 +41,6 @@ public class DiscreteKnowledgeGraph extends UndirectedGraph<Node, Edge>{
     public void update(Collection<Node> updatedNodes)
     {
         Collection<Node> nodes = this.getNodes();
-        System.out.println("===");
         for(Node updatedNode : updatedNodes)
         {
             if(this.isNodeInteresting(updatedNode) && !nodes.contains(updatedNode))
@@ -65,6 +64,7 @@ public class DiscreteKnowledgeGraph extends UndirectedGraph<Node, Edge>{
      */
     private void addNewIntrestingNode(Node node)
     {
+        this.addNode(node);
         Collection<Node> myNodes = this.getNodes();
         Map<Node, List<Edge>> pathsToMyNodes = this.graph.circleNode(node, myNodes);
         Collection<Node> neighbours = new HashSet<>();
@@ -111,7 +111,6 @@ public class DiscreteKnowledgeGraph extends UndirectedGraph<Node, Edge>{
         Collection<Node> neighbours = null;
         try {
             neighbours = this.getNeighboursAsNodesOf(node);
-            System.out.println(node);
             this.removeNode(node);
             for(Node neighbourA : neighbours)
             {
@@ -120,7 +119,6 @@ public class DiscreteKnowledgeGraph extends UndirectedGraph<Node, Edge>{
                     if(!neighbourA.equals(neighbourB))
                     {
                         Edge edge = new Edge(neighbourA, neighbourB);
-                        System.out.println(edge);
                         this.addEdge(edge);
                     }
                 }

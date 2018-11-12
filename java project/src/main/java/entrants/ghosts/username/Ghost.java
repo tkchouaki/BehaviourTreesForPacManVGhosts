@@ -75,7 +75,7 @@ public class Ghost extends IndividualGhostController {
     }
 
     public void initJBT(){
-       initJBT("StarterGhost");
+       initJBT("StarterGhost_V2");
     }
 
     public void initJBT(String behaviourTreeName){

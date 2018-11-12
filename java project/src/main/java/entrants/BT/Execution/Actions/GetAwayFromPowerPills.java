@@ -8,6 +8,17 @@
 // ******************************************************* 
 package entrants.BT.Execution.Actions;
 
+import entrants.ghosts.username.Ghost;
+import entrants.utils.graph.Edge;
+import entrants.utils.graph.Node;
+import entrants.utils.graph.UndirectedGraph;
+import entrants.utils.graph.interfaces.IUndirectedGraph;
+import pacman.game.Constants;
+import pacman.game.Game;
+
+import java.util.HashSet;
+import java.util.List;
+
 /** ExecutionAction class created from MMPM action GetAwayFromPowerPills. */
 public class GetAwayFromPowerPills extends
 		jbt.execution.task.leaf.action.ExecutionAction {
@@ -41,7 +52,23 @@ public class GetAwayFromPowerPills extends
 		 * should only return Status.SUCCESS, Status.FAILURE or Status.RUNNING.
 		 * No other values are allowed.
 		 */
-		return jbt.execution.core.ExecutionTask.Status.SUCCESS;
+		Game game = (Game) this.getContext().getVariable("GAME");
+		Ghost ghost = (Ghost) this.getContext().getVariable("GHOST");
+		Node currentPosition = ghost.getKnowledge().getKnowledgeAboutMySelf().getPosition();
+		UndirectedGraph<Node, Edge> graph = ghost.getKnowledge().getGraph();
+		try {
+			List<Node> path = graph.getPathToClosest(currentPosition, Node.getNodesWithPowerPills(graph.getNodes()), new HashSet<>());
+			if(path.size()>0)
+			{
+				Node powerPillPosition = path.get(path.size()-1);
+				System.out.println("getting away from power pill " + powerPillPosition.getContainedPowerPillId() + " at node " + powerPillPosition.getId());
+				this.getContext().setVariable("MOVE", game.getNextMoveAwayFromTarget(currentPosition.getId(), powerPillPosition.getId(), Constants.DM.PATH));
+				return jbt.execution.core.ExecutionTask.Status.SUCCESS;
+			}
+		} catch (IUndirectedGraph.NodeNotFoundException e) {
+			e.printStackTrace();
+		}
+		return Status.FAILURE;
 	}
 
 	protected void internalTerminate() {
