@@ -5,6 +5,7 @@ import entrants.utils.graph.Edge;
 import entrants.utils.graph.Node;
 import entrants.utils.graph.UndirectedGraph;
 import entrants.utils.graph.interfaces.IUndirectedGraph;
+import org.graphstream.graph.ElementNotFoundException;
 import org.graphstream.graph.Graph;
 import org.graphstream.graph.implementations.DefaultGraph;
 import org.graphstream.ui.view.Viewer;
@@ -86,7 +87,12 @@ public class KnowledgeGraphDisplayer {
             public void propertyChange(PropertyChangeEvent evt) {
                 Node node = (Node) evt.getOldValue();
                 node.removeChangeEventListener(renderListener);
-                graphUI.removeNode(node.getId().toString());
+                try {
+                    graphUI.removeNode(node.getId().toString());
+                } catch (ElementNotFoundException e) {
+                    //ignore, should see why it happens
+                }
+
             }
         });
 
@@ -94,7 +100,11 @@ public class KnowledgeGraphDisplayer {
             @Override
             public void propertyChange(PropertyChangeEvent evt) {
                 Edge edge = (Edge) evt.getOldValue();
-                graphUI.removeEdge(edge.toString());
+                try {
+                    graphUI.removeEdge(edge.toString());
+                } catch (ElementNotFoundException e) {
+                    //ignore, should see why it happens
+                }
             }
         });
 
