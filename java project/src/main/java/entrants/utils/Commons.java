@@ -94,6 +94,7 @@ public abstract class Commons {
             if(node.containsPacMan() && !node.getId().equals(pacManPosition))
             {
                 //We change the last update time of the old Pac Man position.
+                changedNodes.add(agentKnowledge.getPacManDescription().getPosition());
                 agentKnowledge.getPacManDescription().setPosition(null);
                 node.setLastUpdateTick(game.getCurrentLevelTime());
             }
