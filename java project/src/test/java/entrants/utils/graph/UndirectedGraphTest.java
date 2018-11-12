@@ -1,11 +1,15 @@
 package entrants.utils.graph;
 
 import entrants.utils.graph.interfaces.IUndirectedGraph;
+import org.junit.Assert;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -103,6 +107,11 @@ class UndirectedGraphTest {
         }
 
         assertTrue(graph.getNeighboursAsNodesOf(nodes[0]).containsAll(Arrays.asList(nodes[1], nodes[2])));
+        assertThrows(AssertionError.class, () -> graph.getNeighboursAsNodesOf(null));
+        assertThrows(
+                IUndirectedGraph.NodeNotFoundException.class,
+                () -> graph.getNeighboursAsNodesOf(new Node(3, 1, 1))
+        );
     }
 
     @Test
@@ -124,7 +133,12 @@ class UndirectedGraphTest {
             graph.addEdge(edge);
         }
 
+        assertThrows(AssertionError.class, () -> graph.getNeighboursAsEdgesOf(null));
         assertTrue(graph.getNeighboursAsEdgesOf(nodes[0]).containsAll(Arrays.asList(edges)));
+        assertThrows(
+                IUndirectedGraph.NodeNotFoundException.class,
+                () -> graph.getNeighboursAsEdgesOf(new Node(3, 1, 1))
+        );
     }
 
     @Test
@@ -143,6 +157,12 @@ class UndirectedGraphTest {
         assertEquals(nodes[2], graph.getNodeByID(nodes[2].getId()));
 
         assertNull(graph.getNodeByID(12));
+        assertThrows(AssertionError.class, () -> graph.getDegreeOf(null));
+    }
+
+    @Test
+    void getPropertyChangeSupport() {
+        assertNotNull(graph.getPropertyChangeSupport());
     }
 
     @Test
@@ -158,6 +178,8 @@ class UndirectedGraphTest {
 
         assertTrue(graph.getNodes().containsAll(Arrays.asList(nodes)));
         assertEquals(graph.getNodes().size(), nodes.length);
+        assertThrows(AssertionError.class, () -> graph.addNode(null));
+        assertFalse(graph.addNode(nodes[0]));
     }
 
     @Test
@@ -186,7 +208,7 @@ class UndirectedGraphTest {
         }
         assertTrue(graph.getEdges().containsAll(Arrays.asList(edges)));
         assertTrue(graph.getNodes().containsAll(Arrays.asList(nodes))); // nodes added through addEdge()
-
+        assertThrows(AssertionError.class, () -> graph.addEdge(null));
     }
 
     @Test
@@ -219,11 +241,18 @@ class UndirectedGraphTest {
         assertTrue(graph.getNodes().containsAll(Arrays.asList(nodes[1], nodes[2], nodes[3])));
         assertEquals(graph.getNodes().size(), 3);
 
-        graph.removeNode(nodes[3]);
+        assertTrue(graph.removeNode(nodes[3]));
         assertTrue(graph.getEdges().contains(edges[2]));
         assertEquals(graph.getEdges().size(), 1);
         assertTrue(graph.getNodes().containsAll(Arrays.asList(nodes[1], nodes[2])));
         assertEquals(graph.getNodes().size(), 2);
+
+        assertTrue(graph.removeNode(nodes[2]));
+        assertEquals(0, graph.getEdges().size());
+        assertTrue(graph.getNodes().contains(nodes[1]));
+        assertEquals(graph.getNodes().size(), 1);
+
+        assertThrows(AssertionError.class, () -> graph.removeNode(null));
     }
 
     @Test
@@ -251,5 +280,39 @@ class UndirectedGraphTest {
         assertTrue(graph.getEdges().containsAll(Arrays.asList(edges[2], edges[1])));
 
         assertFalse(graph.removeEdge(edges[0]));
+        assertThrows(AssertionError.class, () -> graph.removeEdge(null));
+    }
+
+    @Test
+    void clear() {
+        graph.addNode(new Node(0, 0, 0));
+        graph.clear();
+
+        assertEquals(0, graph.getNodes().size());
+        assertEquals(0, graph.getEdges().size());
+    }
+
+    @Test
+    void circleNode() {
+        Node[] nodes = new Node[] {
+                new Node(0, 0, 0),
+                new Node(1, 0, 1),
+                new Node(2, 1, 0),
+                new Node(3, 1, 1)
+        };
+        for (Node node : nodes) {
+            graph.addEdge(new Edge(nodes[0], nodes[1]));
+            graph.addEdge(new Edge(nodes[0], nodes[2]));
+            graph.addEdge(new Edge(nodes[1], nodes[3]));
+        }
+
+        List<Node> circling = Arrays.asList(nodes[1], nodes[2]);
+        Map<Node, List<Edge>> result = graph.circleNode(nodes[0], circling);
+
+        assertNotNull(result);
+        assertTrue(circling.containsAll(result.keySet()));
+        assertEquals(2, result.size());
+        assertFalse(result.containsKey(nodes[0]));
+        assertFalse(result.containsKey(nodes[3]));
     }
 }

@@ -32,10 +32,8 @@ import java.util.logging.Logger;
 public class Ghost extends IndividualGhostController {
 
     // BT
-    private MOVE            myMove;
     private IContext        context;
     private ModelTask       bt;
-    private String          btName;
 
     // STATICS
     public static final String MAZE_CHANGED_PROP = "maze_changed";
@@ -124,17 +122,22 @@ public class Ghost extends IndividualGhostController {
             this.discreteKnowledgeGraph.update(Commons.updateAgentsKnowledge(this.knowledge, game));
         }
 
-        // ========== Behaviour Tree's LOOP =========
-        context.setVariable("MOVE", MOVE.NEUTRAL);
-        context.setVariable("GAME", game);
+        Node position = getKnowledge().getKnowledgeAboutMySelf().getPosition();
+        if (position != null && position.isDecisionNode() && game.doesGhostRequireAction(this.getGhostEnumValue())) {
+            // ========== Behaviour Tree's LOOP =========
+            context.setVariable("MOVE", MOVE.NEUTRAL);
+            context.setVariable("GAME", game);
+            context.setVariable("GHOST", this);
 
-        IBTExecutor btExecutor = BTExecutorFactory.createBTExecutor(bt, context);
+            IBTExecutor btExecutor = BTExecutorFactory.createBTExecutor(bt, context);
 
-        do{
-            btExecutor.tick();
-        }while(btExecutor.getStatus() == ExecutionTask.Status.RUNNING);
+            do {
+                btExecutor.tick();
+            } while (btExecutor.getStatus() == ExecutionTask.Status.RUNNING);
 
-        return (MOVE) context.getVariable("MOVE");
+            return (MOVE) context.getVariable("MOVE");
+        }
+        return null;
     }
 
     public PropertyChangeSupport getPropertyChangeSupport() {
@@ -144,5 +147,15 @@ public class Ghost extends IndividualGhostController {
     public IUndirectedGraph<Node, Edge> getDiscreteGraph()
     {
         return this.discreteKnowledgeGraph;
+    }
+
+    public AgentKnowledge getKnowledge()
+    {
+        return this.knowledge;
+    }
+
+    public Constants.GHOST getGhostEnumValue()
+    {
+        return this.ghost;
     }
 }

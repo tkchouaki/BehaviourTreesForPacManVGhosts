@@ -8,6 +8,11 @@
 // ******************************************************* 
 package entrants.BT.Execution.Actions;
 
+import entrants.ghosts.username.Ghost;
+import entrants.utils.graph.Node;
+import pacman.game.Constants;
+import pacman.game.Game;
+
 /** ExecutionAction class created from MMPM action GoToPowerPill. */
 public class GoToPowerPill extends
 		jbt.execution.task.leaf.action.ExecutionAction {
@@ -75,6 +80,17 @@ public class GoToPowerPill extends
 		 * should only return Status.SUCCESS, Status.FAILURE or Status.RUNNING.
 		 * No other values are allowed.
 		 */
+		Game game = (Game) this.getContext().getVariable("GAME");
+		Ghost ghost = (Ghost) this.getContext().getVariable("GHOST");
+		int currentPosition = ghost.getKnowledge().getKnowledgeAboutMySelf().getPosition().getId();
+		int powerPillPosition = 0;
+		for(Node node : Node.getNodesWithPowerPills(ghost.getDiscreteGraph().getNodes()))
+		{
+			powerPillPosition = node.getId();
+			break;
+		}
+		this.getContext().setVariable("MOVE", game.getNextMoveTowardsTarget(currentPosition, powerPillPosition, Constants.DM.PATH));
+		System.out.println("GoToPowerPill " + powerPillPosition);
 		return jbt.execution.core.ExecutionTask.Status.SUCCESS;
 	}
 

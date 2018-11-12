@@ -1,9 +1,6 @@
 package entrants.utils;
 
-import entrants.utils.graph.AgentKnowledge;
-import entrants.utils.graph.Edge;
-import entrants.utils.graph.Node;
-import entrants.utils.graph.UndirectedGraph;
+import entrants.utils.graph.*;
 import entrants.utils.graph.interfaces.IUndirectedGraph;
 import pacman.game.Constants;
 import pacman.game.Game;
@@ -55,6 +52,8 @@ public abstract class Commons {
         //We retrieve the PacMan's & the ghosts positions (if we can see them)
         int pacManPosition = game.getPacmanCurrentNodeIndex();
         Map<Constants.GHOST, Integer> ghostsPositions = new HashMap<>();
+        //We loop through the nodes of the graph to update them. the changed nodes are store into a set.
+        Collection<Node> changedNodes = new HashSet<>();
         for(Constants.GHOST ghost : Constants.GHOST.values())
         {
             //While retrieving the positions of the ghosts
@@ -73,10 +72,12 @@ public abstract class Commons {
             }
         }
 
-        //We loop through the nodes of the graph to update them. the changed nodes are store into a set.
-        Collection<Node> changedNodes = new HashSet<>();
         for(Node node : agentKnowledge.getGraph().getNodes())
         {
+            if(!game.isNodeObservable(node.getId()))
+            {
+                continue;
+            }
             //We update the pills information
             if(Commons.updatePillsInfo(game, node)){
                 changedNodes.add(node);
@@ -88,10 +89,12 @@ public abstract class Commons {
                     LOGGER.info(agentKnowledge.getOwner() + ": no more pills at node " + node.getId());
                 }
             }
+
             //Check if we see a node where we thought there was PacMan but now it's not.
             if(node.containsPacMan() && !node.getId().equals(pacManPosition))
             {
                 //We change the last update time of the old Pac Man position.
+                changedNodes.add(agentKnowledge.getPacManDescription().getPosition());
                 agentKnowledge.getPacManDescription().setPosition(null);
                 node.setLastUpdateTick(game.getCurrentLevelTime());
             }
@@ -103,6 +106,8 @@ public abstract class Commons {
                 agentKnowledge.getPacManDescription().setPosition(node);
                 node.setLastUpdateTick(game.getCurrentLevelTime());
                 changedNodes.add(node);
+                sendToAllGhostExceptMe(game, agentKnowledge.getOwner(), Message.MessageType.PACMAN_SEEN, node.getId());
+                LOGGER.info(agentKnowledge.getOwner() + ": Pacman seen at node " + node.getId());
             }
             //We check if the current node is a ghost's current position.
             //We also add its old & new position to the changed nodes.
@@ -142,8 +147,10 @@ public abstract class Commons {
                 }
                 Node a = new Node(i, game.getNodeXCood(i), game.getNodeYCood(i), game.isJunction(i));
                 Node b = new Node(neighbours[j], game.getNodeXCood(neighbours[j]), game.getNodeYCood(neighbours[j]), game.isJunction(neighbours[j]));
-                Commons.updatePillsInfo(game, a);
-                Commons.updatePillsInfo(game, b);
+                a.setContainedPowerPillId(game.getPowerPillIndex(a.getId()));
+                a.setContainedPillId(game.getPillIndex(a.getId()));
+                b.setContainedPowerPillId(game.getPowerPillIndex(b.getId()));
+                b.setContainedPillId(game.getPillIndex(b.getId()));
                 Edge edge = new Edge(a, b);
                 graph.addEdge(edge);
             }
@@ -189,7 +196,7 @@ public abstract class Commons {
     }
 
     /**
-     * Read received messages and update knowledge according to received informmation
+     * Read received messages and update knowledge according to received information
      * @param agentKnowledge the receiving agent's knowledge
      * @param game the running game
      * @return all nodes that have been updated
@@ -216,24 +223,38 @@ public abstract class Commons {
             }
 
             // Teammates positions have changed
-            if (type.equals(Message.MessageType.I_AM)) {
-                Node old = Node.getNodeContainingGhost(agentKnowledge.getGraph().getNodes(), message.getSender());
-                if (old == null || !old.getId().equals(node.getId()))
+            else if (type.equals(Message.MessageType.I_AM)) {
+                Node old = agentKnowledge.getGhostDescription(message.getSender()).getPosition();
+                if (old == null || (!old.equals(node) && old.getLastUpdateTick() < message.getTick()))
                 {
                     // Remove old position
-                    if (old != null && old.getLastUpdateTick() < message.getTick())
+                    if (old != null)
                     {
-                        old.removeGhost(message.getSender());
+                        // old.removeGhostDescription(message.getSender());
                         old.setLastUpdateTick(message.getTick());
                         toUpdate.add(old);
                     }
+
                     // Set new one
-                    if(node.getLastUpdateTick() < message.getTick())
-                    {
-                        agentKnowledge.getGhostDescription(message.getSender()).setPosition(node);
-                        node.setLastUpdateTick(message.getTick());
-                    }
+                    agentKnowledge.getGhostDescription(message.getSender()).setPosition(node);
+                    node.setLastUpdateTick(message.getTick());
                     LOGGER.info(agentKnowledge.getOwner() + " received " + message.getSender() + "'s position (" + node.getId() +")");
+                }
+            }
+
+            // Pacman has been seen by one of my teammates
+            else if (type.equals(Message.MessageType.PACMAN_SEEN)) {
+                Node old = agentKnowledge.getPacManDescription().getPosition();
+                if (old == null || (!old.equals(node) && old.getLastUpdateTick() < message.getTick())) {
+                    if (old != null) {
+                        old.setLastUpdateTick(message.getTick());
+                        toUpdate.add(old);
+                    }
+
+                    // Set the new position
+                    agentKnowledge.getPacManDescription().setPosition(node);
+                    node.setLastUpdateTick(message.getTick());
+                    LOGGER.info(agentKnowledge.getOwner() + " received PACMAN's position (" + node.getId() +") from " + message.getSender());
                 }
             }
             toUpdate.add(node);
@@ -262,5 +283,26 @@ public abstract class Commons {
                 ));
             }
         }
+    }
+
+    /**
+     * Checks if two iterables have an element in common
+     * @param a
+     * @param b
+     * @return True if the iterables have an element in common. False otherwise
+     */
+    public static boolean isIntersectionNotEmpty(Iterable a, Iterable b)
+    {
+        for(Object objectA : a)
+        {
+            for(Object objectB : b)
+            {
+                if(a.equals(b))
+                {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 }

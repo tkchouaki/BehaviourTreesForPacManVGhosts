@@ -22,7 +22,7 @@ public class PacManDescription extends AgentDescription{
     public void removeFromPosition() {
         if(this.getPosition().containsPacMan())
         {
-            this.getPosition().setContainedPacMan(null);
+            this.getPosition().setContainedPacManDescription(null);
         }
     }
 
@@ -33,7 +33,7 @@ public class PacManDescription extends AgentDescription{
     public void addToPosition() {
         if(!this.getPosition().containsPacMan())
         {
-            this.getPosition().setContainedPacMan(this);
+            this.getPosition().setContainedPacManDescription(this);
         }
     }
 }

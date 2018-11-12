@@ -20,6 +20,7 @@ public class KnowledgeGraphDisplayer {
     private final Graph graphUI;
     private final NodeRenderer renderer;
     private String css;
+    private final ChangeEventListener renderListener;
 
     public KnowledgeGraphDisplayer(IUndirectedGraph<Node, Edge> g, String css) {
         if (css == null) {
@@ -30,6 +31,12 @@ public class KnowledgeGraphDisplayer {
         graphUI.addAttribute("ui.stylesheet", this.css);
         graphData = (g == null) ? new UndirectedGraph<>() : g;
         renderer = new NodeRenderer(graphUI);
+        renderListener = new ChangeEventListener() {
+            @Override
+            public void changed(ChangeEvent evt) {
+                renderer.render((Node) evt.getSource());
+            }
+        };
 
         registerListener();
         updateUI();
@@ -54,14 +61,12 @@ public class KnowledgeGraphDisplayer {
         support.addPropertyChangeListener(UndirectedGraph.NODE_ADDED_PROP, new PropertyChangeListener() {
             @Override
             public void propertyChange(PropertyChangeEvent evt) {
-                graphUI.addNode(evt.getNewValue().toString());
                 Node n = (Node) evt.getNewValue();
-                n.addChangeEventListener(new ChangeEventListener() {
-                    @Override
-                    public void changed(ChangeEvent evt) {
-                        renderer.render((Node) evt.getSource());
-                    }
-                });
+                org.graphstream.graph.Node gNode = graphUI.addNode(n.getId().toString());
+                gNode.setAttribute("ui.label", n.getId());
+                gNode.setAttribute("x", n.getX());
+                gNode.setAttribute("y", 600-n.getY());
+                n.addChangeEventListener(renderListener);
                 renderer.render(n);
             }
         });
@@ -80,6 +85,7 @@ public class KnowledgeGraphDisplayer {
             @Override
             public void propertyChange(PropertyChangeEvent evt) {
                 Node node = (Node) evt.getOldValue();
+                node.removeChangeEventListener(renderListener);
                 graphUI.removeNode(node.getId().toString());
             }
         });
@@ -93,13 +99,7 @@ public class KnowledgeGraphDisplayer {
         });
 
         for (Node n : graphData.getNodes()) {
-            n.addChangeEventListener(new ChangeEventListener() {
-                @Override
-                public void changed(ChangeEvent evt)
-                {
-                    renderer.render(n);
-                }
-            });
+            n.addChangeEventListener(renderListener);
         }
     }
 
@@ -119,7 +119,10 @@ public class KnowledgeGraphDisplayer {
 
     private void updateUI() {
         for (Node n : graphData.getNodes()) {
-            graphUI.addNode(n.toString());
+            org.graphstream.graph.Node graphStreamNode = graphUI.addNode(n.toString());
+            graphStreamNode.setAttribute("ui.label", n.getId());
+            graphStreamNode.setAttribute("x", n.getX());
+            graphStreamNode.setAttribute("y", 600-n.getY());
             renderer.render(n);
         }
 

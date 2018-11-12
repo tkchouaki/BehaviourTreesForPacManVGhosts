@@ -7,6 +7,8 @@ import entrants.utils.graph.interfaces.NodeInterface;
 import java.beans.PropertyChangeSupport;
 import java.util.*;
 
+import static entrants.utils.Commons.isIntersectionNotEmpty;
+
 /**
  * This class describes an Undirected Graph
  * @param <N>
@@ -237,7 +239,70 @@ public class UndirectedGraph<N extends NodeInterface, E extends EdgeInterface<N>
         support.firePropertyChange(GRAPH_CLEARED_PROP, result, null);
     }
 
-    // TODO: Add in interface if necessary or add javadoc
+    public List<N> getPathToClosest(N start, Collection<N> targets, Collection<N> forbidden) throws NodeNotFoundException {
+        Collection<N> nodes = this.getNodes();
+        Collection<N> seen = new HashSet<>();
+        List<Map<N, E>> levels = new ArrayList<>();
+        Map<N, E> firstLevel = new HashMap<>();
+        firstLevel.put(start, null);
+        levels.add(0, firstLevel);
+        boolean arrived = false;
+        N reachedTarget = null;
+        if(!nodes.contains(start))
+        {
+            throw new NodeNotFoundException();
+        }
+        if(targets.contains(start))
+        {
+            return new ArrayList<>();
+        }
+        seen.add(start);
+        while(reachedTarget==null && seen.size() < nodes.size())
+        {
+            Map<N, E> lastLevel = levels.get(levels.size()-1);
+            Map<N, E> nextLevel = new HashMap<>();
+            for(N node : lastLevel.keySet())
+            {
+                Collection<E> neighbours = this.getNeighboursAsEdgesOf(node);
+                for(E edge : neighbours)
+                {
+                    N neighbour = edge.getNeighbour(node);
+                    if(forbidden.contains(neighbour))
+                    {
+                        continue;
+                    }
+                    if(!seen.contains(neighbour))
+                    {
+                        seen.add(neighbour);
+                        nextLevel.put(neighbour, edge);
+                        if(targets.contains(neighbour))
+                        {
+                            reachedTarget = neighbour;
+                        }
+                    }
+                }
+                if(reachedTarget != null)
+                {
+                    break;
+                }
+            }
+            levels.add(nextLevel);
+        }
+        if(reachedTarget != null)
+        {
+            List<N> path = new ArrayList<>();
+            for(int currentLevelIndex = levels.size()-1; currentLevelIndex!=0; currentLevelIndex--)
+            {
+                Map<N, E> currentLevel = levels.get(currentLevelIndex);
+                path.add(0, reachedTarget);
+                reachedTarget = currentLevel.get(reachedTarget).getNeighbour(reachedTarget);
+            }
+            return path;
+        }
+        return null;
+    }
+
+    @Override
     public Map<N, List<E>> circleNode(N node, Collection<N> circlingNodes)
     {
         Map<N, List<E>> result = new HashMap<>();
