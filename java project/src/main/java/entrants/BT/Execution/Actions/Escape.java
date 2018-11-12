@@ -34,7 +34,6 @@ public class Escape extends jbt.execution.task.leaf.action.ExecutionAction {
 		this.getExecutor().requestInsertionIntoList(
 				jbt.execution.core.BTExecutor.BTExecutorList.TICKABLE, this);
 		/* TODO: this method's implementation must be completed. */
-		System.out.println(this.getClass().getCanonicalName() + " spawned");
 	}
 
 	protected jbt.execution.core.ExecutionTask.Status internalTick() {
@@ -48,7 +47,6 @@ public class Escape extends jbt.execution.task.leaf.action.ExecutionAction {
 		int toEscape = ghost.getKnowledge().getPacManDescription().getPosition().getId();
 		int currentPosition = ghost.getKnowledge().getKnowledgeAboutMySelf().getPosition().getId();
 		this.getContext().setVariable("MOVE", game.getNextMoveAwayFromTarget(currentPosition, toEscape, Constants.DM.PATH));
-		System.out.println("Escape");
 		return jbt.execution.core.ExecutionTask.Status.SUCCESS;
 	}
 

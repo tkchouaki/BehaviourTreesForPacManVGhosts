@@ -43,7 +43,6 @@ public class GetAwayFromPowerPills extends
 		this.getExecutor().requestInsertionIntoList(
 				jbt.execution.core.BTExecutor.BTExecutorList.TICKABLE, this);
 		/* TODO: this method's implementation must be completed. */
-		System.out.println(this.getClass().getCanonicalName() + " spawned");
 	}
 
 	protected jbt.execution.core.ExecutionTask.Status internalTick() {
@@ -58,10 +57,9 @@ public class GetAwayFromPowerPills extends
 		UndirectedGraph<Node, Edge> graph = ghost.getKnowledge().getGraph();
 		try {
 			List<Node> path = graph.getPathToClosest(currentPosition, Node.getNodesWithPowerPills(graph.getNodes()), new HashSet<>());
-			if(path.size()>0)
+			if(path != null && path.size()>0)
 			{
 				Node powerPillPosition = path.get(path.size()-1);
-				System.out.println("getting away from power pill " + powerPillPosition.getContainedPowerPillId() + " at node " + powerPillPosition.getId());
 				this.getContext().setVariable("MOVE", game.getNextMoveAwayFromTarget(currentPosition.getId(), powerPillPosition.getId(), Constants.DM.PATH));
 				return jbt.execution.core.ExecutionTask.Status.SUCCESS;
 			}

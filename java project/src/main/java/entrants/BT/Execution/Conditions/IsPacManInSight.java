@@ -34,7 +34,6 @@ public class IsPacManInSight extends
 		this.getExecutor().requestInsertionIntoList(
 				jbt.execution.core.BTExecutor.BTExecutorList.TICKABLE, this);
 		/* TODO: this method's implementation must be completed. */
-		System.out.println(this.getClass().getCanonicalName() + " spawned");
 	}
 
 	protected jbt.execution.core.ExecutionTask.Status internalTick() {
@@ -44,7 +43,6 @@ public class IsPacManInSight extends
 		 * No other values are allowed.
 		 */
 		Ghost ghost = (Ghost) this.getContext().getVariable("GHOST");
-		System.out.println("isPacManInsight");
 		return ghost.getKnowledge().getPacManDescription().getPosition() != null ? jbt.execution.core.ExecutionTask.Status.SUCCESS : Status.FAILURE;
 	}
 

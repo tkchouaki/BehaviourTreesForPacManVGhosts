@@ -42,7 +42,6 @@ public class Chase extends jbt.execution.task.leaf.action.ExecutionAction {
 		this.getExecutor().requestInsertionIntoList(
 				jbt.execution.core.BTExecutor.BTExecutorList.TICKABLE, this);
 		/* TODO: this method's implementation must be completed. */
-		System.out.println(this.getClass().getCanonicalName() + " spawned");
 	}
 
 	protected jbt.execution.core.ExecutionTask.Status internalTick() {
@@ -64,10 +63,8 @@ public class Chase extends jbt.execution.task.leaf.action.ExecutionAction {
 			targets.remove(ghost.getKnowledge().getKnowledgeAboutMySelf().getPosition());
 			List<Node> path = null;
 			try {
-				System.out.println("here");
-				path = graph.getPathToClosest(ghost.getKnowledge().getKnowledgeAboutMySelf().getPosition(), targets, forbidden);
+				path = graph.getPathToClosest(ghost.getKnowledge().getPacManDescription().getPosition(), targets, forbidden);
 				Node target = path.get(path.size()-1);
-				System.out.println(target.getId());
 				this.getContext().setVariable("MOVE", game.getNextMoveTowardsTarget(currentPosition, target.getId(), Constants.DM.PATH));
 			} catch (IUndirectedGraph.NodeNotFoundException e) {
 				e.printStackTrace();
@@ -77,7 +74,6 @@ public class Chase extends jbt.execution.task.leaf.action.ExecutionAction {
 		{
 			this.getContext().setVariable("MOVE", game.getNextMoveTowardsTarget(currentPosition, pacManPosition, Constants.DM.PATH));
 		}
-		System.out.println("Chase");
 		return jbt.execution.core.ExecutionTask.Status.SUCCESS;
 	}
 

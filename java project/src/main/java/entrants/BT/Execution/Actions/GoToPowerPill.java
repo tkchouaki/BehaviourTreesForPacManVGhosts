@@ -71,7 +71,6 @@ public class GoToPowerPill extends
 		this.getExecutor().requestInsertionIntoList(
 				jbt.execution.core.BTExecutor.BTExecutorList.TICKABLE, this);
 		/* TODO: this method's implementation must be completed. */
-		System.out.println(this.getClass().getCanonicalName() + " spawned");
 	}
 
 	protected jbt.execution.core.ExecutionTask.Status internalTick() {
@@ -90,7 +89,6 @@ public class GoToPowerPill extends
 			break;
 		}
 		this.getContext().setVariable("MOVE", game.getNextMoveTowardsTarget(currentPosition, powerPillPosition, Constants.DM.PATH));
-		System.out.println("GoToPowerPill " + powerPillPosition);
 		return jbt.execution.core.ExecutionTask.Status.SUCCESS;
 	}
 
