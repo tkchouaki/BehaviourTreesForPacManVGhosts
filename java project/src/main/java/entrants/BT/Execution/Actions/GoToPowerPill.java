@@ -90,7 +90,7 @@ public class GoToPowerPill extends
 			break;
 		}
 		this.getContext().setVariable("MOVE", game.getNextMoveTowardsTarget(currentPosition, powerPillPosition, Constants.DM.PATH));
-		System.out.println("GoToPowerPill");
+		System.out.println("GoToPowerPill " + powerPillPosition);
 		return jbt.execution.core.ExecutionTask.Status.SUCCESS;
 	}
 

@@ -65,7 +65,7 @@ public class KnowledgeGraphDisplayer {
                 org.graphstream.graph.Node gNode = graphUI.addNode(n.getId().toString());
                 gNode.setAttribute("ui.label", n.getId());
                 gNode.setAttribute("x", n.getX());
-                gNode.setAttribute("y", n.getY());
+                gNode.setAttribute("y", 600-n.getY());
                 n.addChangeEventListener(renderListener);
                 renderer.render(n);
             }
@@ -122,7 +122,7 @@ public class KnowledgeGraphDisplayer {
             org.graphstream.graph.Node graphStreamNode = graphUI.addNode(n.toString());
             graphStreamNode.setAttribute("ui.label", n.getId());
             graphStreamNode.setAttribute("x", n.getX());
-            graphStreamNode.setAttribute("y", n.getY());
+            graphStreamNode.setAttribute("y", 600-n.getY());
             renderer.render(n);
         }
 

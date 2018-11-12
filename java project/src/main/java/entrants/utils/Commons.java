@@ -1,9 +1,6 @@
 package entrants.utils;
 
-import entrants.utils.graph.AgentKnowledge;
-import entrants.utils.graph.Edge;
-import entrants.utils.graph.Node;
-import entrants.utils.graph.UndirectedGraph;
+import entrants.utils.graph.*;
 import entrants.utils.graph.interfaces.IUndirectedGraph;
 import pacman.game.Constants;
 import pacman.game.Game;
@@ -54,8 +51,9 @@ public abstract class Commons {
     {
         //We retrieve the PacMan's & the ghosts positions (if we can see them)
         int pacManPosition = game.getPacmanCurrentNodeIndex();
-
         Map<Constants.GHOST, Integer> ghostsPositions = new HashMap<>();
+        //We loop through the nodes of the graph to update them. the changed nodes are store into a set.
+        Collection<Node> changedNodes = new HashSet<>();
         for(Constants.GHOST ghost : Constants.GHOST.values())
         {
             //While retrieving the positions of the ghosts
@@ -74,10 +72,12 @@ public abstract class Commons {
             }
         }
 
-        //We loop through the nodes of the graph to update them. the changed nodes are store into a set.
-        Collection<Node> changedNodes = new HashSet<>();
         for(Node node : agentKnowledge.getGraph().getNodes())
         {
+            if(!game.isNodeObservable(node.getId()))
+            {
+                continue;
+            }
             //We update the pills information
             if(Commons.updatePillsInfo(game, node)){
                 changedNodes.add(node);
@@ -89,6 +89,7 @@ public abstract class Commons {
                     LOGGER.info(agentKnowledge.getOwner() + ": no more pills at node " + node.getId());
                 }
             }
+
             //Check if we see a node where we thought there was PacMan but now it's not.
             if(node.containsPacMan() && !node.getId().equals(pacManPosition))
             {
