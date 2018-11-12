@@ -15,6 +15,8 @@
             <Parameter name="powerPillIndex" type="INTEGER" />
         </Action>
 
+        <Action name="GetAwayFromPowerPills" />
+
         <Action name="Escape" />
 
         <Action name="Chase" />

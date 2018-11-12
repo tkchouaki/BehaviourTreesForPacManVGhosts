@@ -6,6 +6,7 @@
         <BTFile>config/BehaviourTree/BTs/Pinky.xbt</BTFile>
         <BTFile>config/BehaviourTree/BTs/Sue.xbt</BTFile>
         <BTFile>config/BehaviourTree/BTs/StarterGhost.xbt</BTFile>
+        <BTFile>config/BehaviourTree/BTs/StarterGhost_V2.xbt</BTFile>
 
 
 

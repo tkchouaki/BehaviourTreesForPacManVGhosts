@@ -2,7 +2,7 @@
 //                   MACHINE GENERATED CODE                
 //                       DO NOT MODIFY                     
 //                                                         
-// Generated on 11/08/2018 16:52:46
+// Generated on 11/12/2018 11:14:16
 // ******************************************************* 
 package entrants.BT.Library;
 
@@ -15,6 +15,7 @@ package entrants.BT.Library;
  * <li>config/BehaviourTree/BTs/Pinky.xbt</li>
  * <li>config/BehaviourTree/BTs/Sue.xbt</li>
  * <li>config/BehaviourTree/BTs/StarterGhost.xbt</li>
+ * <li>config/BehaviourTree/BTs/StarterGhost_V2.xbt</li>
  * </ul>
  */
 public class BTLibrary implements jbt.execution.core.IBTLibrary {
@@ -30,6 +31,8 @@ public class BTLibrary implements jbt.execution.core.IBTLibrary {
 	private static jbt.model.core.ModelTask Sue;
 	/** Tree generated from file config/BehaviourTree/BTs/StarterGhost.xbt. */
 	private static jbt.model.core.ModelTask StarterGhost;
+	/** Tree generated from file config/BehaviourTree/BTs/StarterGhost_V2.xbt. */
+	private static jbt.model.core.ModelTask StarterGhost_V2;
 
 	/* Static initialization of all the trees. */
 	static {
@@ -88,6 +91,41 @@ public class BTLibrary implements jbt.execution.core.IBTLibrary {
 								new entrants.BT.Model.Actions.Escape(null)),
 						new entrants.BT.Model.Actions.Chase(null)));
 
+		StarterGhost_V2 = new jbt.model.task.composite.ModelSelector(
+				null,
+				new jbt.model.task.composite.ModelSequence(
+						null,
+						new jbt.model.task.decorator.ModelInverter(
+								null,
+								new entrants.BT.Model.Conditions.IsPacManInSight(
+										null)),
+						new jbt.model.task.composite.ModelSelector(
+								null,
+								new jbt.model.task.composite.ModelSequence(
+										null,
+										new entrants.BT.Model.Conditions.IsEdible(
+												null),
+										new entrants.BT.Model.Actions.GetAwayFromPowerPills(
+												null)),
+								new jbt.model.task.composite.ModelRandomSelector(
+										null,
+										new entrants.BT.Model.Actions.GoToPowerPill(
+												null, (int) -1, null),
+										new entrants.BT.Model.Actions.DefaultMove(
+												null)))),
+				new jbt.model.task.composite.ModelSelector(
+						null,
+						new jbt.model.task.composite.ModelSequence(
+								null,
+								new jbt.model.task.composite.ModelSelector(
+										null,
+										new entrants.BT.Model.Conditions.IsPacManCloseToPowerPill(
+												null),
+										new entrants.BT.Model.Conditions.IsEdible(
+												null)),
+								new entrants.BT.Model.Actions.Escape(null)),
+						new entrants.BT.Model.Actions.Chase(null)));
+
 	}
 
 	/**
@@ -115,6 +153,9 @@ public class BTLibrary implements jbt.execution.core.IBTLibrary {
 		if (name.equals("StarterGhost")) {
 			return StarterGhost;
 		}
+		if (name.equals("StarterGhost_V2")) {
+			return StarterGhost_V2;
+		}
 		return null;
 	}
 
@@ -133,7 +174,7 @@ public class BTLibrary implements jbt.execution.core.IBTLibrary {
 	private class BTLibraryIterator
 			implements
 			java.util.Iterator<jbt.util.Pair<java.lang.String, jbt.model.core.ModelTask>> {
-		static final long numTrees = 6;
+		static final long numTrees = 7;
 		long currentTree = 0;
 
 		public boolean hasNext() {
@@ -171,6 +212,11 @@ public class BTLibrary implements jbt.execution.core.IBTLibrary {
 			if ((this.currentTree - 1) == 5) {
 				return new jbt.util.Pair<java.lang.String, jbt.model.core.ModelTask>(
 						"StarterGhost", StarterGhost);
+			}
+
+			if ((this.currentTree - 1) == 6) {
+				return new jbt.util.Pair<java.lang.String, jbt.model.core.ModelTask>(
+						"StarterGhost_V2", StarterGhost_V2);
 			}
 
 			throw new java.util.NoSuchElementException();
