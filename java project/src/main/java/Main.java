@@ -3,11 +3,11 @@ import entrants.ghosts.username.*;
 import entrants.utils.logging.GhostLogger;
 import entrants.utils.ui.DebugWindow;
 import examples.StarterPacMan.MyPacMan;
-import examples.StarterPacMan.MyPacMan;
 import pacman.Executor;
 import pacman.controllers.IndividualGhostController;
 import pacman.controllers.MASController;
 import pacman.game.Constants.*;
+import pacman.game.util.Stats;
 
 import javax.swing.*;
 import java.util.EnumMap;
@@ -55,5 +55,13 @@ public class Main {
 
         // Run the game
         executor.runGameTimed(new MyPacMan(), new MASController(controllers));
+        /*int nbTrials = 10;
+        Double[] scores = new Double[nbTrials];
+        for(int i=0; i<nbTrials; i++)
+        {
+            Stats[] stats = executor.runExperiment(new MyPacMan(), new MASController(controllers), 1, "");
+            scores[i] = stats[0].getAverage();
+            System.out.println(scores[i]);
+        }*/
     }
 }

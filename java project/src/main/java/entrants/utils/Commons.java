@@ -39,7 +39,6 @@ public abstract class Commons {
         return b;
     }
 
-
     /**
      * Updates an Agent's Knowledge from a Game object
      * @param game
@@ -47,8 +46,7 @@ public abstract class Commons {
      * @param agentKnowledge
      * The AgentKnowledge to update
      */
-    public static Collection<Node> updateAgentsKnowledge(AgentKnowledge agentKnowledge, Game game)
-    {
+    public static Collection<Node> updateAgentsKnowledge(AgentKnowledge agentKnowledge, Game game) {
         //We retrieve the PacMan's & the ghosts positions (if we can see them)
         int pacManPosition = game.getPacmanCurrentNodeIndex();
         Map<Constants.GHOST, Integer> ghostsPositions = new HashMap<>();
@@ -78,9 +76,9 @@ public abstract class Commons {
             {
                 continue;
             }
+            changedNodes.add(node);
             //We update the pills information
             if(Commons.updatePillsInfo(game, node)){
-                changedNodes.add(node);
                 node.setLastUpdateTick(game.getCurrentLevelTime());
                 if (node.getContainedPillId() == -1 && node.getContainedPowerPillId() == -1) {
                     sendToAllGhostExceptMe(
@@ -96,6 +94,26 @@ public abstract class Commons {
                 //We change the last update time of the old Pac Man position.
                 changedNodes.add(agentKnowledge.getPacManDescription().getPosition());
                 agentKnowledge.getPacManDescription().setPosition(null);
+                if(pacManPosition == -1 && game.getCurrentLevelTime() - node.getLastUpdateTick() <= 10 && node.isDecisionNode())
+                {
+                    try {
+                        Collection<Node> neighbours = agentKnowledge.getGraph().getNeighboursAsNodesOf(node);
+                        List<Node> invisibleNodes = new ArrayList<>(neighbours);
+                        for(Node neighbour : neighbours)
+                        {
+                            if(game.isNodeObservable(neighbour.getId()))
+                            {
+                               invisibleNodes.remove(neighbour);
+                            }
+                        }
+                        if(invisibleNodes.size()==1)
+                        {
+                            agentKnowledge.getPacManDescription().setPosition(invisibleNodes.get(0));
+                        }
+                    } catch (IUndirectedGraph.NodeNotFoundException e) {
+                        e.printStackTrace();
+                    }
+                }
                 node.setLastUpdateTick(game.getCurrentLevelTime());
             }
             //We check if the current node is the PacMan's position to update it.
@@ -153,6 +171,10 @@ public abstract class Commons {
                 b.setContainedPillId(game.getPillIndex(b.getId()));
                 Edge edge = new Edge(a, b);
                 graph.addEdge(edge);
+                if(i == game.getPacManInitialNodeIndex())
+                {
+                    agentKnowledge.getPacManDescription().setPosition(a);
+                }
             }
         }
     }
