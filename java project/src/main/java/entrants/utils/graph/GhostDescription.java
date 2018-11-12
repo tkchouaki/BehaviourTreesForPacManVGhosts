@@ -135,7 +135,7 @@ public class GhostDescription extends AgentDescription{
     public void removeFromPosition() {
         if(this.getPosition().containsGhost(this.ghost))
         {
-            this.getPosition().removeGhost(this.ghost);
+            this.getPosition().removeGhostDescription(this.ghost);
         }
     }
 
@@ -146,7 +146,7 @@ public class GhostDescription extends AgentDescription{
     public void addToPosition() {
         if(!this.getPosition().containsGhost(this.ghost))
         {
-            this.getPosition().addGhost(this);
+            this.getPosition().addGhostDescription(this);
         }
     }
 }

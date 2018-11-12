@@ -4,7 +4,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import pacman.game.Constants;
 
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -89,7 +88,7 @@ class NodeTest {
 
     @Test
     void setContainsPacMan() {
-        node.setContainedPacMan(new PacManDescription(new Node(1, 1, 1)));
+        node.setContainedPacManDescription(new PacManDescription(new Node(1, 1, 1)));
         assertTrue(node.containsPacMan());
     }
 
@@ -114,7 +113,7 @@ class NodeTest {
         for (Constants.GHOST g : Constants.GHOST.values()) {
             ghosts.add(new GhostDescription(g, n));
         }
-        node.setContainedGhosts(ghosts);
+        node.setContainedGhostsDescriptions(ghosts);
 
         assertTrue(ghosts.containsAll(node.getContainedGhosts()));
         assertTrue(node.getContainedGhosts().containsAll(ghosts));

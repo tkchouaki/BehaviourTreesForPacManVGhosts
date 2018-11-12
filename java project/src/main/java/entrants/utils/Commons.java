@@ -228,7 +228,7 @@ public abstract class Commons {
                     // Remove old position
                     if (old != null)
                     {
-                        // old.removeGhost(message.getSender());
+                        // old.removeGhostDescription(message.getSender());
                         old.setLastUpdateTick(message.getTick());
                         toUpdate.add(old);
                     }
@@ -281,5 +281,26 @@ public abstract class Commons {
                 ));
             }
         }
+    }
+
+    /**
+     * Checks if two iterables have an element in common
+     * @param a
+     * @param b
+     * @return True if the iterables have an element in common. False otherwise
+     */
+    public static boolean isIntersectionNotEmpty(Iterable a, Iterable b)
+    {
+        for(Object objectA : a)
+        {
+            for(Object objectB : b)
+            {
+                if(a.equals(b))
+                {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 }
