@@ -64,16 +64,16 @@ public class Chase extends jbt.execution.task.leaf.action.ExecutionAction {
 			List<Node> path = null;
 			try {
 				path = graph.getPathToClosest(ghost.getKnowledge().getPacManDescription().getPosition(), targets, forbidden);
-				Node target = path.get(path.size()-1);
-				this.getContext().setVariable("MOVE", game.getNextMoveTowardsTarget(currentPosition, target.getId(), Constants.DM.PATH));
+				if(path != null && path.size() > 0 ){
+					Node target = path.get(path.size()-1);
+					this.getContext().setVariable("MOVE", game.getNextMoveTowardsTarget(currentPosition, target.getId(), Constants.DM.PATH));
+					return jbt.execution.core.ExecutionTask.Status.SUCCESS;
+				}
 			} catch (IUndirectedGraph.NodeNotFoundException e) {
 				e.printStackTrace();
 			}
 		}
-		else
-		{
-			this.getContext().setVariable("MOVE", game.getNextMoveTowardsTarget(currentPosition, pacManPosition, Constants.DM.PATH));
-		}
+		this.getContext().setVariable("MOVE", game.getNextMoveTowardsTarget(currentPosition, pacManPosition, Constants.DM.PATH));
 		return jbt.execution.core.ExecutionTask.Status.SUCCESS;
 	}
 
