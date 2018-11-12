@@ -9,7 +9,6 @@ import pacman.controllers.IndividualGhostController;
 import pacman.controllers.MASController;
 import pacman.controllers.examples.StarterPacMan;
 import pacman.game.Constants.*;
-import pacman.game.util.Stats;
 
 import javax.swing.*;
 import java.util.Arrays;
@@ -55,9 +54,17 @@ public class Main {
                 window.setVisible(true);
             }
         });
-        // GhostLogger.setup();
+
         // Run the game
         executor.runGameTimed(new MyPacMan(), new MASController(controllers));
+        /*int nbTrials = 10;
+        Double[] scores = new Double[nbTrials];
+        for(int i=0; i<nbTrials; i++)
+        {
+            Stats[] stats = executor.runExperiment(new MyPacMan(), new MASController(controllers), 1, "");
+            scores[i] = stats[0].getAverage();
+            System.out.println(scores[i]);
+        }*/
         /*for (int i = 0; i < 20; ++i) {
             Stats[] stats = executor.runExperiment(new MyPacMan(), new MASController(controllers), 1, "");
             for (Stats stat : stats) {

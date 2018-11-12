@@ -95,6 +95,10 @@ public class Ghost extends IndividualGhostController {
         {
             Commons.sendToAllGhostExceptMe(game, this.ghost, Message.MessageType.I_AM, game.getGhostCurrentNodeIndex(this.ghost));
         }
+        if(game.wasPacManEaten())
+        {
+            this.knowledge.getPacManDescription().setPosition(this.knowledge.getGraph().getNodeByID(game.getPacManInitialNodeIndex()));
+        }
         //if its the first iteration or the maze has changed
         if (this.knowledge == null || !game.getCurrentMaze().equals(this.currentMaze)) {
             Maze oldMaze = this.currentMaze;

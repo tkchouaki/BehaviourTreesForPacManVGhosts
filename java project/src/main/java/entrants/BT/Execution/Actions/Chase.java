@@ -16,9 +16,7 @@ import entrants.utils.graph.interfaces.IUndirectedGraph;
 import pacman.game.Constants;
 import pacman.game.Game;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /** ExecutionAction class created from MMPM action Chase. */
 public class Chase extends jbt.execution.task.leaf.action.ExecutionAction {
@@ -52,7 +50,49 @@ public class Chase extends jbt.execution.task.leaf.action.ExecutionAction {
 		 */
 		Game game = (Game) this.getContext().getVariable("GAME");
 		Ghost ghost = (Ghost) this.getContext().getVariable("GHOST");
-		int currentPosition = ghost.getKnowledge().getKnowledgeAboutMySelf().getPosition().getId();
+		UndirectedGraph<Node, Edge> graph = ghost.getKnowledge().getGraph();
+		Node ghostPosition = ghost.getKnowledge().getKnowledgeAboutMySelf().getPosition();
+		Node pacManPosition = ghost.getKnowledge().getPacManDescription().getPosition();
+        Collection<Node> circlingNodes = graph.circleNode(pacManPosition, Node.getDecisionNodes(graph.getNodes())).keySet();
+        Collection<Node> nodesWithGhosts = Node.getNodesContainingGhosts(graph.getNodes());
+        Map<Node, Integer> ranks = new HashMap<>();
+        Node targetNode = null;
+        for(Node circlingNode : circlingNodes)
+        {
+            int distanceToNode = game.getShortestPathDistance(ghostPosition.getId(), circlingNode.getId());
+            ranks.put(circlingNode, 1);
+            for(Node nodeWithGhost : nodesWithGhosts)
+            {
+                if(!nodeWithGhost.containsGhost(ghost.getGhostEnumValue()) && game.getShortestPathDistance(nodeWithGhost.getId(), circlingNode.getId()) < distanceToNode)
+                {
+                    ranks.put(circlingNode, ranks.get(circlingNode)+1);
+                }
+            }
+            if(targetNode == null || ranks.get(targetNode) > ranks.get(circlingNode))
+            {
+                targetNode = circlingNode;
+            }
+        }
+        this.getContext().setVariable("MOVE", game.getNextMoveTowardsTarget(targetNode.getId(), pacManPosition.getId(), Constants.DM.PATH));
+        /*ArrayList<Node> closestCirclingNodes = null;
+        int minDistance=-1;
+        for(Node node : circlingNodes)
+        {
+            int distance = game.getShortestPathDistance(ghostPosition.getId(), node.getId());
+            if(distance <= minDistance || minDistance < 0)
+            {
+                if(distance < minDistance || minDistance < 0)
+                {
+                    minDistance = distance;
+                    closestCirclingNodes = new ArrayList<>();
+                }
+                closestCirclingNodes.add(node);
+            }
+        }
+        Node targetNode = closestCirclingNodes.get(new Random().nextInt(closestCirclingNodes.size()));
+        this.getContext().setVariable("MOVE", game.getNextMoveTowardsTarget(ghostPosition.getId(), targetNode.getId(), Constants.DM.PATH));
+        */
+		/*int currentPosition = ghost.getKnowledge().getKnowledgeAboutMySelf().getPosition().getId();
 		int pacManPosition = ghost.getKnowledge().getPacManDescription().getPosition().getId();
 		if(ghost.getGhostEnumValue().equals(Constants.GHOST.BLINKY) || ghost.getGhostEnumValue().equals(Constants.GHOST.INKY))
 		{
@@ -74,6 +114,7 @@ public class Chase extends jbt.execution.task.leaf.action.ExecutionAction {
 			}
 		}
 		this.getContext().setVariable("MOVE", game.getNextMoveTowardsTarget(currentPosition, pacManPosition, Constants.DM.PATH));
+		*/
 		return jbt.execution.core.ExecutionTask.Status.SUCCESS;
 	}
 

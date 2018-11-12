@@ -8,6 +8,13 @@
 // ******************************************************* 
 package entrants.BT.Execution.Actions;
 
+import entrants.ghosts.username.Ghost;
+import entrants.utils.graph.Edge;
+import entrants.utils.graph.Node;
+import entrants.utils.graph.UndirectedGraph;
+import pacman.game.Constants;
+import pacman.game.Game;
+
 /** ExecutionAction class created from MMPM action DefaultMove. */
 public class DefaultMove extends jbt.execution.task.leaf.action.ExecutionAction {
 
@@ -38,6 +45,21 @@ public class DefaultMove extends jbt.execution.task.leaf.action.ExecutionAction 
 		 * should only return Status.SUCCESS, Status.FAILURE or Status.RUNNING.
 		 * No other values are allowed.
 		 */
+		Game game = (Game) this.getContext().getVariable("GAME");
+		Ghost ghost = (Ghost) this.getContext().getVariable("GHOST");
+		UndirectedGraph<Node, Edge> graph = ghost.getKnowledge().getGraph();
+		Node target = null;
+		for(Node node : Node.getDecisionNodes(graph.getNodes()))
+		{
+			if(target == null || node.getLastUpdateTick() < target.getLastUpdateTick())
+			{
+				target = node;
+			}
+		}
+		if(target != null)
+		{
+			this.getContext().setVariable("MOVE", game.getNextMoveTowardsTarget(ghost.getKnowledge().getKnowledgeAboutMySelf().getPosition().getId(), target.getId(), Constants.DM.PATH));
+		}
 		return jbt.execution.core.ExecutionTask.Status.SUCCESS;
 	}
 

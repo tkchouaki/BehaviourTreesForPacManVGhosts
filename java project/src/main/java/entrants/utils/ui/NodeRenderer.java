@@ -30,17 +30,16 @@ public class NodeRenderer {
             classes.add(ghost.className.toLowerCase());
         }
 
-        if (n.containsPill()) {
-            classes.add("pill");
-        }
-
-        if (n.containsPowerPill()) {
-            classes.add("power_pill");
-        }
-
         if (n.containsPacMan()) {
             classes.add("pacman");
         }
+        else if(n.containsPowerPill()) {
+            classes.add("power_pill");
+        }
+        else if (n.containsPill()) {
+            classes.add("pill");
+        }
+
         //LOGGER.info("Classes for node " + n.getId() + ": " + classes);
         org.graphstream.graph.Node graphStreamNode = graph.getNode(n.getId().toString());
         if(graphStreamNode != null)
