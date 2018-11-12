@@ -55,7 +55,7 @@ public class Chase extends jbt.execution.task.leaf.action.ExecutionAction {
 		Ghost ghost = (Ghost) this.getContext().getVariable("GHOST");
 		int currentPosition = ghost.getKnowledge().getKnowledgeAboutMySelf().getPosition().getId();
 		int pacManPosition = ghost.getKnowledge().getPacManDescription().getPosition().getId();
-		if(ghost.getGhostEnumValue().equals(Constants.GHOST.BLINKY))
+		if(ghost.getGhostEnumValue().equals(Constants.GHOST.BLINKY) || ghost.getGhostEnumValue().equals(Constants.GHOST.INKY))
 		{
 			UndirectedGraph<Node, Edge> graph = ghost.getKnowledge().getGraph();
 			Set<Node> forbidden = new HashSet<>();
