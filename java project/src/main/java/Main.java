@@ -39,7 +39,7 @@ public class Main {
         controllers.put(GHOST.SUE, new Sue());
 
         // Launch debug window
-        /*SwingUtilities.invokeLater(new Runnable() {
+        SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run() {
                 DebugWindow window = new DebugWindow();
@@ -54,7 +54,7 @@ public class Main {
 
                 window.setVisible(true);
             }
-        });*/
+        });
         GhostLogger.setup();
 
         // Run the game
