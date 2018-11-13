@@ -25,7 +25,7 @@ public class DebugModel {
         tracedAgents = new HashMap<>();
         support = new PropertyChangeSupport(this);
 
-        this.pic = new FileSinkImages(FileSinkImages.OutputType.PNG, FileSinkImages.Resolutions.CGA);
+        this.pic = new FileSinkImages(FileSinkImages.OutputType.PNG, FileSinkImages.Resolutions.HD720);
     }
 
     public Collection<Ghost> getRegisteredAgents() {

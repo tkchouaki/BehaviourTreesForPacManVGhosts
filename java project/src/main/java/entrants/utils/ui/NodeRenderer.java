@@ -28,6 +28,10 @@ public class NodeRenderer {
 
         for (Constants.GHOST ghost : n.getContainedGhosts()) {
             classes.add(ghost.className.toLowerCase());
+            if(n.getContainedGhostDescription(ghost).getEdibleTime()>0)
+            {
+                classes.add("frighted");
+            }
         }
 
         if (n.containsPacMan()) {
@@ -38,6 +42,16 @@ public class NodeRenderer {
         }
         else if (n.containsPill()) {
             classes.add("pill");
+        }
+
+        if(n.isDanger())
+        {
+            classes.add("danger");
+        }
+
+        if(n.isGoal())
+        {
+            classes.add("goal");
         }
 
         //LOGGER.info("Classes for node " + n.getId() + ": " + classes);

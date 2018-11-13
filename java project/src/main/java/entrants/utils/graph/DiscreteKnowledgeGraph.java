@@ -197,6 +197,10 @@ public class DiscreteKnowledgeGraph extends UndirectedGraph<Node, Edge>{
         {
             return true;
         }
+        if(node.isGoal() || node.isDanger())
+        {
+            return true;
+        }
         return node.isDecisionNode();
     }
 }

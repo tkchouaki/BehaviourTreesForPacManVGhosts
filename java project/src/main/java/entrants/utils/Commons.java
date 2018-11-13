@@ -171,12 +171,9 @@ public abstract class Commons {
                 b.setContainedPillId(game.getPillIndex(b.getId()));
                 Edge edge = new Edge(a, b);
                 graph.addEdge(edge);
-                if(i == game.getPacManInitialNodeIndex())
-                {
-                    agentKnowledge.getPacManDescription().setPosition(a);
-                }
             }
         }
+        agentKnowledge.getPacManDescription().setPosition(graph.getNodeByID(game.getPacManInitialNodeIndex()));
     }
 
     /**

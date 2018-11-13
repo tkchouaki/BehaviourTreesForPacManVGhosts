@@ -17,6 +17,8 @@ import pacman.game.comms.Message;
 import pacman.game.internal.Maze;
 
 import java.beans.PropertyChangeSupport;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -44,9 +46,10 @@ public class Ghost extends IndividualGhostController {
     private AgentKnowledge knowledge;
     private DiscreteKnowledgeGraph discreteKnowledgeGraph;
     private Maze currentMaze;
-    private boolean initialized;
     private final PropertyChangeSupport support;
     private boolean display;
+    private Node currentTarget;
+    private boolean closing;
 
     /**
      * Initializes the ghost, its knowledge is not displayed
@@ -91,10 +94,13 @@ public class Ghost extends IndividualGhostController {
      */
     @Override
     public Constants.MOVE getMove(Game game, long l) {
+
+        //We send the ghost's position to other ghosts regularly
         if(game.getCurrentLevelTime()%Ghost.POSITION_SENDING_FREQUENCY == 0)
         {
             Commons.sendToAllGhostExceptMe(game, this.ghost, Message.MessageType.I_AM, game.getGhostCurrentNodeIndex(this.ghost));
         }
+        //If PacMan was eaten, we reset its position to its spawning one.
         if(game.wasPacManEaten())
         {
             this.knowledge.getPacManDescription().setPosition(this.knowledge.getGraph().getNodeByID(game.getPacManInitialNodeIndex()));
@@ -114,22 +120,52 @@ public class Ghost extends IndividualGhostController {
         }
 
         Node position = getKnowledge().getKnowledgeAboutMySelf().getPosition();
+        //if the position requires an action.
         if (position != null && position.isDecisionNode() && game.doesGhostRequireAction(this.getGhostEnumValue())) {
             // ========== Behaviour Tree's LOOP =========
-            context.setVariable("MOVE", MOVE.NEUTRAL);
+            //context.setVariable("MOVE", MOVE.NEUTRAL);
             context.setVariable("GAME", game);
             context.setVariable("GHOST", this);
 
             IBTExecutor btExecutor = BTExecutorFactory.createBTExecutor(bt, context);
 
-            if (display) {
-                support.firePropertyChange(SAVE_CURRENT_STATE_PROP, null, game.getTotalTime());
-            }
-
             do {
                 btExecutor.tick();
             } while (btExecutor.getStatus() == ExecutionTask.Status.RUNNING);
-            return (MOVE) context.getVariable("MOVE");
+            Set<Node> toUpdate = new HashSet<>();
+            if(currentTarget != null)
+            {
+                currentTarget.setDanger(false);
+                currentTarget.setGoal(false);
+                toUpdate.add(currentTarget);
+
+            }
+            currentTarget = (Node) context.getVariable("SELECTED_NODE");
+            toUpdate.add(currentTarget);
+            this.closing = (Boolean) context.getVariable("CLOSING");
+            MOVE move;
+            String message = "";
+            if(closing)
+            {
+                message = "going to " + currentTarget;
+                currentTarget.setGoal(true);
+                move = game.getNextMoveTowardsTarget(position.getId(), currentTarget.getId(), Constants.DM.PATH);
+            }
+            else
+            {
+                message = "escaping " + currentTarget;
+                currentTarget.setDanger(true);
+                move = game.getNextMoveAwayFromTarget(position.getId(), currentTarget.getId(), Constants.DM.PATH);
+            }
+            this.discreteKnowledgeGraph.update(toUpdate);
+            if (display) {
+                support.firePropertyChange(SAVE_CURRENT_STATE_PROP, null, game.getTotalTime());
+            }
+            if(this.getGhostEnumValue().equals(Constants.GHOST.BLINKY))
+            {
+                System.out.println("blinky " + message + " at " + game.getTotalTime());
+            }
+            return move;
         }
         return null;
     }
