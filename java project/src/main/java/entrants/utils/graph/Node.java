@@ -31,6 +31,7 @@ public class Node implements NodeInterface {
 
 
     private final EventListenerList support;
+
     private final ChangeEvent event;
 
     /**
@@ -55,6 +56,35 @@ public class Node implements NodeInterface {
      * If not, this attribute should be set to null
      */
     private PacManDescription containedPacManDescription;
+
+    /**
+     * A boolean indicating if the current node is the agent's goal
+     */
+    private boolean isGoal;
+
+    /**
+     * A boolean indicating if the current node is ine that the agent's wants to get away from
+     */
+    private boolean isDanger;
+
+
+    public boolean isGoal() {
+        return isGoal;
+    }
+
+    public void setGoal(boolean goal) {
+        isGoal = goal;
+        fireChangeEvent();
+    }
+
+    public boolean isDanger() {
+        return isDanger;
+    }
+
+    public void setDanger(boolean danger) {
+        isDanger = danger;
+        fireChangeEvent();
+    }
 
     /**
      * A set of contained ghosts descriptions
