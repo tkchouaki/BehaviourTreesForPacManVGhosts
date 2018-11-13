@@ -1,0 +1,57 @@
+node {
+    text-mode: normal;
+    stroke-mode: plain;
+    text-color: black;
+    text-background-mode: plain;
+    text-alignment: under;
+}
+
+node.inky {
+    fill-color: orange;
+}
+
+node.pinky {
+    fill-color: orange;
+}
+
+node.sue {
+      fill-color: orange;
+}
+
+node.inky_frighted {
+    fill-color: pink;
+}
+
+node.pinky_frighted {
+    fill-color: pink;
+}
+
+node.sue_frighted {
+    fill-color: pink;
+}
+
+node.blinky {
+    fill-color: red;
+}
+
+node.blinky_frighted {
+    fill-color: blue;
+}
+
+node.pacman {
+    fill-color: yellow;
+}
+
+
+node.goal {
+    fill-color: green;
+}
+
+node.danger {
+    fill-color: #00e8ee;
+}
+
+
+node.power_pill {
+    fill-color: grey;
+}

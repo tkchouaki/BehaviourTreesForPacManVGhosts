@@ -15,8 +15,11 @@ import pacman.game.Constants.MOVE;
 import pacman.game.Game;
 import pacman.game.comms.Message;
 import pacman.game.internal.Maze;
+import scala.collection.immutable.Stream;
 
 import java.beans.PropertyChangeSupport;
+import java.sql.Timestamp;
+import java.time.LocalTime;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.logging.Level;
@@ -74,7 +77,7 @@ public class Ghost extends IndividualGhostController {
     }
 
     public void initJBT(){
-       initJBT("StarterGhost_V2");
+       initJBT("StarterGhost");
     }
 
     public void initJBT(String behaviourTreeName){
@@ -94,7 +97,7 @@ public class Ghost extends IndividualGhostController {
      */
     @Override
     public Constants.MOVE getMove(Game game, long l) {
-
+        float begin = System.currentTimeMillis();
         //We send the ghost's position to other ghosts regularly
         if(game.getCurrentLevelTime()%Ghost.POSITION_SENDING_FREQUENCY == 0)
         {
@@ -143,19 +146,20 @@ public class Ghost extends IndividualGhostController {
             currentTarget = (Node) context.getVariable("SELECTED_NODE");
             toUpdate.add(currentTarget);
             this.closing = (Boolean) context.getVariable("CLOSING");
-            MOVE move;
             String message = "";
+            Constants.MOVE lastMove = game.getGhostLastMoveMade(this.getGhostEnumValue());
+            Constants.MOVE nextMove;
             if(closing)
             {
                 message = "going to " + currentTarget;
                 currentTarget.setGoal(true);
-                move = game.getNextMoveTowardsTarget(position.getId(), currentTarget.getId(), Constants.DM.PATH);
+                nextMove = computeNextMove(position, currentTarget, closing, game, lastMove);
             }
             else
             {
                 message = "escaping " + currentTarget;
                 currentTarget.setDanger(true);
-                move = game.getNextMoveAwayFromTarget(position.getId(), currentTarget.getId(), Constants.DM.PATH);
+                nextMove = computeNextMove(position, currentTarget, closing, game, lastMove);
             }
             this.discreteKnowledgeGraph.update(toUpdate);
             if (display) {
@@ -163,9 +167,36 @@ public class Ghost extends IndividualGhostController {
             }
             if(this.getGhostEnumValue().equals(Constants.GHOST.BLINKY))
             {
-                System.out.println("blinky " + message + " at " + game.getTotalTime());
+                message = "blinky " + message + " at " + game.getTotalTime();
+                if(nextMove != null)
+                {
+                    message += " making " + nextMove.toString() + " among : ";
+                    boolean found = false;
+                    for(Constants.MOVE move : game.getPossibleMoves(position.getId(), lastMove))
+                    {
+                        message += move.toString() + ", ";
+                        if(move.equals(nextMove))
+                        {
+                           found = true;
+                        }
+                    }
+                    message += " after having made " + lastMove.toString();
+                    if(!found)
+                    {
+                        nextMove = computeNextMove(position, currentTarget, closing, game, lastMove);
+                    }
+                }
+                else
+                {
+                    message = "blinky has no move to do";
+                }
+                //System.out.println(message);
             }
-            return move;
+            if(System.currentTimeMillis() - begin >= 10)
+            {
+                System.out.println("problem");
+            }
+            return nextMove;
         }
         return null;
     }
@@ -187,5 +218,31 @@ public class Ghost extends IndividualGhostController {
     public Constants.GHOST getGhostEnumValue()
     {
         return this.ghost;
+    }
+
+    private Constants.MOVE computeNextMove(Node position, Node target, boolean closing, Game game, Constants.MOVE lastMove)
+    {
+        Constants.MOVE move;
+        if(closing)
+        {
+            try
+            {
+                move = game.getNextMoveTowardsTarget(position.getId(), currentTarget.getId(), lastMove, Constants.DM.MANHATTAN);
+            }catch (Exception e)
+            {
+                move = game.getNextMoveTowardsTarget(position.getId(), currentTarget.getId(), Constants.DM.MANHATTAN);
+            }
+        }
+        else
+        {
+            try
+            {
+                move = game.getNextMoveAwayFromTarget(position.getId(), currentTarget.getId(), lastMove, Constants.DM.MANHATTAN);
+            }catch (Exception e)
+            {
+                move = game.getNextMoveAwayFromTarget(position.getId(), currentTarget.getId(), Constants.DM.MANHATTAN);
+            }
+        }
+        return move;
     }
 }

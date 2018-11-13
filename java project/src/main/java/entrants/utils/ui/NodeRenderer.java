@@ -27,11 +27,12 @@ public class NodeRenderer {
         List<String> classes = new ArrayList<>();
 
         for (Constants.GHOST ghost : n.getContainedGhosts()) {
-            classes.add(ghost.className.toLowerCase());
+            String ghostClass = ghost.className.toLowerCase();
             if(n.getContainedGhostDescription(ghost).getEdibleTime()>0)
             {
-                classes.add("frighted");
+                ghostClass+="_frighted";
             }
+            classes.add(ghostClass);
         }
 
         if (n.containsPacMan()) {
