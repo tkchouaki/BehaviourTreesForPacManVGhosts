@@ -36,7 +36,7 @@ public class UndirectedGraph<N extends NodeInterface, E extends EdgeInterface<N>
      * A collection of all the nodes of the graph
      */
     @Override
-    public Collection<N> getNodes() {
+    public synchronized Collection<N> getNodes() {
         return new ArrayList<>(topology.keySet());
     }
 
@@ -46,7 +46,7 @@ public class UndirectedGraph<N extends NodeInterface, E extends EdgeInterface<N>
      * A collection of all the nodes of the graph
      */
     @Override
-    public Collection<E> getEdges() {
+    public synchronized Collection<E> getEdges() {
         Set<E> values = new HashSet<>();
         for (Collection<E> edges : topology.values()) {
             values.addAll(edges);
@@ -71,7 +71,7 @@ public class UndirectedGraph<N extends NodeInterface, E extends EdgeInterface<N>
      * @throws NodeNotFoundException fired if the given node doesn't exist in the graph
      */
     @Override
-    public int getDegreeOf(N node) throws NodeNotFoundException {
+    public synchronized int getDegreeOf(N node) throws NodeNotFoundException {
         if (node == null) {
             throw new AssertionError();
         }
@@ -89,7 +89,7 @@ public class UndirectedGraph<N extends NodeInterface, E extends EdgeInterface<N>
      * @throws NodeNotFoundException Fired if the given node doesn't exist in the graph
      */
     @Override
-    public Collection<N> getNeighboursAsNodesOf(N node) throws NodeNotFoundException {
+    public synchronized Collection<N> getNeighboursAsNodesOf(N node) throws NodeNotFoundException {
          if (node == null) {
              throw new AssertionError();
          }
@@ -115,7 +115,7 @@ public class UndirectedGraph<N extends NodeInterface, E extends EdgeInterface<N>
      * @throws NodeNotFoundException
      */
     @Override
-    public Collection<E> getNeighboursAsEdgesOf(N node) throws NodeNotFoundException {
+    public synchronized Collection<E> getNeighboursAsEdgesOf(N node) throws NodeNotFoundException {
         if (node == null) {
             throw new AssertionError();
         }
@@ -132,7 +132,7 @@ public class UndirectedGraph<N extends NodeInterface, E extends EdgeInterface<N>
      * @return The node with the given ID if it exists in the graph, null otherwise
      */
     @Override
-    public N getNodeByID(Integer nodeID) {
+    public synchronized N getNodeByID(Integer nodeID) {
         int i = 0;
         List<N> nodes = new ArrayList<>(topology.keySet());
         while (i < nodes.size() && !nodes.get(i).getId().equals(nodeID)) {
@@ -148,7 +148,7 @@ public class UndirectedGraph<N extends NodeInterface, E extends EdgeInterface<N>
      * @return True if the node didn't exist, False otherwise
      */
     @Override
-    public boolean addNode(N node) {
+    public synchronized boolean addNode(N node) {
         if (node == null) {
             throw new AssertionError();
         }
@@ -166,7 +166,7 @@ public class UndirectedGraph<N extends NodeInterface, E extends EdgeInterface<N>
      * @return True if the edge didn't exist in the graph, False otherwise
      */
     @Override
-    public boolean addEdge(E edge) {
+    public synchronized boolean addEdge(E edge) {
         if (edge == null) {
             throw new AssertionError();
         }
@@ -191,7 +191,7 @@ public class UndirectedGraph<N extends NodeInterface, E extends EdgeInterface<N>
      * @return True if the node existed in the graph, False otherwise
      */
     @Override
-    public boolean removeNode(N node) {
+    public synchronized boolean removeNode(N node) {
         if (node == null) {
             throw new AssertionError();
         }
@@ -217,7 +217,7 @@ public class UndirectedGraph<N extends NodeInterface, E extends EdgeInterface<N>
      * @return True if the edge existed in the graph, False otherwise
      */
     @Override
-    public boolean removeEdge(E edge) {
+    public synchronized boolean removeEdge(E edge) {
         if (edge == null) {
             throw new AssertionError();
         }
@@ -233,13 +233,13 @@ public class UndirectedGraph<N extends NodeInterface, E extends EdgeInterface<N>
      * Removes everything from the graph
      */
     @Override
-    public void clear() {
+    public synchronized void clear() {
         Map<N, Collection<E>> result = new HashMap<>(this.topology);
         topology.clear();
         support.firePropertyChange(GRAPH_CLEARED_PROP, result, null);
     }
 
-    public List<N> getPathToClosest(N start, Collection<N> targets, Collection<N> forbidden) throws NodeNotFoundException {
+    public synchronized List<N> getPathToClosest(N start, Collection<N> targets, Collection<N> forbidden) throws NodeNotFoundException {
         Collection<N> nodes = this.getNodes();
         Collection<N> seen = new HashSet<>();
         List<Map<N, E>> levels = new ArrayList<>();

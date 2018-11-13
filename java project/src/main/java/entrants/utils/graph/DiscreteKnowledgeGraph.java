@@ -26,7 +26,7 @@ public class DiscreteKnowledgeGraph extends UndirectedGraph<Node, Edge>{
      * Removes the nodes that are no longer intresting.
      * Adds the nodes that became interesting.
      */
-    public void update()
+    public synchronized void update()
     {
         this.update(this.graph.getNodes());
     }
@@ -38,7 +38,7 @@ public class DiscreteKnowledgeGraph extends UndirectedGraph<Node, Edge>{
      * @param updatedNodes
      * The nodes to recheck
      */
-    public void update(Collection<Node> updatedNodes)
+    public synchronized void update(Collection<Node> updatedNodes)
     {
         Collection<Node> nodes = this.getNodes();
         for(Node updatedNode : updatedNodes)
@@ -62,7 +62,7 @@ public class DiscreteKnowledgeGraph extends UndirectedGraph<Node, Edge>{
      * @param node
      * The node to add.
      */
-    private void addNewIntrestingNode(Node node)
+    private synchronized void addNewIntrestingNode(Node node)
     {
         this.addNode(node);
         Collection<Node> myNodes = this.getNodes();

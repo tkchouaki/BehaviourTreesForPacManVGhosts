@@ -55,7 +55,7 @@ public class Main {
                 window.setVisible(true);
             }
         });
-        GhostLogger.setup();
+        //GhostLogger.setup();
 
         // Run the game
         boolean experience = false;
