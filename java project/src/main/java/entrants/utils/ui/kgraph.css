@@ -27,7 +27,7 @@ node.pacman {
 }
 
 node.frighted {
-    fill-color: blue;
+    shape: rounded-box;
 }
 
 node.power_pill {
@@ -37,3 +37,28 @@ node.power_pill {
 node.pill {
     fill-color: violet;
 }
+
+
+node.goal {
+    stroke-mode: plain;
+    stroke-width: 2px;
+    stroke-color: green;
+}
+
+node.danger {
+    stroke-mode: plain;
+    stroke-width: 2px;
+    stroke-color: red;
+}
+
+/*node.goal {
+    stroke-mode: plain;
+    stroke-size: 20;
+    stroke-color: green;
+}
+
+node.danger {
+    stroke-mode: plain;
+    stroke-width: 20;
+    stroke-color: red;
+}*/
