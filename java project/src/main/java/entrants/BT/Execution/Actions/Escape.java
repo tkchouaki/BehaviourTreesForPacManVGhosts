@@ -9,6 +9,7 @@
 package entrants.BT.Execution.Actions;
 
 import entrants.ghosts.username.Ghost;
+import entrants.utils.graph.Node;
 import pacman.game.Constants;
 import pacman.game.Game;
 
@@ -42,11 +43,10 @@ public class Escape extends jbt.execution.task.leaf.action.ExecutionAction {
 		 * should only return Status.SUCCESS, Status.FAILURE or Status.RUNNING.
 		 * No other values are allowed.
 		 */
-		Game game = (Game) this.getContext().getVariable("GAME");
 		Ghost ghost = (Ghost) this.getContext().getVariable("GHOST");
-		int toEscape = ghost.getKnowledge().getPacManDescription().getPosition().getId();
-		int currentPosition = ghost.getKnowledge().getKnowledgeAboutMySelf().getPosition().getId();
-		this.getContext().setVariable("MOVE", game.getNextMoveAwayFromTarget(currentPosition, toEscape, Constants.DM.PATH));
+		Node toEscape = ghost.getKnowledge().getPacManDescription().getPosition();
+		this.getContext().setVariable("SELECTED_NODE", toEscape);
+		this.getContext().setVariable("CLOSING", false);
 		return jbt.execution.core.ExecutionTask.Status.SUCCESS;
 	}
 

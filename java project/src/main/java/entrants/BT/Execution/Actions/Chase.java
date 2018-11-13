@@ -73,7 +73,8 @@ public class Chase extends jbt.execution.task.leaf.action.ExecutionAction {
                 targetNode = circlingNode;
             }
         }
-        this.getContext().setVariable("MOVE", game.getNextMoveTowardsTarget(targetNode.getId(), pacManPosition.getId(), Constants.DM.PATH));
+        this.getContext().setVariable("SELECTED_NODE", targetNode);
+        this.getContext().setVariable("CLOSING", true);
         /*ArrayList<Node> closestCirclingNodes = null;
         int minDistance=-1;
         for(Node node : circlingNodes)

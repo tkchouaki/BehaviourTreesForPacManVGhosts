@@ -45,7 +45,6 @@ public class DefaultMove extends jbt.execution.task.leaf.action.ExecutionAction 
 		 * should only return Status.SUCCESS, Status.FAILURE or Status.RUNNING.
 		 * No other values are allowed.
 		 */
-		Game game = (Game) this.getContext().getVariable("GAME");
 		Ghost ghost = (Ghost) this.getContext().getVariable("GHOST");
 		UndirectedGraph<Node, Edge> graph = ghost.getKnowledge().getGraph();
 		Node target = null;
@@ -58,7 +57,8 @@ public class DefaultMove extends jbt.execution.task.leaf.action.ExecutionAction 
 		}
 		if(target != null)
 		{
-			this.getContext().setVariable("MOVE", game.getNextMoveTowardsTarget(ghost.getKnowledge().getKnowledgeAboutMySelf().getPosition().getId(), target.getId(), Constants.DM.PATH));
+			this.getContext().setVariable("SELECTED_NODE", target);
+			this.getContext().setVariable("CLOSING", true);
 		}
 		return jbt.execution.core.ExecutionTask.Status.SUCCESS;
 	}

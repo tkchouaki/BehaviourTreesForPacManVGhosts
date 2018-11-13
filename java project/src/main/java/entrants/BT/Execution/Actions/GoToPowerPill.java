@@ -13,6 +13,8 @@ import entrants.utils.graph.Node;
 import pacman.game.Constants;
 import pacman.game.Game;
 
+import java.util.Random;
+
 /** ExecutionAction class created from MMPM action GoToPowerPill. */
 public class GoToPowerPill extends
 		jbt.execution.task.leaf.action.ExecutionAction {
@@ -81,14 +83,18 @@ public class GoToPowerPill extends
 		 */
 		Game game = (Game) this.getContext().getVariable("GAME");
 		Ghost ghost = (Ghost) this.getContext().getVariable("GHOST");
-		int currentPosition = ghost.getKnowledge().getKnowledgeAboutMySelf().getPosition().getId();
-		int powerPillPosition = 0;
+		Node powerPillPosition = null;
 		for(Node node : Node.getNodesWithPowerPills(ghost.getDiscreteGraph().getNodes()))
 		{
-			powerPillPosition = node.getId();
+			powerPillPosition = node;
 			break;
 		}
-		this.getContext().setVariable("MOVE", game.getNextMoveTowardsTarget(currentPosition, powerPillPosition, Constants.DM.PATH));
+		if(powerPillPosition == null)
+		{
+			powerPillPosition = ghost.getKnowledge().getGraph().getNodeByID(new Random().nextInt(game.getNumberOfNodes()));
+		}
+		this.getContext().setVariable("SELECTED_NODE", powerPillPosition);
+		this.getContext().setVariable("CLOSING", true);
 		return jbt.execution.core.ExecutionTask.Status.SUCCESS;
 	}
 

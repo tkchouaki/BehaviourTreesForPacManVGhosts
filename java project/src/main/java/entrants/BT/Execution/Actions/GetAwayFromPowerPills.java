@@ -51,7 +51,6 @@ public class GetAwayFromPowerPills extends
 		 * should only return Status.SUCCESS, Status.FAILURE or Status.RUNNING.
 		 * No other values are allowed.
 		 */
-		Game game = (Game) this.getContext().getVariable("GAME");
 		Ghost ghost = (Ghost) this.getContext().getVariable("GHOST");
 		Node currentPosition = ghost.getKnowledge().getKnowledgeAboutMySelf().getPosition();
 		UndirectedGraph<Node, Edge> graph = ghost.getKnowledge().getGraph();
@@ -60,7 +59,8 @@ public class GetAwayFromPowerPills extends
 			if(path != null && path.size()>0)
 			{
 				Node powerPillPosition = path.get(path.size()-1);
-				this.getContext().setVariable("MOVE", game.getNextMoveAwayFromTarget(currentPosition.getId(), powerPillPosition.getId(), Constants.DM.PATH));
+				this.getContext().setVariable("SELECTED_NODE", powerPillPosition);
+				this.getContext().setVariable("CLOSING", false);
 				return jbt.execution.core.ExecutionTask.Status.SUCCESS;
 			}
 		} catch (IUndirectedGraph.NodeNotFoundException e) {
