@@ -26,23 +26,16 @@ public class NodeRenderer {
     public void render(Node n) {
         List<String> classes = new ArrayList<>();
 
-        for (Constants.GHOST ghost : n.getContainedGhosts()) {
-            String ghostClass = ghost.className.toLowerCase();
-            if(n.getContainedGhostDescription(ghost).getEdibleTime()>0)
-            {
-                ghostClass+="_frighted";
-            }
-            classes.add(ghostClass);
-        }
-
         if (n.containsPacMan()) {
             classes.add("pacman");
         }
-        else if(n.containsPowerPill()) {
-            classes.add("power_pill");
-        }
-        else if (n.containsPill()) {
-            classes.add("pill");
+
+        for (Constants.GHOST ghost : n.getContainedGhosts()) {
+            if(n.getContainedGhostDescription(ghost).getEdibleTime()>0)
+            {
+                classes.add("frighted");
+            }
+            classes.add(ghost.className.toLowerCase());
         }
 
         if(n.isDanger())
@@ -53,6 +46,13 @@ public class NodeRenderer {
         if(n.isGoal())
         {
             classes.add("goal");
+        }
+
+        if(n.containsPowerPill()) {
+            classes.add("power_pill");
+        }
+        else if (n.containsPill()) {
+            classes.add("pill");
         }
 
         //LOGGER.info("Classes for node " + n.getId() + ": " + classes);

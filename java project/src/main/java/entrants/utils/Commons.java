@@ -62,6 +62,13 @@ public abstract class Commons {
             int edibleTime = game.getGhostEdibleTime(ghost);
             if(edibleTime > -1)
             {
+                if(ghost.equals(agentKnowledge.getOwner()) && edibleTime > 0)
+                {
+                    if(agentKnowledge.getGhostDescription(ghost).getEdibleTime()<=0 && pacManPosition<0)
+                    {
+                        agentKnowledge.getPacManDescription().setPosition(null);
+                    }
+                }
                 agentKnowledge.getGhostDescription(ghost).setEdibleTime(edibleTime);
             }
             else

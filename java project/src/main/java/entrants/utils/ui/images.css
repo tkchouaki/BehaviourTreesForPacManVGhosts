@@ -18,24 +18,12 @@ node.sue {
       fill-color: orange;
 }
 
-node.inky_frighted {
-    fill-color: pink;
-}
-
-node.pinky_frighted {
-    fill-color: pink;
-}
-
-node.sue_frighted {
-    fill-color: pink;
-}
-
 node.blinky {
     fill-color: red;
 }
 
-node.blinky_frighted {
-    fill-color: blue;
+node.frighted {
+    fill-color: pink;
 }
 
 node.pacman {

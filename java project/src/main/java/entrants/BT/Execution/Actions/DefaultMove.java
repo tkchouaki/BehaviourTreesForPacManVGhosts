@@ -9,11 +9,13 @@
 package entrants.BT.Execution.Actions;
 
 import entrants.ghosts.username.Ghost;
-import entrants.utils.graph.Edge;
-import entrants.utils.graph.Node;
-import entrants.utils.graph.UndirectedGraph;
+import entrants.utils.graph.*;
+import entrants.utils.graph.interfaces.IUndirectedGraph;
 import pacman.game.Constants;
 import pacman.game.Game;
+
+import java.util.HashSet;
+import java.util.Set;
 
 /** ExecutionAction class created from MMPM action DefaultMove. */
 public class DefaultMove extends jbt.execution.task.leaf.action.ExecutionAction {
@@ -46,20 +48,21 @@ public class DefaultMove extends jbt.execution.task.leaf.action.ExecutionAction 
 		 * No other values are allowed.
 		 */
 		Ghost ghost = (Ghost) this.getContext().getVariable("GHOST");
+		AgentKnowledge agentKnowledge = ghost.getKnowledge();
 		UndirectedGraph<Node, Edge> graph = ghost.getKnowledge().getGraph();
-		Node target = null;
-		for(Node node : Node.getDecisionNodes(graph.getNodes()))
+		Node target = agentKnowledge.getKnowledgeAboutMySelf().getPosition();
+		IUndirectedGraph<Node, Edge> discreteKnowledgeGraph = ghost.getDiscreteGraph();
+		int minUpdateTime=-1;
+		for(Node node : Node.getDecisionNodes(discreteKnowledgeGraph.getNodes()))
 		{
-			if(target == null || node.getLastUpdateTick() < target.getLastUpdateTick())
+			if(target == null || node.getLastUpdateTick() < minUpdateTime)
 			{
 				target = node;
+				minUpdateTime = node.getLastUpdateTick();
 			}
 		}
-		if(target != null)
-		{
-			this.getContext().setVariable("SELECTED_NODE", target);
-			this.getContext().setVariable("CLOSING", true);
-		}
+		this.getContext().setVariable("SELECTED_NODE", target);
+		this.getContext().setVariable("CLOSING", true);
 		return jbt.execution.core.ExecutionTask.Status.SUCCESS;
 	}
 

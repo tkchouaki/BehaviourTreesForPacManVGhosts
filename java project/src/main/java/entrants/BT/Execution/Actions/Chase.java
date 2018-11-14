@@ -25,6 +25,7 @@ public class Chase extends jbt.execution.task.leaf.action.ExecutionAction {
 	private static final int TO_CIRCLING_NODE_IM_CLOSEST_TO = 1;
 	private static final int TO_PACMAN = 2;
 	private static final int TO_CLOSEST_POSSIBLE_PACMAN_NEXT_DESTINATION = 3;
+	private static final int ACCORDING_TO_AGENT = 4;
 	private static final int CHOOSE_RANDOM_STRATEGY = -1;
 
 	private static final int CHASING_STRATEGY = CHOOSE_RANDOM_STRATEGY;
@@ -60,9 +61,9 @@ public class Chase extends jbt.execution.task.leaf.action.ExecutionAction {
 	private void routeStrategy(int chasingStrategy)
 	{
 		//if the chasing strategy is not valid, a random one is picked
-		if(chasingStrategy>3 || chasingStrategy < 0)
+		if(chasingStrategy>4 || chasingStrategy < 0)
 		{
-			chasingStrategy = new Random().nextInt(4);
+			chasingStrategy = new Random().nextInt(5);
 		}
 		switch(chasingStrategy)
 		{
@@ -80,7 +81,25 @@ public class Chase extends jbt.execution.task.leaf.action.ExecutionAction {
 
 			case TO_CLOSEST_POSSIBLE_PACMAN_NEXT_DESTINATION:
 				this.toClosestPossiblePacmanNextDestination();
-				break;
+			break;
+
+			case ACCORDING_TO_AGENT:
+				this.accordingToAgent();
+			break;
+		}
+	}
+
+	private void accordingToAgent()
+	{
+		Ghost ghost = (Ghost) this.getContext().getVariable("GHOST");
+		Constants.GHOST ghostValue = ghost.getGhostEnumValue();
+		if(ghostValue.equals(Constants.GHOST.INKY) || ghostValue.equals(Constants.GHOST.SUE))
+		{
+			this.toPacman();
+		}
+		else
+		{
+			this.toClosestPossiblePacmanNextDestination();
 		}
 	}
 
@@ -112,9 +131,16 @@ public class Chase extends jbt.execution.task.leaf.action.ExecutionAction {
 			path = graph.getPathToClosest(ghost.getKnowledge().getPacManDescription().getPosition(), targets, forbidden);
 			if(path != null && path.size() > 0 ){
 				//we have the closest decision node from pacman that can be its next destination
-				Node target = path.get(path.size()-1);
-				this.getContext().setVariable("SELECTED_NODE", target);
-				this.getContext().setVariable("CLOSING", true);
+				if(path.contains(ghost.getKnowledge().getKnowledgeAboutMySelf().getPosition()))
+                {
+                    this.toPacman();
+                }
+                else
+                {
+                    Node target = path.get(path.size()-1);
+                    this.getContext().setVariable("SELECTED_NODE", target);
+                    this.getContext().setVariable("CLOSING", true);
+                }
 			}
 		} catch (IUndirectedGraph.NodeNotFoundException e) {
 			e.printStackTrace();
@@ -137,7 +163,7 @@ public class Chase extends jbt.execution.task.leaf.action.ExecutionAction {
 		int minDistance=-1;
 		for(Node node : circlingNodes)
 		{
-			int distance = game.getShortestPathDistance(ghostPosition.getId(), node.getId());
+			int distance = game.getShortestPathDistance(ghostPosition.getId(), node.getId(), game.getGhostLastMoveMade(ghost.getGhostEnumValue()));
 			if(distance <= minDistance || minDistance < 0)
 			{
 				if(distance < minDistance || minDistance < 0)
@@ -169,7 +195,7 @@ public class Chase extends jbt.execution.task.leaf.action.ExecutionAction {
 		Node targetNode = null;
 		for(Node circlingNode : circlingNodes)
 		{
-			int distanceToNode = game.getShortestPathDistance(ghostPosition.getId(), circlingNode.getId());
+			int distanceToNode = game.getShortestPathDistance(ghostPosition.getId(), circlingNode.getId(), game.getGhostLastMoveMade(ghost.getGhostEnumValue()));
 			ranks.put(circlingNode, 1);
 			for(Node nodeWithGhost : nodesWithGhosts)
 			{
@@ -183,7 +209,16 @@ public class Chase extends jbt.execution.task.leaf.action.ExecutionAction {
 				targetNode = circlingNode;
 			}
 		}
-		this.getContext().setVariable("SELECTED_NODE", targetNode);
+
+		for(int nodeIndex : game.getShortestPath(targetNode.getId(), pacManPosition.getId()))
+		{
+			if(nodeIndex == ghostPosition.getId())
+			{
+				this.toPacman();
+				return;
+			}
+		}
+        this.getContext().setVariable("SELECTED_NODE", targetNode);
 		this.getContext().setVariable("CLOSING", true);
 	}
 

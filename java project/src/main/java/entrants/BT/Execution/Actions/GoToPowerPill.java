@@ -9,11 +9,13 @@
 package entrants.BT.Execution.Actions;
 
 import entrants.ghosts.username.Ghost;
-import entrants.utils.graph.Node;
+import entrants.utils.graph.*;
 import pacman.game.Constants;
 import pacman.game.Game;
 
+import java.util.HashSet;
 import java.util.Random;
+import java.util.Set;
 
 /** ExecutionAction class created from MMPM action GoToPowerPill. */
 public class GoToPowerPill extends
@@ -83,19 +85,50 @@ public class GoToPowerPill extends
 		 */
 		Game game = (Game) this.getContext().getVariable("GAME");
 		Ghost ghost = (Ghost) this.getContext().getVariable("GHOST");
-		Node powerPillPosition = null;
-		for(Node node : Node.getNodesWithPowerPills(ghost.getDiscreteGraph().getNodes()))
+		AgentKnowledge agentKnowledge = ghost.getKnowledge();
+		UndirectedGraph<Node, Edge> graph = ghost.getKnowledge().getGraph();
+		Set<Node> ghostsPositions = new HashSet<>();
+		Set<Node> nodesWithPowerPills = Node.getNodesWithPowerPills(graph.getNodes());
+		Node target = agentKnowledge.getKnowledgeAboutMySelf().getPosition();
+		if(nodesWithPowerPills.size() > 0)
 		{
-			powerPillPosition = node;
-			break;
+			//I first retrieve the positions of all the ghosts i know (excluding myself)
+			for(Constants.GHOST ghostValue : Constants.GHOST.values())
+			{
+				if(ghostValue.equals(ghost.getGhostEnumValue()))
+				{
+					continue;
+				}
+				GhostDescription ghostDescription = agentKnowledge.getGhostDescription(ghostValue);
+				if(ghostDescription.getPosition() != null)
+				{
+					ghostsPositions.add(ghostDescription.getPosition());
+				}
+			}
+			int minRank = -1;
+			for(Node nodeWithPowerPill : nodesWithPowerPills)
+			{
+				int rank = 0;
+				int meToPowerPill = game.getShortestPathDistance(agentKnowledge.getKnowledgeAboutMySelf().getPosition().getId(), nodeWithPowerPill.getId(), game.getGhostLastMoveMade(ghost.getGhostEnumValue()));
+				for(Node ghostPosition : ghostsPositions)
+				{
+					int otherToPowerPill = game.getShortestPathDistance(ghostPosition.getId(), nodeWithPowerPill.getId());
+					if(otherToPowerPill < meToPowerPill)
+					{
+						rank++;
+					}
+				}
+				if(minRank == -1 || rank<minRank)
+				{
+					minRank = rank;
+					target = nodeWithPowerPill;
+				}
+			}
+			this.getContext().setVariable("SELECTED_NODE", target);
+			this.getContext().setVariable("CLOSING", true);
+			return Status.SUCCESS;
 		}
-		if(powerPillPosition == null)
-		{
-			powerPillPosition = ghost.getKnowledge().getGraph().getNodeByID(new Random().nextInt(game.getNumberOfNodes()));
-		}
-		this.getContext().setVariable("SELECTED_NODE", powerPillPosition);
-		this.getContext().setVariable("CLOSING", true);
-		return jbt.execution.core.ExecutionTask.Status.SUCCESS;
+		return Status.FAILURE;
 	}
 
 	protected void internalTerminate() {

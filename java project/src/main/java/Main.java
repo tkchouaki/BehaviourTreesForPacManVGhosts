@@ -38,33 +38,36 @@ public class Main {
         controllers.put(GHOST.PINKY, new Pinky());
         controllers.put(GHOST.SUE, new Sue());
 
-        // Launch debug window
-        SwingUtilities.invokeLater(new Runnable() {
-            @Override
-            public void run() {
-                DebugWindow window = new DebugWindow();
-                window.getModel().registerAgent((Ghost) controllers.get(GHOST.BLINKY));
-                window.getModel().registerAgent((Ghost) controllers.get(GHOST.SUE));
-                window.getModel().registerAgent((Ghost) controllers.get(GHOST.INKY));
-                window.getModel().registerAgent((Ghost) controllers.get(GHOST.PINKY));
 
-                // Configure Logger
-                GhostLogger.setup();
-                GhostLogger.setTextArea(window.getLogsArea());
-
-                window.setVisible(true);
-            }
-        });
-        //GhostLogger.setup();
-
-        // Run the game
-        boolean experience = false;
+        boolean experience = true;
+        boolean debugWindow = true;
         if(!experience)
         {
+            // Launch debug window
+            if(debugWindow)
+            {
+                SwingUtilities.invokeLater(new Runnable() {
+                    @Override
+                    public void run() {
+                        DebugWindow window = new DebugWindow();
+                        window.getModel().registerAgent((Ghost) controllers.get(GHOST.BLINKY));
+                        window.getModel().registerAgent((Ghost) controllers.get(GHOST.SUE));
+                        window.getModel().registerAgent((Ghost) controllers.get(GHOST.INKY));
+                        window.getModel().registerAgent((Ghost) controllers.get(GHOST.PINKY));
+
+                        // Configure Logger
+                        GhostLogger.setup();
+                        GhostLogger.setTextArea(window.getLogsArea());
+
+                        window.setVisible(true);
+                    }
+                });
+            }
             executor.runGameTimed(new MyPacMan(), new MASController(controllers));
         }
         else
         {
+            GhostLogger.setup();
             int nbTrials = 20;
             Double[] scores = new Double[nbTrials];
             for(int i=0; i<nbTrials; i++)
@@ -74,7 +77,7 @@ public class Main {
             }
             for(Double score : scores)
             {
-                System.out.println(score);
+                System.out.println(score.intValue());
             }
         }
     }

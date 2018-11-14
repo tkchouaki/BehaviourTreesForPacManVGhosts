@@ -18,6 +18,7 @@ import pacman.game.Game;
 
 import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /** ExecutionAction class created from MMPM action GetAwayFromPowerPills. */
 public class GetAwayFromPowerPills extends
@@ -51,20 +52,27 @@ public class GetAwayFromPowerPills extends
 		 * should only return Status.SUCCESS, Status.FAILURE or Status.RUNNING.
 		 * No other values are allowed.
 		 */
+		Game game = (Game) this.getContext().getVariable("GAME");
 		Ghost ghost = (Ghost) this.getContext().getVariable("GHOST");
 		Node currentPosition = ghost.getKnowledge().getKnowledgeAboutMySelf().getPosition();
 		UndirectedGraph<Node, Edge> graph = ghost.getKnowledge().getGraph();
-		try {
-			List<Node> path = graph.getPathToClosest(currentPosition, Node.getNodesWithPowerPills(graph.getNodes()), new HashSet<>());
-			if(path != null && path.size()>0)
+		Set<Node> nodesWithPowerPills = Node.getNodesWithPowerPills(graph.getNodes());
+		Node closestNodeWithPowerPill = null;
+		int minDistance = 0;
+		if(nodesWithPowerPills.size() > 0)
+		{
+			for(Node nodeWithPowerPill : nodesWithPowerPills)
 			{
-				Node powerPillPosition = path.get(path.size()-1);
-				this.getContext().setVariable("SELECTED_NODE", powerPillPosition);
-				this.getContext().setVariable("CLOSING", false);
-				return jbt.execution.core.ExecutionTask.Status.SUCCESS;
+				int distance = game.getShortestPathDistance(nodeWithPowerPill.getId(), currentPosition.getId());
+				if(closestNodeWithPowerPill == null || distance < minDistance)
+				{
+					minDistance = distance;
+					closestNodeWithPowerPill = nodeWithPowerPill;
+				}
 			}
-		} catch (IUndirectedGraph.NodeNotFoundException e) {
-			e.printStackTrace();
+			this.getContext().setVariable("SELECTED_NODE", closestNodeWithPowerPill);
+			this.getContext().setVariable("CLOSING", false);
+			return Status.SUCCESS;
 		}
 		return Status.FAILURE;
 	}

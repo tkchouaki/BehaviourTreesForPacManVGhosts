@@ -11,15 +11,11 @@ import jbt.execution.core.*;
 import jbt.model.core.ModelTask;
 import pacman.controllers.IndividualGhostController;
 import pacman.game.Constants;
-import pacman.game.Constants.MOVE;
 import pacman.game.Game;
 import pacman.game.comms.Message;
 import pacman.game.internal.Maze;
-import scala.collection.immutable.Stream;
 
 import java.beans.PropertyChangeSupport;
-import java.sql.Timestamp;
-import java.time.LocalTime;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.logging.Level;
@@ -77,7 +73,7 @@ public class Ghost extends IndividualGhostController {
     }
 
     public void initJBT(){
-       initJBT("StarterGhost");
+       initJBT("StarterGhost_V2");
     }
 
     public void initJBT(String behaviourTreeName){
@@ -124,7 +120,7 @@ public class Ghost extends IndividualGhostController {
 
         Node position = getKnowledge().getKnowledgeAboutMySelf().getPosition();
         //if the position requires an action.
-        if (position != null && position.isDecisionNode() && game.doesGhostRequireAction(this.getGhostEnumValue())) {
+        if (position != null && (position.isDecisionNode() || game.doesGhostRequireAction(this.getGhostEnumValue()))) {
             // ========== Behaviour Tree's LOOP =========
             //context.setVariable("MOVE", MOVE.NEUTRAL);
             context.setVariable("GAME", game);
@@ -167,7 +163,7 @@ public class Ghost extends IndividualGhostController {
             }
             if(this.getGhostEnumValue().equals(Constants.GHOST.BLINKY))
             {
-                message = "blinky " + message + " at " + game.getTotalTime();
+                message = "blinky at " + position.getId() + " " + message + " at " + game.getTotalTime();
                 if(nextMove != null)
                 {
                     message += " making " + nextMove.toString() + " among : ";
@@ -181,6 +177,10 @@ public class Ghost extends IndividualGhostController {
                         }
                     }
                     message += " after having made " + lastMove.toString();
+                    if(knowledge.getPacManDescription().getPosition() != null)
+                    {
+                        message += " | pacman is at " + knowledge.getPacManDescription().getPosition();
+                    }
                     if(!found)
                     {
                         nextMove = computeNextMove(position, currentTarget, closing, game, lastMove);
@@ -190,7 +190,7 @@ public class Ghost extends IndividualGhostController {
                 {
                     message = "blinky has no move to do";
                 }
-                //System.out.println(message);
+                System.out.println(message);
             }
             if(System.currentTimeMillis() - begin >= 10)
             {
@@ -227,20 +227,20 @@ public class Ghost extends IndividualGhostController {
         {
             try
             {
-                move = game.getNextMoveTowardsTarget(position.getId(), currentTarget.getId(), lastMove, Constants.DM.MANHATTAN);
+                move = game.getNextMoveTowardsTarget(position.getId(), target.getId(), lastMove, Constants.DM.MANHATTAN);
             }catch (Exception e)
             {
-                move = game.getNextMoveTowardsTarget(position.getId(), currentTarget.getId(), Constants.DM.MANHATTAN);
+                move = game.getNextMoveTowardsTarget(position.getId(), target.getId(), Constants.DM.MANHATTAN);
             }
         }
         else
         {
             try
             {
-                move = game.getNextMoveAwayFromTarget(position.getId(), currentTarget.getId(), lastMove, Constants.DM.MANHATTAN);
+                move = game.getNextMoveAwayFromTarget(position.getId(), target.getId(), lastMove, Constants.DM.MANHATTAN);
             }catch (Exception e)
             {
-                move = game.getNextMoveAwayFromTarget(position.getId(), currentTarget.getId(), Constants.DM.MANHATTAN);
+                move = game.getNextMoveAwayFromTarget(position.getId(), target.getId(), Constants.DM.MANHATTAN);
             }
         }
         return move;
