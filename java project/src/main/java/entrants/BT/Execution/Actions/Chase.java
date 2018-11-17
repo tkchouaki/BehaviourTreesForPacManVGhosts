@@ -18,17 +18,39 @@ import pacman.game.Game;
 
 import java.util.*;
 
-/** ExecutionAction class created from MMPM action Chase. */
+/**
+ * ExecutionAction class created from MMPM action Chase.
+ * Offers 6 Chase strategies available as public constants
+ * - TO_CLOSEST_CIRCLING_NODE
+ * - TO_CIRCLING_NODE_IM_CLOSEST_TO
+ * - TO_PACMAN
+ * - TO_CLOSEST_POSSIBLE_PACMAN_NEXT_DESTINATION
+ * - ACCORDING_TO_AGENT
+ * - CHOOSE_RANDOM_STRATEGY
+ * The used strategy can be set by the method {@link Chase#setChasingStrategy}.
+ * For more details on how the different strategies work, refer to the project report.
+ */
+
 public class Chase extends jbt.execution.task.leaf.action.ExecutionAction {
 
-	private static final int TO_CLOSEST_CIRCLING_NODE = 0;
-	private static final int TO_CIRCLING_NODE_IM_CLOSEST_TO = 1;
-	private static final int TO_PACMAN = 2;
-	private static final int TO_CLOSEST_POSSIBLE_PACMAN_NEXT_DESTINATION = 3;
-	private static final int ACCORDING_TO_AGENT = 4;
-	private static final int CHOOSE_RANDOM_STRATEGY = -1;
+	public static final int TO_CLOSEST_CIRCLING_NODE = 0;
+	public static final int TO_CIRCLING_NODE_IM_CLOSEST_TO = 1;
+	public static final int TO_PACMAN = 2;
+	public static final int TO_CLOSEST_POSSIBLE_PACMAN_NEXT_DESTINATION = 3;
+	public static final int ACCORDING_TO_AGENT = 4;
+	public static final int CHOOSE_RANDOM_STRATEGY = -1;
 
-	private static final int CHASING_STRATEGY = CHOOSE_RANDOM_STRATEGY;
+	private static int CHASING_STRATEGY = TO_PACMAN;
+
+	/**
+	 * This method sets the chasing strategy that will be used by the ghosts.
+	 * @param chasingStrategy
+	 * A value representing the strategy to use. the constants are available in the Chase class
+	 */
+	public static void setChasingStrategy(int chasingStrategy)
+	{
+		CHASING_STRATEGY = chasingStrategy;
+	}
 
 	/**
 	 * Constructor. Constructs an instance of Chase that is able to run a
@@ -89,6 +111,10 @@ public class Chase extends jbt.execution.task.leaf.action.ExecutionAction {
 		}
 	}
 
+	/**
+	 * If the current agent is inky or sue, it will chase Pacman to his current position.
+	 * Otherwise, it will chase him in a next possible position.
+	 */
 	private void accordingToAgent()
 	{
 		Ghost ghost = (Ghost) this.getContext().getVariable("GHOST");
