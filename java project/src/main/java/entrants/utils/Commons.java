@@ -15,7 +15,9 @@ import java.util.Map;
 import java.util.*;
 import java.util.logging.Logger;
 
-
+/**
+ * Provide utility methods
+ */
 public abstract class Commons {
     /**
      * The logger to use.
@@ -39,13 +41,12 @@ public abstract class Commons {
         return b;
     }
 
-    /**
+    /*
      * Updates an Agent's Knowledge from a Game object
      * @param game
      * The game to use for the update
      * @param agentKnowledge
      * The AgentKnowledge to update
-     */
     public static Collection<Node> updateAgentsKnowledge(AgentKnowledge agentKnowledge, Game game) {
         //We retrieve the PacMan's & the ghosts positions (if we can see them)
         int pacManPosition = game.getPacmanCurrentNodeIndex();
@@ -157,7 +158,7 @@ public abstract class Commons {
      * Initializes an Agent's knowledge with the fixed topology of a game.
      * @param game
      * The game to use for the initialization
-     */
+     *
     public static void initAgentsKnowledge(AgentKnowledge agentKnowledge, Game game)
     {
         UndirectedGraph<Node, Edge> graph = agentKnowledge.getGraph();
@@ -187,7 +188,7 @@ public abstract class Commons {
      * This method updates the Pills Info of the current Node from a given Game object
      * @param game
      * The game object representing the state of the game from which to update the current node
-     */
+     *
     public static boolean updatePillsInfo(Game game, Node node)
     {
         //We store the old values to see if anything has changed.
@@ -226,7 +227,7 @@ public abstract class Commons {
      * @param agentKnowledge the receiving agent's knowledge
      * @param game the running game
      * @return all nodes that have been updated
-     */
+     *
     public static Collection<Node> readMessages(AgentKnowledge agentKnowledge, Game game) {
         List<Message> messages = game.getMessenger().getMessages(agentKnowledge.getOwner());
         List<Node> toUpdate = new ArrayList<>();
@@ -294,7 +295,7 @@ public abstract class Commons {
      * @param me the ghost sending the message
      * @param type message's type
      * @param data message's data
-     */
+     *
     public static void sendToAllGhostExceptMe(Game game, Constants.GHOST me, Message.MessageType type, int data) {
         Messenger messenger = game.getMessenger();
 
@@ -310,6 +311,7 @@ public abstract class Commons {
             }
         }
     }
+    */
 
     /**
      * Checks if two iterables have an element in common

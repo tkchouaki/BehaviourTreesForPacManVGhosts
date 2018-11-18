@@ -48,7 +48,8 @@ public class DebugWindow extends JFrame {
     }
 
     private void createComponents() {
-        logs = new JTextArea(); {
+        logs = new JTextArea();
+        {
             logs.setEditable(false);
             logs.setLineWrap(true);
         }
@@ -60,7 +61,8 @@ public class DebugWindow extends JFrame {
     private void placeComponents() {
         setLayout(new BorderLayout());
         this.add(displayPanel, BorderLayout.CENTER);
-        JScrollPane jScrollPane = new JScrollPane(); {
+        JScrollPane jScrollPane = new JScrollPane();
+        {
             jScrollPane.setViewportView(logs);
             jScrollPane.setPreferredSize(new Dimension(300, 400));
         }

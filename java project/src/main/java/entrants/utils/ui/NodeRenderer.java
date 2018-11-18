@@ -31,34 +31,29 @@ public class NodeRenderer {
         }
 
         for (Constants.GHOST ghost : n.getContainedGhosts()) {
-            if(n.getContainedGhostDescription(ghost).getEdibleTime()>0)
-            {
+            if (n.getContainedGhostDescription(ghost).getEdibleTime() > 0) {
                 classes.add("frighted");
             }
             classes.add(ghost.className.toLowerCase());
         }
 
-        if(n.isDanger())
-        {
+        if (n.isDanger()) {
             classes.add("danger");
         }
 
-        if(n.isGoal())
-        {
+        if (n.isGoal()) {
             classes.add("goal");
         }
 
-        if(n.containsPowerPill()) {
+        if (n.containsPowerPill()) {
             classes.add("power_pill");
-        }
-        else if (n.containsPill()) {
+        } else if (n.containsPill()) {
             classes.add("pill");
         }
 
         //LOGGER.info("Classes for node " + n.getId() + ": " + classes);
         org.graphstream.graph.Node graphStreamNode = graph.getNode(n.getId().toString());
-        if(graphStreamNode != null)
-        {
+        if (graphStreamNode != null) {
             graphStreamNode.addAttribute("ui.class", String.join(",", classes));
         }
     }

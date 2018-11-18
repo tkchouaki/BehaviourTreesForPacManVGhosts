@@ -10,7 +10,11 @@ package entrants.BT.Execution.Conditions;
 
 import entrants.ghosts.username.Ghost;
 
-/** ExecutionCondition class created from MMPM condition IsPacManInSight. */
+
+/**
+ * ExecutionCondition class created from MMPM condition IsPacManInSight.
+ * Implements the checking of the condition that Pacman is in sight for a ghost.
+ */
 public class IsPacManInSight extends
 		jbt.execution.task.leaf.condition.ExecutionCondition {
 
@@ -36,6 +40,12 @@ public class IsPacManInSight extends
 		/* TODO: this method's implementation must be completed. */
 	}
 
+	/**
+	 * Just checks if Pacman's position is known
+	 * @return
+	 * success if Pacman's position is known.
+	 * failure otherwise.
+	 */
 	protected jbt.execution.core.ExecutionTask.Status internalTick() {
 		/*
 		 * TODO: this method's implementation must be completed. This function

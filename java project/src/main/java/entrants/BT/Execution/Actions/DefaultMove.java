@@ -17,7 +17,11 @@ import pacman.game.Game;
 import java.util.HashSet;
 import java.util.Set;
 
-/** ExecutionAction class created from MMPM action DefaultMove. */
+/**
+ * ExecutionAction class created from MMPM action DefaultMove.
+ * Implements a default move for the ghosts to perform.
+ * Currently, is sends the ghost to the decision node with the most outdated update tick.
+ */
 public class DefaultMove extends jbt.execution.task.leaf.action.ExecutionAction {
 
 	/**
@@ -41,6 +45,11 @@ public class DefaultMove extends jbt.execution.task.leaf.action.ExecutionAction 
 		/* TODO: this method's implementation must be completed. */
 	}
 
+	/**
+	 * Sends the ghost to the decision Node with the most outdated update tick
+	 * @return
+	 * Always returns Success.
+	 */
 	protected jbt.execution.core.ExecutionTask.Status internalTick() {
 		/*
 		 * TODO: this method's implementation must be completed. This function

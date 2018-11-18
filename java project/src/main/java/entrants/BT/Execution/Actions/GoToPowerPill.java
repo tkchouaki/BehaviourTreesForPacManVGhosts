@@ -17,7 +17,11 @@ import java.util.HashSet;
 import java.util.Random;
 import java.util.Set;
 
-/** ExecutionAction class created from MMPM action GoToPowerPill. */
+/**
+ * ExecutionAction class created from MMPM action GoToPowerPill.
+ * Implements the Behaviour of a ghost going to a powerPill.
+ * Sends the ghost to the power pill whom it is the closest to.
+ */
 public class GoToPowerPill extends
 		jbt.execution.task.leaf.action.ExecutionAction {
 	/**
@@ -77,12 +81,14 @@ public class GoToPowerPill extends
 		/* TODO: this method's implementation must be completed. */
 	}
 
+	/**
+	 * Sends the ghost to the power pill whom it is the closest to.
+	 * @return
+	 * Returns success if there's at least one power pill.
+	 * Returns Failure otherwise.
+	 */
 	protected jbt.execution.core.ExecutionTask.Status internalTick() {
-		/*
-		 * TODO: this method's implementation must be completed. This function
-		 * should only return Status.SUCCESS, Status.FAILURE or Status.RUNNING.
-		 * No other values are allowed.
-		 */
+		//We retrieve the current state of the game, the ghost, its knowledge, graph & position and the nodes containing power pills.
 		Game game = (Game) this.getContext().getVariable("GAME");
 		Ghost ghost = (Ghost) this.getContext().getVariable("GHOST");
 		AgentKnowledge agentKnowledge = ghost.getKnowledge();
@@ -90,6 +96,7 @@ public class GoToPowerPill extends
 		Set<Node> ghostsPositions = new HashSet<>();
 		Set<Node> nodesWithPowerPills = Node.getNodesWithPowerPills(graph.getNodes());
 		Node target = agentKnowledge.getKnowledgeAboutMySelf().getPosition();
+
 		if(nodesWithPowerPills.size() > 0)
 		{
 			//I first retrieve the positions of all the ghosts i know (excluding myself)
@@ -105,6 +112,9 @@ public class GoToPowerPill extends
 					ghostsPositions.add(ghostDescription.getPosition());
 				}
 			}
+			//For each node with a power pill
+			//We rank the ghosts by proximity
+			//And send the current ghost to the node for which he has the best rank.
 			int minRank = -1;
 			for(Node nodeWithPowerPill : nodesWithPowerPills)
 			{

@@ -11,10 +11,9 @@ import static entrants.utils.Commons.isIntersectionNotEmpty;
 
 /**
  * This class describes an Undirected Graph
- * @param <N>
- *     The class that represents the nodes of the graph
- * @param <E>
- *     The class that represents the edged of the graph
+ *
+ * @param <N> The class that represents the nodes of the graph
+ * @param <E> The class that represents the edged of the graph
  */
 public class UndirectedGraph<N extends NodeInterface, E extends EdgeInterface<N>> implements IUndirectedGraph<N, E> {
     // ATTRIBUTES
@@ -32,8 +31,8 @@ public class UndirectedGraph<N extends NodeInterface, E extends EdgeInterface<N>
 
     /**
      * Retrieves a collection of all the nodes of the graph
-     * @return
-     * A collection of all the nodes of the graph
+     *
+     * @return A collection of all the nodes of the graph
      */
     @Override
     public synchronized Collection<N> getNodes() {
@@ -42,8 +41,8 @@ public class UndirectedGraph<N extends NodeInterface, E extends EdgeInterface<N>
 
     /**
      * Retrieves a collection of all the nodes of the graph
-     * @return
-     * A collection of all the nodes of the graph
+     *
+     * @return A collection of all the nodes of the graph
      */
     @Override
     public synchronized Collection<E> getEdges() {
@@ -56,8 +55,8 @@ public class UndirectedGraph<N extends NodeInterface, E extends EdgeInterface<N>
 
     /**
      * Returns the property change support of the graph
-     * @return
-     * The property change support of the graph
+     *
+     * @return The property change support of the graph
      */
     @Override
     public PropertyChangeSupport getPropertyChangeSupport() {
@@ -66,6 +65,7 @@ public class UndirectedGraph<N extends NodeInterface, E extends EdgeInterface<N>
 
     /**
      * Computes the degree of a given node
+     *
      * @param node the node
      * @return The degree of a given node
      * @throws NodeNotFoundException fired if the given node doesn't exist in the graph
@@ -84,15 +84,16 @@ public class UndirectedGraph<N extends NodeInterface, E extends EdgeInterface<N>
 
     /**
      * Returns the neighbouring nodes of a given node
+     *
      * @param node the node
      * @return A collection of the given node's neighbours.
      * @throws NodeNotFoundException Fired if the given node doesn't exist in the graph
      */
     @Override
     public synchronized Collection<N> getNeighboursAsNodesOf(N node) throws NodeNotFoundException {
-         if (node == null) {
-             throw new AssertionError();
-         }
+        if (node == null) {
+            throw new AssertionError();
+        }
         Collection<E> edges = topology.get(node);
         if (edges == null) {
             throw new NodeNotFoundException();
@@ -110,6 +111,7 @@ public class UndirectedGraph<N extends NodeInterface, E extends EdgeInterface<N>
 
     /**
      * Retrieves the Edges that concern a given node (i.e the edges between the given node & its neighbours)
+     *
      * @param node the node
      * @return The edges that concer
      * @throws NodeNotFoundException
@@ -128,6 +130,7 @@ public class UndirectedGraph<N extends NodeInterface, E extends EdgeInterface<N>
 
     /**
      * Retrieves a node with the given ID from the graph
+     *
      * @param nodeID the id of the desired node
      * @return The node with the given ID if it exists in the graph, null otherwise
      */
@@ -144,6 +147,7 @@ public class UndirectedGraph<N extends NodeInterface, E extends EdgeInterface<N>
 
     /**
      * Adds a node to the graph if it doesn't exist yet
+     *
      * @param node the node you want to add to the graph
      * @return True if the node didn't exist, False otherwise
      */
@@ -162,6 +166,7 @@ public class UndirectedGraph<N extends NodeInterface, E extends EdgeInterface<N>
 
     /**
      * Adds an edge to the graph if it doesn't already exist.
+     *
      * @param edge the edge you want to add to the graph
      * @return True if the edge didn't exist in the graph, False otherwise
      */
@@ -187,6 +192,7 @@ public class UndirectedGraph<N extends NodeInterface, E extends EdgeInterface<N>
 
     /**
      * Removes a node from the graph if it exists
+     *
      * @param node the node to be deleted
      * @return True if the node existed in the graph, False otherwise
      */
@@ -196,7 +202,7 @@ public class UndirectedGraph<N extends NodeInterface, E extends EdgeInterface<N>
             throw new AssertionError();
         }
         if (!topology.containsKey(node)) return false;
-        for (Iterator<E> it = topology.get(node).iterator(); it.hasNext();) {
+        for (Iterator<E> it = topology.get(node).iterator(); it.hasNext(); ) {
             E edge = it.next();
             if (edge.getNodeA().equals(node)) {
                 topology.get(edge.getNodeB()).remove(edge);
@@ -213,6 +219,7 @@ public class UndirectedGraph<N extends NodeInterface, E extends EdgeInterface<N>
 
     /**
      * Removes an edge from the graph if it exists
+     *
      * @param edge the edge to be deleted
      * @return True if the edge existed in the graph, False otherwise
      */
@@ -222,7 +229,7 @@ public class UndirectedGraph<N extends NodeInterface, E extends EdgeInterface<N>
             throw new AssertionError();
         }
         if (!topology.containsKey(edge.getNodeA()) || !topology.containsKey(edge.getNodeB())) return false;
-        if(!topology.get(edge.getNodeA()).contains(edge)) return false;
+        if (!topology.get(edge.getNodeA()).contains(edge)) return false;
         topology.get(edge.getNodeA()).remove(edge);
         topology.get(edge.getNodeB()).remove(edge);
         support.firePropertyChange(EDGE_REMOVED_PROP, edge, null);
@@ -248,51 +255,40 @@ public class UndirectedGraph<N extends NodeInterface, E extends EdgeInterface<N>
         levels.add(0, firstLevel);
         boolean arrived = false;
         N reachedTarget = null;
-        if(!nodes.contains(start))
-        {
+        if (!nodes.contains(start)) {
             throw new NodeNotFoundException();
         }
-        if(targets.contains(start))
-        {
+        if (targets.contains(start)) {
             return new ArrayList<>();
         }
         seen.add(start);
-        while(reachedTarget==null && seen.size() < nodes.size())
-        {
-            Map<N, E> lastLevel = levels.get(levels.size()-1);
+        while (reachedTarget == null && seen.size() < nodes.size()) {
+            Map<N, E> lastLevel = levels.get(levels.size() - 1);
             Map<N, E> nextLevel = new HashMap<>();
-            for(N node : lastLevel.keySet())
-            {
+            for (N node : lastLevel.keySet()) {
                 Collection<E> neighbours = this.getNeighboursAsEdgesOf(node);
-                for(E edge : neighbours)
-                {
+                for (E edge : neighbours) {
                     N neighbour = edge.getNeighbour(node);
-                    if(forbidden.contains(neighbour))
-                    {
+                    if (forbidden.contains(neighbour)) {
                         continue;
                     }
-                    if(!seen.contains(neighbour))
-                    {
+                    if (!seen.contains(neighbour)) {
                         seen.add(neighbour);
                         nextLevel.put(neighbour, edge);
-                        if(targets.contains(neighbour))
-                        {
+                        if (targets.contains(neighbour)) {
                             reachedTarget = neighbour;
                         }
                     }
                 }
-                if(reachedTarget != null)
-                {
+                if (reachedTarget != null) {
                     break;
                 }
             }
             levels.add(nextLevel);
         }
-        if(reachedTarget != null)
-        {
+        if (reachedTarget != null) {
             List<N> path = new ArrayList<>();
-            for(int currentLevelIndex = levels.size()-1; currentLevelIndex!=0; currentLevelIndex--)
-            {
+            for (int currentLevelIndex = levels.size() - 1; currentLevelIndex != 0; currentLevelIndex--) {
                 Map<N, E> currentLevel = levels.get(currentLevelIndex);
                 path.add(0, reachedTarget);
                 reachedTarget = currentLevel.get(reachedTarget).getNeighbour(reachedTarget);
@@ -303,8 +299,7 @@ public class UndirectedGraph<N extends NodeInterface, E extends EdgeInterface<N>
     }
 
     @Override
-    public Map<N, List<E>> circleNode(N node, Collection<N> circlingNodes)
-    {
+    public Map<N, List<E>> circleNode(N node, Collection<N> circlingNodes) {
         Map<N, List<E>> result = new HashMap<>();
         Map<N, E> predecessors = new HashMap<>();
         Collection<N> tempCirclingNodes = new HashSet<>(circlingNodes);
@@ -314,30 +309,22 @@ public class UndirectedGraph<N extends NodeInterface, E extends EdgeInterface<N>
 
         predecessors.put(node, null);
 
-        while(tempCirclingNodes.size() > 0 && open.size()>0)
-        {
+        while (tempCirclingNodes.size() > 0 && open.size() > 0) {
             nextOpen = new HashSet<>();
-            for(N openNode : open)
-            {
-                if(closed.contains(openNode))
-                {
+            for (N openNode : open) {
+                if (closed.contains(openNode)) {
                     continue;
                 }
                 try {
-                    for(E edge: this.getNeighboursAsEdgesOf(openNode))
-                    {
+                    for (E edge : this.getNeighboursAsEdgesOf(openNode)) {
                         N neighbour = edge.getNeighbour(openNode);
-                        if(closed.contains(neighbour))
-                        {
+                        if (closed.contains(neighbour)) {
                             continue;
                         }
                         predecessors.put(neighbour, edge);
-                        if(!tempCirclingNodes.contains(neighbour))
-                        {
+                        if (!tempCirclingNodes.contains(neighbour)) {
                             nextOpen.add(neighbour);
-                        }
-                        else
-                        {
+                        } else {
                             tempCirclingNodes.remove(neighbour);
                         }
                     }
@@ -349,21 +336,17 @@ public class UndirectedGraph<N extends NodeInterface, E extends EdgeInterface<N>
             open = nextOpen;
         }
 
-        for(N circlingNode : circlingNodes)
-        {
-            if(predecessors.containsKey(circlingNode))
-            {
+        for (N circlingNode : circlingNodes) {
+            if (predecessors.containsKey(circlingNode)) {
                 List<E> path = new ArrayList<>();
                 N currentNode = circlingNode;
                 E currentEdge = predecessors.get(currentNode);
-                while(currentEdge != null)
-                {
+                while (currentEdge != null) {
                     path.add(0, currentEdge);
                     currentNode = currentEdge.getNeighbour(currentNode);
                     currentEdge = predecessors.get(currentNode);
                 }
-                if(path.size()>0)
-                {
+                if (path.size() > 0) {
                     result.put(circlingNode, path);
                 }
             }

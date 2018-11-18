@@ -73,6 +73,11 @@ public class Chase extends jbt.execution.task.leaf.action.ExecutionAction {
 		/* TODO: this method's implementation must be completed. */
 	}
 
+	/**
+	 * Applies the active strategy by calling {@link Chase#routeStrategy(int)}.
+	 * @return
+	 * Always returns success.
+	 */
 	protected jbt.execution.core.ExecutionTask.Status internalTick() {
 		//use the strategy specified by the CHASING_STRATEGY constant
 		//if it doesn't correspond to a strategy, a random one is picked
@@ -80,6 +85,13 @@ public class Chase extends jbt.execution.task.leaf.action.ExecutionAction {
 		return jbt.execution.core.ExecutionTask.Status.SUCCESS;
 	}
 
+	/**
+	 * Applies the active strategy.
+	 * If the value of the passed strategy doesn't correspond to a valid strategy,
+	 * it follows the same behaviour as if it was {@link Chase#CHOOSE_RANDOM_STRATEGY}.
+	 * @param chasingStrategy
+	 * The value of the chasing strategy
+	 */
 	private void routeStrategy(int chasingStrategy)
 	{
 		//if the chasing strategy is not valid, a random one is picked
@@ -144,6 +156,8 @@ public class Chase extends jbt.execution.task.leaf.action.ExecutionAction {
 	 */
 	private void toClosestPossiblePacmanNextDestination()
 	{
+		//Here some computing is done
+		//We first retrieve the ghost & its knowledge graph
 		Ghost ghost = (Ghost) this.getContext().getVariable("GHOST");
 		UndirectedGraph<Node, Edge> graph = ghost.getKnowledge().getGraph();
 		//we try to compute a path from PacMan to the rest of the decision nodes & forbidding its previous position.
@@ -157,6 +171,7 @@ public class Chase extends jbt.execution.task.leaf.action.ExecutionAction {
 			path = graph.getPathToClosest(ghost.getKnowledge().getPacManDescription().getPosition(), targets, forbidden);
 			if(path != null && path.size() > 0 ){
 				//we have the closest decision node from pacman that can be its next destination
+				//if the ghost is already between this position & Pacman, it justs goes to Pacman
 				if(path.contains(ghost.getKnowledge().getKnowledgeAboutMySelf().getPosition()))
                 {
                     this.toPacman();
@@ -178,15 +193,19 @@ public class Chase extends jbt.execution.task.leaf.action.ExecutionAction {
 	 */
 	private void toClosestCirclingNode()
 	{
+		//Here, some computing is done
+		//We first retrieve the current state of the game, the ghost, its knowledge graph & position & Pacman's position.
 		Game game = (Game) this.getContext().getVariable("GAME");
 		Ghost ghost = (Ghost) this.getContext().getVariable("GHOST");
 		UndirectedGraph<Node, Edge> graph = ghost.getKnowledge().getGraph();
 		Node pacManPosition = ghost.getKnowledge().getPacManDescription().getPosition();
 		Node ghostPosition = ghost.getKnowledge().getKnowledgeAboutMySelf().getPosition();
 
+		//We circle the current Pacman's position with decision nodes.
 		Collection<Node> circlingNodes = graph.circleNode(pacManPosition, Node.getDecisionNodes(graph.getNodes())).keySet();
 		ArrayList<Node> closestCirclingNodes = null;
 		int minDistance=-1;
+		//Here we look for the closest node among the circling nodes
 		for(Node node : circlingNodes)
 		{
 			int distance = game.getShortestPathDistance(ghostPosition.getId(), node.getId(), game.getGhostLastMoveMade(ghost.getGhostEnumValue()));
@@ -200,6 +219,7 @@ public class Chase extends jbt.execution.task.leaf.action.ExecutionAction {
 				closestCirclingNodes.add(node);
 			}
 		}
+		//If many nodes are at the same minimum distance, we pick one by random
 		Node targetNode = closestCirclingNodes.get(new Random().nextInt(closestCirclingNodes.size()));
 		this.getContext().setVariable("SELECTED_NODE", targetNode);
 		this.getContext().setVariable("CLOSING", true);
@@ -210,15 +230,22 @@ public class Chase extends jbt.execution.task.leaf.action.ExecutionAction {
 	 */
 	private void toCirclingNodeImClosestTo()
 	{
+		//Here, we do some computing.
+		//We first retrieve the current state of the game, the ghost, its knowledge graph & position & Pacman's position.
+		//We also retrieve the positions of the other ghosts.
 		Game game = (Game) this.getContext().getVariable("GAME");
 		Ghost ghost = (Ghost) this.getContext().getVariable("GHOST");
 		UndirectedGraph<Node, Edge> graph = ghost.getKnowledge().getGraph();
 		Node ghostPosition = ghost.getKnowledge().getKnowledgeAboutMySelf().getPosition();
 		Node pacManPosition = ghost.getKnowledge().getPacManDescription().getPosition();
-		Collection<Node> circlingNodes = graph.circleNode(pacManPosition, Node.getDecisionNodes(graph.getNodes())).keySet();
 		Collection<Node> nodesWithGhosts = Node.getNodesContainingGhosts(graph.getNodes());
+
+		//We retrieve the decision nodes that circle the Pacman's current position.
+		Collection<Node> circlingNodes = graph.circleNode(pacManPosition, Node.getDecisionNodes(graph.getNodes())).keySet();
 		Map<Node, Integer> ranks = new HashMap<>();
 		Node targetNode = null;
+		//For each node, we compute the rank of proximity of the current ghost compared to the others.
+		//And Set the target to the node for which the current agent has the best rank.
 		for(Node circlingNode : circlingNodes)
 		{
 			int distanceToNode = game.getShortestPathDistance(ghostPosition.getId(), circlingNode.getId(), game.getGhostLastMoveMade(ghost.getGhostEnumValue()));
@@ -235,7 +262,7 @@ public class Chase extends jbt.execution.task.leaf.action.ExecutionAction {
 				targetNode = circlingNode;
 			}
 		}
-
+		//If the current ghost is already between Pacman & the target, we just make him chase Pacman directly
 		for(int nodeIndex : game.getShortestPath(targetNode.getId(), pacManPosition.getId()))
 		{
 			if(nodeIndex == ghostPosition.getId())

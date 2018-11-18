@@ -13,6 +13,5 @@ public class Pinky extends Ghost {
 
     public Pinky() {
         super(Constants.GHOST.PINKY);
-        initJBT();
     }
 }

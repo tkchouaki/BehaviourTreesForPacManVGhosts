@@ -96,32 +96,25 @@ public class Node implements NodeInterface {
     /**
      * Initializes a Node with the given ID & coordinates
      * By default, a node doesn't contain anything & is not a decision node
-     * @param id
-     * The node's ID
-     * @param x
-     * The x component of the Node's coordinates
-     * @param y
-     * The y component of the Node's coordinates
+     *
+     * @param id The node's ID
+     * @param x  The x component of the Node's coordinates
+     * @param y  The y component of the Node's coordinates
      */
-    public Node(Integer id, int x, int y)
-    {
+    public Node(Integer id, int x, int y) {
         this(id, x, y, false);
     }
 
 
     /**
      * Initializes a Node with the given ID, coordinates & isDecisionNode value
-     * @param id
-     * The node's ID
-     * @param x
-     * The x component of the node's coordinates
-     * @param y
-     * The y componenet of the node's coordinates
-     * @param isDecisionNode
-     * A boolean indicating if the node is a decision node
+     *
+     * @param id             The node's ID
+     * @param x              The x component of the node's coordinates
+     * @param y              The y componenet of the node's coordinates
+     * @param isDecisionNode A boolean indicating if the node is a decision node
      */
-    public Node(Integer id, int x, int y, boolean isDecisionNode)
-    {
+    public Node(Integer id, int x, int y, boolean isDecisionNode) {
         support = new EventListenerList();
         event = new ChangeEvent(this);
 
@@ -139,16 +132,16 @@ public class Node implements NodeInterface {
 
     /**
      * Retrieves the ID of the current node
-     * @return
-     * The current Node's ID
+     *
+     * @return The current Node's ID
      */
-    public Integer getId()
-    {
+    public Integer getId() {
         return this.id;
     }
 
     /**
      * Retrieves the X component of the node's coordinates
+     *
      * @return
      */
     public int getX() {
@@ -157,6 +150,7 @@ public class Node implements NodeInterface {
 
     /**
      * Retrieves the Y component of the node's coordinates
+     *
      * @return
      */
     public int getY() {
@@ -166,35 +160,35 @@ public class Node implements NodeInterface {
     /**
      * Retrieves a boolean indicating if the current node is a decision node
      * i.e where the agent needs to make a decision
+     *
      * @return
      */
-    public boolean isDecisionNode()
-    {
+    public boolean isDecisionNode() {
         return this.isDecisionNode;
     }
 
     /**
      * Sets the isDecisionNode property
+     *
      * @param isDecisionNode
      */
-    public void setIsDecisionNode(boolean isDecisionNode)
-    {
+    public void setIsDecisionNode(boolean isDecisionNode) {
         this.isDecisionNode = isDecisionNode;
     }
 
     /**
      * Checks if the current Node contains a pill
-     * @return
-     * True if the current Node contains a pill
+     *
+     * @return True if the current Node contains a pill
      */
     public boolean containsPill() {
-        return containedPillId >=0 ;
+        return containedPillId >= 0;
     }
 
     /**
      * Returns the ID of the contained pill
-     * @return
-     * The ID of the contained Pill
+     *
+     * @return The ID of the contained Pill
      * If the current Node doesn't contain a pill, the returned value is -1
      */
     public int getContainedPillId() {
@@ -203,8 +197,8 @@ public class Node implements NodeInterface {
 
     /**
      * Retrieves the last update tick of the current node
-     * @return
-     * The last update tick of the current node.
+     *
+     * @return The last update tick of the current node.
      */
     public int getLastUpdateTick() {
         return lastUpdateTick;
@@ -212,8 +206,8 @@ public class Node implements NodeInterface {
 
     /**
      * Sets The ID of the contained Pill
-     * @param containedPillId
-     * the ID of the contained pill
+     *
+     * @param containedPillId the ID of the contained pill
      */
     public void setContainedPillId(int containedPillId) {
         this.containedPillId = containedPillId;
@@ -222,8 +216,8 @@ public class Node implements NodeInterface {
 
     /**
      * Checks if the current Node contains a power pill
-     * @return
-     * True if the current node contains a power pill
+     *
+     * @return True if the current node contains a power pill
      */
     public boolean containsPowerPill() {
         return containedPowerPillId >= 0;
@@ -231,8 +225,8 @@ public class Node implements NodeInterface {
 
     /**
      * Returns the ID of the contained power pill
-     * @return
-     * The ID of the contained power pill
+     *
+     * @return The ID of the contained power pill
      * If the current Node doesn't contain a power pill, the returned value is -1
      */
     public int getContainedPowerPillId() {
@@ -241,30 +235,28 @@ public class Node implements NodeInterface {
 
     /**
      * Sets the ID of the contained power pill
-     * @param containedPowerPillId
-     * the id of the contained power pill
+     *
+     * @param containedPowerPillId the id of the contained power pill
      */
-    public void setContainedPowerPillId(int containedPowerPillId)
-    {
+    public void setContainedPowerPillId(int containedPowerPillId) {
         this.containedPowerPillId = containedPowerPillId;
         fireChangeEvent();
     }
 
     /**
      * Returns the description of the contained PacMan
-     * @return
-     * The Description of PacMan if it is contained in the current node.
+     *
+     * @return The Description of PacMan if it is contained in the current node.
      * If PacMan is node in the current node, a null value is returned.
      */
-    public PacManDescription getContainedPacManDescription()
-    {
+    public PacManDescription getContainedPacManDescription() {
         return this.containedPacManDescription;
     }
 
     /**
      * Checks if PacMan is in the current Node
-     * @return
-     * True if PacMan is in the current Node
+     *
+     * @return True if PacMan is in the current Node
      */
     public boolean containsPacMan() {
         return this.containedPacManDescription != null;
@@ -272,20 +264,18 @@ public class Node implements NodeInterface {
 
     /**
      * Sets the containedPacManDescription attribute's value
-     * @param containedPacMan
-     * The contained PacMan's description
+     *
+     * @param containedPacMan The contained PacMan's description
      */
     public void setContainedPacManDescription(PacManDescription containedPacMan) {
         PacManDescription old = this.containedPacManDescription;
         this.containedPacManDescription = containedPacMan;
         //We remove the old PacManDescription from the current node.
-        if(old != null && old.getPosition().equals(this))
-        {
+        if (old != null && old.getPosition().equals(this)) {
             old.setPosition(null);
         }
         //We add the new PacManDescription to the Current node.
-        if(this.containedPacManDescription != null && !this.containedPacManDescription.getPosition().equals(this))
-        {
+        if (this.containedPacManDescription != null && !this.containedPacManDescription.getPosition().equals(this)) {
             this.containedPacManDescription.setPosition(this);
         }
         fireChangeEvent();
@@ -293,54 +283,46 @@ public class Node implements NodeInterface {
 
     /**
      * Checks if the current Node Contains a ghost
-     * @return
-     * True if the current Node contains a ghost
+     *
+     * @return True if the current Node contains a ghost
      */
-    public boolean containsGhost()
-    {
+    public boolean containsGhost() {
         return this.containedGhostsDescriptions.size() > 0;
     }
 
 
     /**
      * Checks if the current node contains a specific ghost
-     * @param ghost
-     * The ghost to look for
-     * @return
-     * True if the current node contains the specified ghost, false otherwise.
+     *
+     * @param ghost The ghost to look for
+     * @return True if the current node contains the specified ghost, false otherwise.
      */
-    public boolean containsGhost(Constants.GHOST ghost)
-    {
+    public boolean containsGhost(Constants.GHOST ghost) {
         return GhostDescription.getGhostDescription(this.containedGhostsDescriptions, ghost) != null;
     }
 
     /**
      * Retrieves the description of a ghost contained in the node.
-     * @param ghost
-     * The ghost whose description is desired
-     * @return
-     * The description of the desired ghost if it is in the current node.
+     *
+     * @param ghost The ghost whose description is desired
+     * @return The description of the desired ghost if it is in the current node.
      * Otherwise, a null value is returned.
      */
-    public GhostDescription getContainedGhostDescription(Constants.GHOST ghost)
-    {
+    public GhostDescription getContainedGhostDescription(Constants.GHOST ghost) {
         return GhostDescription.getGhostDescription(this.containedGhostsDescriptions, ghost);
     }
 
     /**
      * Adds a ghost's description to the current Node.
-     * @param ghostDescription
-     * The ghost's description
-     * @return
-     * True if the description didn't exist in the node & it was added.
+     *
+     * @param ghostDescription The ghost's description
+     * @return True if the description didn't exist in the node & it was added.
      */
-    public boolean addGhostDescription(GhostDescription ghostDescription)
-    {
+    public boolean addGhostDescription(GhostDescription ghostDescription) {
         boolean toReturn = this.containedGhostsDescriptions.add(ghostDescription);
         //If the position specified in the ghost's description is not the current node.
         //It is set to the current node.
-        if(!ghostDescription.getPosition().equals(this))
-        {
+        if (!ghostDescription.getPosition().equals(this)) {
             ghostDescription.setPosition(this);
         }
         this.fireChangeEvent();
@@ -350,17 +332,14 @@ public class Node implements NodeInterface {
 
     /**
      * Removes a ghost's description from the current node
-     * @param ghost
-     * The ghost whose description will be removed.
-     * @return
-     * True if the ghost was in the current node.
+     *
+     * @param ghost The ghost whose description will be removed.
+     * @return True if the ghost was in the current node.
      * False otherwise.
      */
-    public boolean removeGhostDescription(Constants.GHOST ghost)
-    {
+    public boolean removeGhostDescription(Constants.GHOST ghost) {
         GhostDescription toRemove = GhostDescription.getGhostDescription(this.containedGhostsDescriptions, ghost);
-        if(toRemove == null)
-        {
+        if (toRemove == null) {
             return false;
         }
         boolean toReturn = this.containedGhostsDescriptions.remove(toRemove);
@@ -371,20 +350,19 @@ public class Node implements NodeInterface {
 
     /**
      * Retrieves the descriptions of the contained ghosts
-     * @return
-     * A collection containing the descriptions of the ghosts contained in the current node.
+     *
+     * @return A collection containing the descriptions of the ghosts contained in the current node.
      * The collection is just a copy & so it can be altered without any risk
      */
-    public Collection<GhostDescription> getContainedGhostsDescriptions()
-    {
+    public Collection<GhostDescription> getContainedGhostsDescriptions() {
         return new HashSet<>(this.containedGhostsDescriptions);
     }
 
 
     /**
      * Retrieves the ghosts present in the current Node
-     * @return
-     * A Set of the ghosts present in the current Node.
+     *
+     * @return A Set of the ghosts present in the current Node.
      */
     public Collection<Constants.GHOST> getContainedGhosts() {
         return GhostDescription.getGhosts(this.containedGhostsDescriptions);
@@ -393,16 +371,14 @@ public class Node implements NodeInterface {
     /**
      * Sets the containedGhostsDescriptions attribute's value.
      * The given Set is copied, it can be manipulated freely after the call to this method
-     * @param containedGhosts
-     * A Set containing the ghosts present in the Node
+     *
+     * @param containedGhosts A Set containing the ghosts present in the Node
      */
     public void setContainedGhostsDescriptions(Set<GhostDescription> containedGhosts) {
-        for(Constants.GHOST ghost : this.getContainedGhosts())
-        {
+        for (Constants.GHOST ghost : this.getContainedGhosts()) {
             this.removeGhostDescription(ghost);
         }
-        for(GhostDescription ghostDescription : containedGhosts)
-        {
+        for (GhostDescription ghostDescription : containedGhosts) {
             this.addGhostDescription(ghostDescription);
         }
         fireChangeEvent();
@@ -410,8 +386,8 @@ public class Node implements NodeInterface {
 
     /**
      * Adds a change event listener to be called when changes occur at the current node.
-     * @param listener
-     * The listener to add.
+     *
+     * @param listener The listener to add.
      */
     public void addChangeEventListener(ChangeEventListener listener) {
         support.add(ChangeEventListener.class, listener);
@@ -419,8 +395,8 @@ public class Node implements NodeInterface {
 
     /**
      * Removes a change event listener so it won't be called anymore when changes occur at the current node
-     * @param listener
-     * The listener to remove.
+     *
+     * @param listener The listener to remove.
      */
     public void removeChangeEventListener(ChangeEventListener listener) {
         support.remove(ChangeEventListener.class, listener);
@@ -428,8 +404,8 @@ public class Node implements NodeInterface {
 
     /**
      * Sets the last update tick of the node
-     * @param tick
-     * The new last update tick of the node.
+     *
+     * @param tick The new last update tick of the node.
      */
     public void setLastUpdateTick(int tick) {
         lastUpdateTick = tick;
@@ -437,10 +413,9 @@ public class Node implements NodeInterface {
 
     /**
      * Checks if the current node is equal to a given object
-     * @param obj
-     * The object to compare with the node
-     * @return
-     * True if the given object is a Node with the same id as the current Node
+     *
+     * @param obj The object to compare with the node
+     * @return True if the given object is a Node with the same id as the current Node
      */
     @Override
     public boolean equals(Object obj) {
@@ -453,23 +428,21 @@ public class Node implements NodeInterface {
 
     /**
      * Returns the hash code of the current node
-     * @return
-     * The hash code of the current node (which is the hash code of its ID)
+     *
+     * @return The hash code of the current node (which is the hash code of its ID)
      */
     @Override
-    public int hashCode()
-    {
+    public int hashCode() {
         return this.id.hashCode();
     }
 
     /**
      * Returns the string representation of the node : a string containing its ID
-     * @return
-     * The string representation of the node
+     *
+     * @return The string representation of the node
      */
     @Override
-    public String toString()
-    {
+    public String toString() {
         return this.id.toString();
     }
 
@@ -485,16 +458,14 @@ public class Node implements NodeInterface {
 
     /**
      * Compares the current Node with another one (allows to sort)
-     * @param o
-     * The object to compare the current node with
-     * @return
-     * An integer representing the difference between the current Node & the given object.
+     *
+     * @param o The object to compare the current node with
+     * @return An integer representing the difference between the current Node & the given object.
      */
     @Override
     public int compareTo(Object o) {
-        if(o instanceof NodeInterface)
-        {
-            return this.getId() - ((NodeInterface)o).getId();
+        if (o instanceof NodeInterface) {
+            return this.getId() - ((NodeInterface) o).getId();
         }
         return Integer.MIN_VALUE;
     }
@@ -502,19 +473,14 @@ public class Node implements NodeInterface {
 
     /**
      * Retrieves a Node with the desired ID from an Iterable of Nodes
-     * @param nodes
-     * The search scope
-     * @param id
-     * The id of the desired Node
-     * @return
-     * The node with the given id, null if not found
+     *
+     * @param nodes The search scope
+     * @param id    The id of the desired Node
+     * @return The node with the given id, null if not found
      */
-    public static Node getNodeById(Iterable<Node> nodes, Integer id)
-    {
-        for(Node node : nodes)
-        {
-            if(node.id.equals(id))
-            {
+    public static Node getNodeById(Iterable<Node> nodes, Integer id) {
+        for (Node node : nodes) {
+            if (node.id.equals(id)) {
                 return node;
             }
         }
@@ -523,18 +489,14 @@ public class Node implements NodeInterface {
 
     /**
      * Retrieves the nodes containing pills from an Iterable of Nodes
-     * @param nodes
-     * The search scope
-     * @return
-     * A Set containing the Nodes of the given Iterable that contain pills
+     *
+     * @param nodes The search scope
+     * @return A Set containing the Nodes of the given Iterable that contain pills
      */
-    public static Set<Node> getNodesWithPills(Iterable<Node> nodes)
-    {
+    public static Set<Node> getNodesWithPills(Iterable<Node> nodes) {
         Set<Node> result = new HashSet<>();
-        for(Node node : nodes)
-        {
-            if(node.containsPill())
-            {
+        for (Node node : nodes) {
+            if (node.containsPill()) {
                 result.add(node);
             }
         }
@@ -543,18 +505,14 @@ public class Node implements NodeInterface {
 
     /**
      * Retrieves the nodes containing power pills from an Iterable of Nodes
-     * @param nodes
-     * The search scope
-     * @return
-     * A Set containing the Nodes of the given Iterable that contain power pills
+     *
+     * @param nodes The search scope
+     * @return A Set containing the Nodes of the given Iterable that contain power pills
      */
-    public static Set<Node> getNodesWithPowerPills(Iterable<Node> nodes)
-    {
+    public static Set<Node> getNodesWithPowerPills(Iterable<Node> nodes) {
         Set<Node> result = new HashSet<>();
-        for(Node node : nodes)
-        {
-            if(node.containsPowerPill())
-            {
+        for (Node node : nodes) {
+            if (node.containsPowerPill()) {
                 result.add(node);
             }
         }
@@ -563,31 +521,24 @@ public class Node implements NodeInterface {
 
     /**
      * Retrieves the nodes containing ghosts from an Iterable of Nodes
-     * @param nodes
-     * The search scope
-     * @return
-     * A Set containing the Nodes of the given Iterable that contain ghosts
+     *
+     * @param nodes The search scope
+     * @return A Set containing the Nodes of the given Iterable that contain ghosts
      */
-    public static Set<Node> getNodesContainingGhosts(Iterable<Node> nodes)
-    {
+    public static Set<Node> getNodesContainingGhosts(Iterable<Node> nodes) {
         Set<Node> result = new HashSet<>();
-        for(Node node : nodes)
-        {
-            if(node.containsGhost())
-            {
+        for (Node node : nodes) {
+            if (node.containsGhost()) {
                 result.add(node);
             }
         }
         return result;
     }
 
-    public static Set<Node> getDecisionNodes(Iterable<Node> nodes)
-    {
+    public static Set<Node> getDecisionNodes(Iterable<Node> nodes) {
         Set<Node> result = new HashSet<>();
-        for(Node node : nodes)
-        {
-            if(node.isDecisionNode())
-            {
+        for (Node node : nodes) {
+            if (node.isDecisionNode()) {
                 result.add(node);
             }
         }
@@ -596,21 +547,16 @@ public class Node implements NodeInterface {
 
     /**
      * Returns the node containing a specified ghost among a given iterable of nodes
-     * @param nodes
-     * The search scope
-     * @param ghost
-     * The desired ghost
-     * @return
-     * The Node containing the specified ghost among the given iterable
+     *
+     * @param nodes The search scope
+     * @param ghost The desired ghost
+     * @return The Node containing the specified ghost among the given iterable
      * Caution : this method assumes that a ghost can only be at one node at a time
      * If no such Node is found, a null value is returned
      */
-    public static Node getNodeContainingGhost(Iterable<Node> nodes, Constants.GHOST ghost)
-    {
-        for(Node node : nodes)
-        {
-            if(node.getContainedGhosts().contains(ghost))
-            {
+    public static Node getNodeContainingGhost(Iterable<Node> nodes, Constants.GHOST ghost) {
+        for (Node node : nodes) {
+            if (node.getContainedGhosts().contains(ghost)) {
                 return node;
             }
         }
@@ -619,19 +565,15 @@ public class Node implements NodeInterface {
 
     /**
      * Returns the node containing PacMan among a given iterable of nodes
-     * @param nodes
-     * The search scope
-     * @return
-     * The Node containing PacMan among the given iterable
+     *
+     * @param nodes The search scope
+     * @return The Node containing PacMan among the given iterable
      * Caution : this method assumes that PacMan can only be at one node at a time
      * If no such Node is found, a null value is returned
      */
-    public static Node getNodeContainingPacMan(Iterable<Node> nodes)
-    {
-        for(Node node : nodes)
-        {
-            if(node.containsPacMan())
-            {
+    public static Node getNodeContainingPacMan(Iterable<Node> nodes) {
+        for (Node node : nodes) {
+            if (node.containsPacMan()) {
                 return node;
             }
         }

@@ -20,7 +20,10 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-/** ExecutionAction class created from MMPM action GetAwayFromPowerPills. */
+/**
+ * ExecutionAction class created from MMPM action GetAwayFromPowerPills.
+ * Implements the behaviour ot the ghost getting away from power pills.
+ */
 public class GetAwayFromPowerPills extends
 		jbt.execution.task.leaf.action.ExecutionAction {
 
@@ -46,12 +49,16 @@ public class GetAwayFromPowerPills extends
 		/* TODO: this method's implementation must be completed. */
 	}
 
+	/**
+	 * Implements the behaviour of the ghost getting away from the power pills.
+	 * It just finds the position of the closest power pill from the current ghost.
+	 * & then it sets the ghost to go away from the closest power pill.
+	 * @return
+	 * Returns success if there's at least one power pill.
+	 * Otherwise returns failure.
+	 */
 	protected jbt.execution.core.ExecutionTask.Status internalTick() {
-		/*
-		 * TODO: this method's implementation must be completed. This function
-		 * should only return Status.SUCCESS, Status.FAILURE or Status.RUNNING.
-		 * No other values are allowed.
-		 */
+
 		Game game = (Game) this.getContext().getVariable("GAME");
 		Ghost ghost = (Ghost) this.getContext().getVariable("GHOST");
 		Node currentPosition = ghost.getKnowledge().getKnowledgeAboutMySelf().getPosition();

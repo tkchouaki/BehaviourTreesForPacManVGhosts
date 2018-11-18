@@ -13,7 +13,12 @@ import entrants.utils.graph.Node;
 import pacman.game.Constants;
 import pacman.game.Game;
 
-/** ExecutionAction class created from MMPM action Escape. */
+/**
+ * ExecutionAction class created from MMPM action Escape.
+ * Implements the behaviour of the ghost escaping Pacman.
+ * Note : entering this behaviour assumes the position of Pacman is known
+ * This is checked by the {@link entrants.BT.Model.Conditions.IsPacManInSight} condition
+ */
 public class Escape extends jbt.execution.task.leaf.action.ExecutionAction {
 
 	/**
@@ -37,6 +42,12 @@ public class Escape extends jbt.execution.task.leaf.action.ExecutionAction {
 		/* TODO: this method's implementation must be completed. */
 	}
 
+	/**
+	 * Makes the ghost go away from the current Pacman Position.
+	 * This method assumes the the position of Pacman is known.
+	 * @return
+	 * Always return true
+	 */
 	protected jbt.execution.core.ExecutionTask.Status internalTick() {
 		/*
 		 * TODO: this method's implementation must be completed. This function

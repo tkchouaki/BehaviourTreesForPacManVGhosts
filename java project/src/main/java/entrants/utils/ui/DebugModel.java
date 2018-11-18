@@ -54,7 +54,7 @@ public class DebugModel {
         if (agent == null) {
             throw new AssertionError();
         }
-         tracedAgents.put(agent, new KnowledgeGraphDisplayer(agent.getDiscreteGraph(), "file:///"+CSS_FILE));
+        tracedAgents.put(agent, new KnowledgeGraphDisplayer(agent.getDiscreteGraph(), "file:///" + CSS_FILE));
         //tracedAgents.put(agent, new KnowledgeGraphDisplayer(agent.getDiscreteGraph(), CSS));
         agent.getPropertyChangeSupport().addPropertyChangeListener(Ghost.MAZE_CHANGED_PROP, new PropertyChangeListener() {
             @Override
