@@ -21,12 +21,14 @@ import java.util.*;
 /**
  * ExecutionAction class created from MMPM action Chase.
  * Offers 6 Chase strategies available as public constants
- * - TO_CLOSEST_CIRCLING_NODE
- * - TO_CIRCLING_NODE_IM_CLOSEST_TO
- * - TO_PACMAN
- * - TO_CLOSEST_POSSIBLE_PACMAN_NEXT_DESTINATION
- * - ACCORDING_TO_AGENT
- * - CHOOSE_RANDOM_STRATEGY
+ * <ul>
+ * <li>TO_CLOSEST_CIRCLING_NODE</li>
+ * <li>TO_CIRCLING_NODE_IM_CLOSEST_TO</li>
+ * <li>TO_PACMAN</li>
+ * <li>TO_CLOSEST_POSSIBLE_PACMAN_NEXT_DESTINATION</li>
+ * <li>ACCORDING_TO_AGENT</li>
+ * <li>CHOOSE_RANDOM_STRATEGY</li>
+ * </ul>
  * The used strategy can be set by the method {@link Chase#setChasingStrategy}.
  * For more details on how the different strategies work, refer to the project report.
  */
